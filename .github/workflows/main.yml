@@ -1211,7 +1211,7 @@ jobs:
           import sys
           base = sys.argv[1]
           raw = subprocess.check_output(["git", "diff", "--name-only", "-z", f"{base}..HEAD"])
-          paths = [p.decode("utf-8", "surrogateescape") for p in raw.split(b"\\0") if p]
+          paths = [p.decode("utf-8", "surrogateescape") for p in raw.split(bytes([0])) if p]
           protected = []
           for path in paths:
               name = path.rsplit("/", 1)[-1]
