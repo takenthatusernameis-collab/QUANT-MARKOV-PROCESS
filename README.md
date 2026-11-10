@@ -19,9 +19,13 @@ A research-only laboratory for testing whether Markov, hidden-Markov, regime-swi
 
 ## Kilo workflow
 
-The Kilo General Agent Loop is scheduled every five minutes; each activation has a 355-minute safety cutoff, bounded sequential sessions, an idle watchdog, completed-run diagnostics, retry/backoff, and controller-owned checkpoints with remote SHA verification. It can also be started manually from **Actions → Kilo General Agent Loop**. Use the `diagnostics_only` option to run controller tests and refresh diagnostics without starting Kilo. Workflow-file pushes run validation only and never launch the worker. The controller does not expose the repository write token to Kilo and does not allow the agent to edit workflow definitions or protected research instructions.
+The `.github/workflows/main.yml` file is an exact copy of the workflow at `takenthatusernameis-collab/NQ-ORB` (source blob SHA `e364e841c85cc5c8a2d075a56929650394604c98`). Its supporting controller helper and four regression-test files are also copied byte-for-byte from that repository.
 
-Create `AGENT_STOP` with a concise reason to stop future research sessions. The scheduled workflow will then exit before starting Kilo. Remove that marker in a reviewed commit to resume.
+The Kilo General Agent Loop is scheduled every five minutes, with a 355-minute activation cutoff, an idle watchdog, sequential worker sessions, bounded transient retries, completed-run diagnostics, recovery artifacts, and controller-verified checkpoint persistence. It can be started manually from **Actions → Kilo General Agent Loop**. The `diagnostics_only` option runs controller tests and refreshes diagnostics without starting Kilo. Workflow-file pushes run validation/diagnostics only and do not launch the worker.
+
+Exact parity includes the source workflow's `GITHUB_TOKEN`/`GH_TOKEN` worker environment and its checkpoint behavior. Repository instructions prohibit the agent from reading, printing, or using credentials. The controller explicitly keeps workflow definitions maintainer-managed; other research-instruction restrictions are specified in the repository guidance and are not additional workflow modifications.
+
+`AGENT_STOP` is a project-level agent instruction marker, not a GitHub Actions controller switch in this exact NQ-ORB workflow. The worker must respect it when read from the project handoff/instructions; it does not cancel an already-running workflow activation.
 
 ## Research outputs
 
