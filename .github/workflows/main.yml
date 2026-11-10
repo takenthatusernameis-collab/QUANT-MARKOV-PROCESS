@@ -54,10 +54,10 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          if [[ -f research_state/STOP ]]; then
+          if [[ -f AGENT_STOP ]]; then
             echo "stopped=true" >> "$GITHUB_OUTPUT"
             echo "Research STOP marker found; no Kilo session will start."
-            cat research_state/STOP
+            cat AGENT_STOP
           else
             echo "stopped=false" >> "$GITHUB_OUTPUT"
           fi
@@ -109,7 +109,7 @@ jobs:
           REPOSITORY = os.environ["REPOSITORY"]
           TOKEN = os.environ["GITHUB_TOKEN"]
           API = f"https://api.github.com/repos/{REPOSITORY}"
-          LEDGER = Path("research_state/workflow_run_diagnostics.jsonl")
+          LEDGER = Path("agent_state/workflow_run_diagnostics.jsonl")
 
           # Bounded work prevents historical backfill from overrunning the job.
           PAGE_SIZE = 100
@@ -677,7 +677,7 @@ jobs:
           git config user.name "workflow-error-capture"
           git config user.email "workflow-error-capture@users.noreply.github.com"
 
-          ledger="research_state/workflow_run_diagnostics.jsonl"
+          ledger="agent_state/workflow_run_diagnostics.jsonl"
           test -f "$ledger" || {
             echo "::error::Diagnostics ledger was not generated."
             exit 1
@@ -1051,7 +1051,7 @@ jobs:
           idle_timeout="${KILO_IDLE_TIMEOUT_SECONDS:-900}"
           if ! [[ "$idle_timeout" =~ ^[0-9]+$ ]] || (( idle_timeout < 60 )); then idle_timeout=900; fi
 
-          command='Read AGENTS.md, KILO_RESEARCH_PROMPT.md, and research_state/agent_handoff.md first. Revalidate the current main branch and prior research artifacts. Complete exactly one bounded, highest-information-value research task. Do not trade, use credentials, commit, push, edit .github/workflows/*, AGENTS.md, or KILO_RESEARCH_PROMPT.md. Preserve negative results and do not inspect or tune a locked final holdout. Run relevant focused tests and report their actual outcomes. Update research_state/agent_handoff.md with changed paths, findings, sources, exact commands/results, uncertainty, blockers, and one next task. If no safe useful research remains, create research_state/STOP with a concise reason and stop.'
+          command='Read AGENTS.md and README.md where present, then follow the repository-specific instructions, prompt files, and durable handoff/task record they identify. Revalidate the live default branch and working tree. Complete exactly one bounded, high-value task aligned with the repository purpose. Do not access or expose credentials, edit .github/workflows/*, commit, or push. Preserve pre-existing work. Run relevant focused checks and report their actual outcomes. Update the repository established handoff/task record with changed paths, findings, evidence, exact commands/results, uncertainty, blockers, and one next task. If no safe useful task remains, create AGENT_STOP with a concise reason and stop.'
 
           heartbeat() {
             local heartbeat_sleep_pid=""
@@ -1180,7 +1180,7 @@ jobs:
             git add -A -- . || return 1
             while IFS= read -r -d '' changed_path; do
               case "$changed_path" in
-                .github/workflows/*|AGENTS.md|KILO_RESEARCH_PROMPT.md|secrets/*|*/secrets/*|research/data/raw/*|data/raw/*|datasets/raw/*|.venv/*|*/.venv/*|venv/*|*/venv/*|node_modules/*|*/node_modules/*|__pycache__/*|*/__pycache__/*|.pytest_cache/*|*/.pytest_cache/*|.mypy_cache/*|*/.mypy_cache/*|.ruff_cache/*|*/.ruff_cache/*|.tox/*|*/.tox/*|.env|.env.*|*/.env|*/.env.*|*.pyc|*.pyo|*.sqlite|*.sqlite3|*.db|*.sqlite-wal|*.sqlite-shm|*.sqlite3-wal|*.sqlite3-shm|*.db-wal|*.db-shm|*.tmp|coverage.xml|*/coverage.xml|.coverage|*/.coverage|kilo-session-*.log|*/kilo-session-*.log|kilo-progress-*.log|*/kilo-progress-*.log)
+                .github/workflows/*|AGENTS.md|*_GUIDELINES.md|*_RESEARCH_PROMPT.md|secrets/*|*/secrets/*|raw/*|*/raw/*|.venv/*|*/.venv/*|venv/*|*/venv/*|node_modules/*|*/node_modules/*|__pycache__/*|*/__pycache__/*|.pytest_cache/*|*/.pytest_cache/*|.mypy_cache/*|*/.mypy_cache/*|.ruff_cache/*|*/.ruff_cache/*|.tox/*|*/.tox/*|.env|.env.*|*/.env|*/.env.*|*.pyc|*.pyo|*.sqlite|*.sqlite3|*.db|*.sqlite-wal|*.sqlite-shm|*.sqlite3-wal|*.sqlite3-shm|*.db-wal|*.db-shm|*.tmp|coverage.xml|*/coverage.xml|.coverage|*/.coverage|kilo-session-*.log|*/kilo-session-*.log|kilo-progress-*.log|*/kilo-progress-*.log)
                   if git cat-file -e "$base_sha:$changed_path" 2>/dev/null; then
                     git restore --staged -- "$changed_path" || return 1
                   else
@@ -1215,8 +1215,10 @@ jobs:
           protected = []
           for path in paths:
               name = path.rsplit("/", 1)[-1]
-              if (path.startswith(".github/workflows/") or path in {"AGENTS.md", "KILO_RESEARCH_PROMPT.md"}
-                  or path.startswith(("secrets/", "research/data/raw/", "data/raw/", "datasets/raw/"))
+              parts = path.split("/")
+              if (path.startswith(".github/workflows/") or path == "AGENTS.md"
+                  or name.endswith(("_GUIDELINES.md", "_RESEARCH_PROMPT.md"))
+                  or "secrets" in parts or "raw" in parts
                   or name == ".env" or name.startswith(".env.")
                   or name.endswith((".pem", ".key", ".p12", ".pfx", ".sqlite", ".sqlite3", ".db"))):
                   protected.append(path)
@@ -1231,7 +1233,7 @@ jobs:
               return 1
             fi
             # Keep maintainer-managed research instructions and workflow files unchanged.
-            git restore --source="$base_sha" --staged --worktree -- .github/workflows AGENTS.md KILO_RESEARCH_PROMPT.md >/dev/null 2>&1 || true
+            git restore --source="$base_sha" --staged --worktree -- .github/workflows AGENTS.md ':(glob)**/*_GUIDELINES.md' ':(glob)**/*_RESEARCH_PROMPT.md' >/dev/null 2>&1 || true
             git clean -fd -- .github/workflows >/dev/null 2>&1 || true
             if ! stage_safe_changes "$base_sha"; then
               save_recovery_evidence "$base_sha"
@@ -1339,9 +1341,9 @@ jobs:
           echo "Repository default branch: ${DEFAULT_BRANCH}"
 
           for ((agent_index=1; agent_index<=agents; agent_index++)); do
-            if [[ -f research_state/STOP ]]; then
+            if [[ -f AGENT_STOP ]]; then
               final_phase="stopped"
-              final_detail="research_state/STOP is present; no additional Kilo session will start"
+              final_detail="AGENT_STOP is present; no additional Kilo session will start"
               break
             fi
             remaining=$((cutoff_epoch - $(date +%s)))
@@ -1610,7 +1612,7 @@ jobs:
           DETAIL: ${{ steps.kilo.outputs.KILO_FINAL_DETAIL }}
         run: |
           if [[ "$STOPPED" == "true" ]]; then
-            echo "Kilo skipped: research_state/STOP is present; collector=${COLLECT_OUTCOME:-unknown}; ledger persistence=${PERSIST_OUTCOME:-unknown}."
+            echo "Kilo skipped: AGENT_STOP is present; collector=${COLLECT_OUTCOME:-unknown}; ledger persistence=${PERSIST_OUTCOME:-unknown}."
             exit 0
           fi
           if [[ "$EVENT_NAME" == "push" || "$DIAGNOSTICS_ONLY" == "true" ]]; then
