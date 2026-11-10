@@ -20,7 +20,7 @@ Read `MARKOV_RESEARCH_GUIDELINES.md` before beginning; it defines the project-sp
 
 Produce a sourced literature and methodology review in `research/literature/markov-processes-in-finance.md` and a companion falsifiable research plan in `research/specifications/initial-research-plan.md`.
 
-Read `MARKOV_RESEARCH_GUIDELINES.md` before beginning. The review should distinguish:
+The review should distinguish:
 - finite-state Markov chains and higher-order chains;
 - hidden Markov models and latent-regime switching;
 - Markov-switching autoregressive/volatility models;
