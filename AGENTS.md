@@ -16,8 +16,8 @@ This is a research-only quantitative laboratory. The default research domain is 
 6. **Protect holdouts.** Keep discovery, model selection, validation, and confirmatory evaluation distinct. Record the split and freeze candidate definitions before any final holdout access. If a valid independent holdout protocol is not yet defined, do not claim confirmatory evidence.
 7. **No performance theatre.** Never present gross returns as net returns, ignore fees/funding/slippage, hide failed experiments, or promote an in-sample winner as a validated strategy.
 8. **Keep the work auditable.** Record data provenance, timestamps, hashes where practical, model/state definitions, parameters, code version, commands, tests, and honest result status.
-9. **Do not rewrite protected instructions.** Kilo may propose revisions in `research_state/prompt_evolution.md`; it must not edit `AGENTS.md`, `KILO_RESEARCH_PROMPT.md`, or `.github/workflows/*`. The workflow controller also restores these paths before checkpointing.
-10. **Respect stop conditions.** Check for `research_state/STOP` before starting work and between tasks. If the research cycle is complete or no safe, useful task remains, create that marker with a reason and stop. Do not keep running sessions merely to consume the workflow budget.
+9. **Do not rewrite protected instructions.** Kilo may propose revisions in `research_state/prompt_evolution.md`; it must not edit `AGENTS.md`, files matching `*_GUIDELINES.md` or `*_RESEARCH_PROMPT.md`, or `.github/workflows/*`. The repository-agnostic controller protects these instruction-file conventions and workflow definitions before checkpointing.
+10. **Respect stop conditions.** Check for `AGENT_STOP` before starting work and between tasks. If the research cycle is complete or no safe, useful task remains, create that marker with a reason and stop. Do not keep running sessions merely to consume the workflow budget.
 
 ## Research and implementation discipline
 
