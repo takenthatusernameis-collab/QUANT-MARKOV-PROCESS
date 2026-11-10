@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+venv/
+ENV/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local credentials and environment
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# Local databases, caches, and transient artifacts
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.tmp
+*.log
+*.parquet
+*.feather
+
+# Raw research data should be reproducible from a manifest, not committed.
+research/data/raw/
+data/raw/
+datasets/raw/
