@@ -18,7 +18,7 @@ The repository was initialized on 2026-11-10. It contains the research mandate, 
 
 Produce a sourced literature and methodology review in `research/literature/markov-processes-in-finance.md` and a companion falsifiable research plan in `research/specifications/initial-research-plan.md`.
 
-The review should distinguish:
+Read `MARKOV_RESEARCH_GUIDELINES.md` before beginning. The review should distinguish:
 - finite-state Markov chains and higher-order chains;
 - hidden Markov models and latent-regime switching;
 - Markov-switching autoregressive/volatility models;
@@ -40,4 +40,4 @@ Update this file with:
 
 ## Stop rule
 
-When the research has no remaining high-value, safe task, or the agreed research cycle has been completed, write `research_state/STOP` with the reason and set this handoff status to `COMPLETE` or `BLOCKED_NO_SAFE_WORK`. Do not create a STOP marker merely because one data provider is unavailable if useful independent literature or methodology work remains.
+When the research has no remaining high-value, safe task, or the agreed research cycle has been completed, write `AGENT_STOP` with the reason and set this handoff status to `COMPLETE` or `BLOCKED_NO_SAFE_WORK`. Do not create a STOP marker merely because one data provider is unavailable if useful independent literature or methodology work remains.
