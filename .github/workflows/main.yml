@@ -49,7 +49,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check research stop marker
+      - name: Check agent stop marker
         id: stop
         shell: bash
         run: |
