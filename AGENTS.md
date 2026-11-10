@@ -16,8 +16,8 @@ This is a research-only quantitative laboratory. The default research domain is 
 6. **Protect holdouts.** Keep discovery, model selection, validation, and confirmatory evaluation distinct. Record the split and freeze candidate definitions before any final holdout access. If a valid independent holdout protocol is not yet defined, do not claim confirmatory evidence.
 7. **No performance theatre.** Never present gross returns as net returns, ignore fees/funding/slippage, hide failed experiments, or promote an in-sample winner as a validated strategy.
 8. **Keep the work auditable.** Record data provenance, timestamps, hashes where practical, model/state definitions, parameters, code version, commands, tests, and honest result status.
-9. **Do not rewrite protected instructions.** Kilo may propose revisions in `research_state/prompt_evolution.md`; it must not edit `AGENTS.md`, files matching `*_GUIDELINES.md` or `*_RESEARCH_PROMPT.md`, or `.github/workflows/*`. The repository-agnostic controller protects these instruction-file conventions and workflow definitions before checkpointing.
-10. **Respect stop conditions.** Check for `AGENT_STOP` before starting work and between tasks. If the research cycle is complete or no safe, useful task remains, create that marker with a reason and stop. Do not keep running sessions merely to consume the workflow budget.
+9. **Keep research instructions human-managed.** Kilo may propose revisions in `research_state/prompt_evolution.md`; it must not edit `AGENTS.md`, files matching `*_GUIDELINES.md` or `*_RESEARCH_PROMPT.md`, or `.github/workflows/*` unless the user explicitly authorizes that exact change. The exact NQ-ORB workflow copy explicitly keeps `.github/workflows/*` maintainer-managed, but does not enforce the other instruction-file restrictions in its controller code; follow this rule as an agent instruction.
+10. **Respect stop conditions.** Check for `AGENT_STOP` before starting work and between tasks. If the research cycle is complete or no safe, useful task remains, create that marker with a reason, mark the durable handoff complete, and do not start another task. The exact NQ-ORB workflow does not interpret `AGENT_STOP` as a controller-level cancellation switch, so the agent itself must obey the marker.
 
 ## Research and implementation discipline
 
@@ -40,4 +40,4 @@ At the start of each session:
 4. Complete one bounded task, test it, and preserve the evidence.
 5. Update the handoff with completed work, exact verification status, blockers, and one next task.
 
-Do not commit or push from inside Kilo. The GitHub Actions controller stages safe files, checkpoints them, pushes to `main`, and verifies the remote SHA. Do not create or modify workflow files.
+Do not commit or push from inside Kilo. The GitHub Actions controller stages changes, manages checkpoints, pushes to `main`, and verifies the remote SHA. The copied NQ-ORB workflow provides `GITHUB_TOKEN` and `GH_TOKEN` in the worker step environment; do not read, print, or use those values. Do not create or modify workflow files.
