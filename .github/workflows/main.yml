@@ -1,0 +1,393 @@
+name: Kilo Quant Markov Research
+
+on:
+  # Workflow edits are validated by GitHub Actions parsing, but must not launch Kilo.
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/main.yml"
+  # The loop itself is bounded to less than six hours; schedule at a matching cadence.
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      agents:
+        description: "Maximum sequential Kilo sessions for this activation (hard job cutoff: 355 minutes)"
+        required: false
+        default: 1000
+        type: number
+
+permissions:
+  contents: write
+
+# One writer at a time. Never cancel a running research session merely because another trigger arrives.
+concurrency:
+  group: kilo-quant-markov-main
+  cancel-in-progress: false
+
+jobs:
+  research:
+    # A workflow-file push is a validation-only activation, not permission to start the agent.
+    if: ${{ github.event_name != 'push' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out the latest default branch without exposing a Git credential to Kilo
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check research stop marker
+        id: stop
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if [[ -f research_state/STOP ]]; then
+            echo "stopped=true" >> "$GITHUB_OUTPUT"
+            echo "Research stop marker found; no Kilo session will start."
+            cat research_state/STOP
+          else
+            echo "stopped=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install pinned stable Kilo CLI
+        if: steps.stop.outputs.stopped != 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          umask 077
+
+          KILO_HOME="$RUNNER_TEMP/kilo-home"
+          mkdir -p "$KILO_HOME/.config/kilo" "$RUNNER_TEMP/kilo"
+          install_backoff=5
+          while ! timeout --signal=TERM --kill-after=10s 180s npm install --no-audit --no-fund --prefix "$RUNNER_TEMP/kilo" @kilocode/cli@7.8.27; do
+            delay="$install_backoff"
+            echo "::warning::Kilo CLI installation failed; retrying after ${delay}s."
+            sleep "$delay"
+            (( install_backoff < 60 )) && install_backoff=$((install_backoff * 2))
+            (( install_backoff > 60 )) && install_backoff=60
+          done
+
+          cat > "$KILO_HOME/.config/kilo/kilo.json" <<'JSON'
+          {"$schema":"https://app.kilo.ai/config.json","permission":"allow"}
+          JSON
+          chmod 600 "$KILO_HOME/.config/kilo/kilo.json"
+
+          echo "$RUNNER_TEMP/kilo/node_modules/.bin" >> "$GITHUB_PATH"
+          echo "HOME=$KILO_HOME" >> "$GITHUB_ENV"
+          echo "XDG_CONFIG_HOME=$KILO_HOME/.config" >> "$GITHUB_ENV"
+          echo "XDG_DATA_HOME=$KILO_HOME/.local/share" >> "$GITHUB_ENV"
+          echo "XDG_CACHE_HOME=$KILO_HOME/.cache" >> "$GITHUB_ENV"
+          mkdir -p "$KILO_HOME/.local/share" "$KILO_HOME/.cache"
+
+          export HOME="$KILO_HOME"
+          export XDG_CONFIG_HOME="$KILO_HOME/.config"
+          kilo --version
+
+      - name: Run bounded Kilo research sessions and verify checkpoints on main
+        id: kilo
+        if: steps.stop.outputs.stopped != 'true'
+        shell: bash
+        env:
+          # The token is unexported before starting Kilo. The agent receives no GitHub token
+          # and cannot push; only this controller uses it after each worker session.
+          PERSIST_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          INPUT_AGENTS: ${{ inputs.agents || '1000' }}
+          KILO_MODEL: kilo/kilo-auto/free
+        run: |
+          set -Eeuo pipefail
+          umask 077
+
+          persist_token="${PERSIST_TOKEN:?GitHub token is unavailable}"
+          export -n PERSIST_TOKEN
+          unset GITHUB_TOKEN GH_TOKEN
+
+          branch="${DEFAULT_BRANCH:-}"
+          if [[ -z "$branch" ]]; then
+            echo "::error::GitHub did not provide the repository default branch."
+            exit 1
+          fi
+
+          git config user.name "kilo-autonomous"
+          git config user.email "kilo-autonomous@users.noreply.github.com"
+
+          # Reconcile to the live branch while the worktree is pristine.
+          if [[ -n "$(git status --porcelain --untracked-files=all)" ]]; then
+            echo "::error::Checkout is not clean before Kilo starts."
+            git status --short
+            exit 1
+          fi
+          git fetch --prune origin "+refs/heads/${branch}:refs/remotes/origin/${branch}"
+          git checkout -B "$branch" "origin/$branch"
+          echo "Kilo base: $(git rev-parse HEAD)"
+
+          agents="${INPUT_AGENTS:-1000}"
+          if ! [[ "$agents" =~ ^[0-9]+$ ]]; then agents=1000; fi
+          (( agents < 1 )) && agents=1
+          (( agents > 1000 )) && agents=1000
+
+          cutoff_epoch=$(( $(date +%s) + 355 * 60 ))
+          checkpoint_reserve_seconds=300
+          session_timeout_seconds=2700
+          session_started=0
+          session_failures=0
+          verified_checkpoints=0
+          meaningful_progress=0
+          empty_sessions=0
+          final_phase="starting"
+          final_detail="initializing"
+
+          save_recovery_evidence() {
+            local suffix="${GITHUB_RUN_ID:-local}-${GITHUB_RUN_ATTEMPT:-1}"
+            git bundle create "$RUNNER_TEMP/kilo-recovery-${suffix}.bundle" --all >/dev/null 2>&1 || true
+            git diff --binary > "$RUNNER_TEMP/kilo-working-tree-${suffix}.patch" 2>/dev/null || true
+            git diff --cached --binary > "$RUNNER_TEMP/kilo-index-${suffix}.patch" 2>/dev/null || true
+            git status --short > "$RUNNER_TEMP/kilo-recovery-status-${suffix}.txt" 2>/dev/null || true
+          }
+
+          stage_safe_changes() {
+            local base_sha="$1"
+            local path
+
+            # Keep the workflow and research mandate maintainer-managed.
+            git restore --source="$base_sha" --staged --worktree -- .github/workflows AGENTS.md KILO_RESEARCH_PROMPT.md >/dev/null 2>&1 || true
+            git clean -fd -- .github/workflows >/dev/null 2>&1 || true
+            git add -A -- .
+
+            # Never persist credentials, local environments, raw datasets, databases, or build caches.
+            while IFS= read -r -d '' path; do
+              case "$path" in
+                .github/workflows/*|AGENTS.md|KILO_RESEARCH_PROMPT.md|.env|.env.*|*/.env|*/.env.*|secrets/*|*/secrets/*|*.pem|*.key|*.p12|*.pfx|*.sqlite|*.sqlite3|*.db|*.db-wal|*.db-shm|*.pyc|*.pyo|research/data/raw/*|data/raw/*|datasets/raw/*|.venv/*|*/.venv/*|venv/*|*/venv/*|node_modules/*|*/node_modules/*|__pycache__/*|*/__pycache__/*)
+                  if git cat-file -e "$base_sha:$path" 2>/dev/null; then
+                    git restore --staged -- "$path"
+                  else
+                    git rm --cached -q --ignore-unmatch -- "$path"
+                  fi
+                  ;;
+              esac
+            done < <(git diff --cached --name-only -z)
+          }
+
+          reject_protected_commits() {
+            local base_sha="$1"
+            python3 - "$base_sha" <<'PYTHON'
+          import subprocess
+          import sys
+
+          base = sys.argv[1]
+          raw = subprocess.check_output(["git", "diff", "--name-only", "-z", f"{base}..HEAD"])
+          paths = [p.decode("utf-8", "surrogateescape") for p in raw.split(b"\0") if p]
+          forbidden = []
+          for path in paths:
+              name = path.rsplit("/", 1)[-1]
+              if (
+                  path.startswith(".github/workflows/")
+                  or path in {"AGENTS.md", "KILO_RESEARCH_PROMPT.md"}
+                  or name == ".env" or name.startswith(".env.")
+                  or path.startswith("secrets/")
+                  or path.startswith("research/data/raw/")
+                  or path.startswith("data/raw/")
+                  or path.startswith("datasets/raw/")
+                  or name.endswith((".pem", ".key", ".p12", ".pfx", ".sqlite", ".sqlite3", ".db"))
+              ):
+                  forbidden.append(path)
+          if forbidden:
+              print("::error::Refusing to persist commits touching protected paths:")
+              for path in forbidden:
+                  print(f" - {path}")
+              raise SystemExit(1)
+          PYTHON
+          }
+
+          persist_checkpoint() {
+            local base_sha="$1"
+            local local_sha remote_sha auth_header
+
+            stage_safe_changes "$base_sha"
+            if ! git diff --cached --check; then
+              echo "::error::Whitespace validation failed; refusing to checkpoint."
+              return 1
+            fi
+
+            if ! git diff --cached --quiet; then
+              git commit -m "research(kilo): checkpoint session ${session_started}"
+            fi
+
+            reject_protected_commits "$base_sha" || return 1
+
+            # Public reads are unauthenticated. The write token is added only to this
+            # controller-owned push command, never to the Kilo process environment.
+            git fetch --prune origin "+refs/heads/${branch}:refs/remotes/origin/${branch}"
+            if ! git merge-base --is-ancestor "origin/$branch" HEAD; then
+              if ! git rebase "origin/$branch"; then
+                git rebase --abort >/dev/null 2>&1 || true
+                echo "::error::Could not safely rebase onto the latest main."
+                return 1
+              fi
+            fi
+
+            local_sha="$(git rev-parse HEAD)"
+            remote_sha="$(git rev-parse "origin/$branch")"
+            if [[ "$local_sha" != "$remote_sha" ]]; then
+              auth_header="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$persist_token" | base64 | tr -d '\n')"
+              if ! git -c http.extraheader="$auth_header" push origin "HEAD:$branch"; then
+                echo "::error::Push failed; remote persistence is unverified."
+                return 1
+              fi
+            fi
+
+            remote_sha="$(git ls-remote origin "refs/heads/$branch" | awk 'NR==1 {print $1}')"
+            local_sha="$(git rev-parse HEAD)"
+            if [[ -z "$remote_sha" || "$remote_sha" != "$local_sha" ]]; then
+              echo "::error::Remote main SHA does not match the local checkpoint."
+              return 1
+            fi
+            verified_checkpoints=$((verified_checkpoints + 1))
+            if ! git diff --quiet "$base_sha" HEAD; then
+              meaningful_progress=1
+            fi
+            echo "Verified checkpoint $verified_checkpoints at $remote_sha."
+            return 0
+          }
+
+          echo "Starting up to $agents sequential sessions; hard cutoff 355 minutes; per-session limit ${session_timeout_seconds}s."
+
+          for ((index=1; index<=agents; index++)); do
+            if [[ -f research_state/STOP ]]; then
+              final_phase="stopped"
+              final_detail="research_state/STOP was created; no further worker session will start"
+              break
+            fi
+
+            remaining=$((cutoff_epoch - $(date +%s)))
+            if (( remaining <= checkpoint_reserve_seconds + 60 )); then
+              final_phase="cutoff"
+              final_detail="global cutoff reached with checkpoint reserve protected"
+              break
+            fi
+
+            session_started=$((session_started + 1))
+            final_phase="worker-session"
+            base_sha="$(git rev-parse HEAD)"
+            session_log="$RUNNER_TEMP/kilo-session-${session_started}.log"
+            : > "$session_log"
+
+            worker_budget=$session_timeout_seconds
+            (( worker_budget > remaining - checkpoint_reserve_seconds )) && worker_budget=$((remaining - checkpoint_reserve_seconds))
+            echo "Starting Kilo session ${session_started}/${agents}; worker budget ${worker_budget}s."
+
+            research_command="Read AGENTS.md, KILO_RESEARCH_PROMPT.md, and research_state/agent_handoff.md first. Revalidate the current repository and prior evidence. Complete exactly one bounded, highest-information-value research task. Do not trade, access credentials, edit protected instructions/workflows, or commit/push. Preserve sources and negative results. Run only relevant tests, state exactly what was and was not verified, update research_state/agent_handoff.md with changed files, findings, commands/results, blockers, and one next task. If the research cycle is complete or no safe useful task remains, write research_state/STOP with a concise reason and stop."
+
+            set +e
+            timeout --signal=TERM --kill-after=15s "${worker_budget}s" kilo run --model "$KILO_MODEL" --auto \
+              --file AGENTS.md \
+              --file KILO_RESEARCH_PROMPT.md \
+              --file research_state/agent_handoff.md \
+              --title "Quant Markov research session ${session_started}" \
+              "$research_command" 2>&1 | tee "$session_log"
+            worker_rc=${PIPESTATUS[0]}
+            set -e
+
+            if (( worker_rc != 0 )); then
+              session_failures=$((session_failures + 1))
+              echo "::warning::Kilo session ${session_started} exited with status ${worker_rc}; checkpointing any safe work and preserving its log."
+            fi
+
+            if ! persist_checkpoint "$base_sha"; then
+              final_phase="checkpoint-failure"
+              final_detail="safe checkpoint or remote SHA verification failed"
+              save_recovery_evidence
+              exit 1
+            fi
+
+            if ! git diff --quiet "$base_sha" HEAD; then
+              empty_sessions=0
+            else
+              empty_sessions=$((empty_sessions + 1))
+            fi
+
+            if [[ -f research_state/STOP ]]; then
+              final_phase="stopped"
+              final_detail="research stop marker was committed and remotely verified"
+              break
+            fi
+
+            if (( empty_sessions >= 2 )); then
+              final_phase="no-progress"
+              final_detail="two consecutive sessions produced no persistable repository change; stopping to avoid churn"
+              break
+            fi
+
+            if (( worker_rc != 0 )); then
+              # A fresh session may recover from a transient provider or worker failure,
+              # but the activation remains visibly failed in its final status.
+              sleep 15
+            else
+              sleep 2
+            fi
+          done
+
+          echo "SESSIONS_STARTED=$session_started" >> "$GITHUB_OUTPUT"
+          echo "SESSION_FAILURES=$session_failures" >> "$GITHUB_OUTPUT"
+          echo "VERIFIED_CHECKPOINTS=$verified_checkpoints" >> "$GITHUB_OUTPUT"
+          echo "MEANINGFUL_PROGRESS=$meaningful_progress" >> "$GITHUB_OUTPUT"
+          echo "FINAL_PHASE=$final_phase" >> "$GITHUB_OUTPUT"
+          echo "FINAL_DETAIL=$final_detail" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Kilo Quant Markov Research"
+            echo "- Sessions started: $session_started"
+            echo "- Worker sessions with errors/timeouts: $session_failures"
+            echo "- Remotely verified checkpoints: $verified_checkpoints"
+            echo "- Meaningful repository progress: $meaningful_progress"
+            echo "- Final phase: $final_phase — $final_detail"
+            echo "- Model: $KILO_MODEL"
+            echo "- Research is simulation-only; no live trading or deployment is permitted."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if (( meaningful_progress != 1 )); then
+            echo "::error::No meaningful repository progress was remotely verified."
+            exit 1
+          fi
+          if (( session_failures > 0 )); then
+            echo "::error::Some Kilo sessions failed or timed out. Safe checkpoints were preserved; inspect logs and the handoff."
+            exit 1
+          fi
+
+      - name: Upload Kilo logs and recovery evidence
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: kilo-quant-markov-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/kilo-session-*.log
+            ${{ runner.temp }}/kilo-recovery-*.bundle
+            ${{ runner.temp }}/kilo-working-tree-*.patch
+            ${{ runner.temp }}/kilo-index-*.patch
+            ${{ runner.temp }}/kilo-recovery-status-*.txt
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Report controller outcome
+        if: always()
+        shell: bash
+        env:
+          STOPPED: ${{ steps.stop.outputs.stopped }}
+          STARTED: ${{ steps.kilo.outputs.SESSIONS_STARTED }}
+          FAILURES: ${{ steps.kilo.outputs.SESSION_FAILURES }}
+          CHECKPOINTS: ${{ steps.kilo.outputs.VERIFIED_CHECKPOINTS }}
+          PROGRESS: ${{ steps.kilo.outputs.MEANINGFUL_PROGRESS }}
+          PHASE: ${{ steps.kilo.outputs.FINAL_PHASE }}
+          DETAIL: ${{ steps.kilo.outputs.FINAL_DETAIL }}
+        run: |
+          if [[ "$STOPPED" == "true" ]]; then
+            echo "Kilo skipped: research_state/STOP is present."
+            exit 0
+          fi
+          echo "Sessions=$STARTED; failures=$FAILURES; verified checkpoints=$CHECKPOINTS; meaningful progress=$PROGRESS."
+          echo "Final phase=$PHASE; detail=$DETAIL."
