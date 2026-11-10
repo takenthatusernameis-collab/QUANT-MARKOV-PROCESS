@@ -16,7 +16,7 @@ The repository was initialized on 2026-11-10. It contains the research mandate, 
 
 ## First task
 
-Read `MARKOV_RESEARCH_GUIDELINES.md` before beginning; it defines the project-specific model scope and research standards.
+Read `MARKOV_RESEARCH_PROMPT.md` before beginning; it defines the project-specific model scope and research standards.
 
 Produce a sourced literature and methodology review in `research/literature/markov-processes-in-finance.md` and a companion falsifiable research plan in `research/specifications/initial-research-plan.md`.
 
