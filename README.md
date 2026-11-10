@@ -13,13 +13,13 @@ A research-only laboratory for testing whether Markov, hidden-Markov, regime-swi
 ## Start here
 
 1. Read [AGENTS.md](AGENTS.md) for repository-wide research and engineering constraints.
-2. Read [MARKOV_RESEARCH_GUIDELINES.md](MARKOV_RESEARCH_GUIDELINES.md) for the research mandate and required methodology.
+2. Read [MARKOV_RESEARCH_PROMPT.md](MARKOV_RESEARCH_PROMPT.md), the authoritative standalone text prompt for all Markov-specific research scope, methods, and decision gates.
 3. Read [research_state/agent_handoff.md](research_state/agent_handoff.md) for the current phase and next bounded task.
 4. Review existing research artifacts before starting a new experiment.
 
 ## Kilo workflow
 
-The `.github/workflows/main.yml` file is an exact copy of the workflow at `takenthatusernameis-collab/NQ-ORB` (source blob SHA `e364e841c85cc5c8a2d075a56929650394604c98`). Its supporting controller helper and four regression-test files are also copied byte-for-byte from that repository.
+The `.github/workflows/main.yml` file is an exact, byte-for-byte copy of the general-purpose workflow at `takenthatusernameis-collab/NQ-ORB` (source blob SHA `e364e841c85cc5c8a2d075a56929650394604c98`). Its supporting controller helper and four regression-test files are also copied byte-for-byte. Markov-specific research requirements are maintained separately in `MARKOV_RESEARCH_PROMPT.md` as written guidance; they are not coded into the workflow.
 
 The Kilo General Agent Loop is scheduled every five minutes, with a 355-minute activation cutoff, an idle watchdog, sequential worker sessions, bounded transient retries, completed-run diagnostics, recovery artifacts, and controller-verified checkpoint persistence. It can be started manually from **Actions → Kilo General Agent Loop**. The `diagnostics_only` option runs controller tests and refreshes diagnostics without starting Kilo. Workflow-file pushes run validation/diagnostics only and do not launch the worker.
 
