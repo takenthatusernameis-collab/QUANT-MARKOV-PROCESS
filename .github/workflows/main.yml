@@ -56,7 +56,7 @@ jobs:
           set -Eeuo pipefail
           if [[ -f AGENT_STOP ]]; then
             echo "stopped=true" >> "$GITHUB_OUTPUT"
-            echo "Research STOP marker found; no Kilo session will start."
+            echo "Agent STOP marker found; no Kilo session will start."
             cat AGENT_STOP
           else
             echo "stopped=false" >> "$GITHUB_OUTPUT"
