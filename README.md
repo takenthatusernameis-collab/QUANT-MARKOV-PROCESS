@@ -13,7 +13,7 @@ A research-only laboratory for testing whether Markov, hidden-Markov, regime-swi
 ## Start here
 
 1. Read [AGENTS.md](AGENTS.md) for repository-wide research and engineering constraints.
-2. Read [KILO_RESEARCH_PROMPT.md](KILO_RESEARCH_PROMPT.md) for the research mandate and required methodology.
+2. Read [MARKOV_RESEARCH_GUIDELINES.md](MARKOV_RESEARCH_GUIDELINES.md) for the research mandate and required methodology.
 3. Read [research_state/agent_handoff.md](research_state/agent_handoff.md) for the current phase and next bounded task.
 4. Review existing research artifacts before starting a new experiment.
 
@@ -21,7 +21,7 @@ A research-only laboratory for testing whether Markov, hidden-Markov, regime-swi
 
 The Kilo General Agent Loop is scheduled every five minutes; each activation has a 355-minute safety cutoff, bounded sequential sessions, an idle watchdog, completed-run diagnostics, retry/backoff, and controller-owned checkpoints with remote SHA verification. It can also be started manually from **Actions → Kilo General Agent Loop**. Use the `diagnostics_only` option to run controller tests and refresh diagnostics without starting Kilo. Workflow-file pushes run validation only and never launch the worker. The controller does not expose the repository write token to Kilo and does not allow the agent to edit workflow definitions or protected research instructions.
 
-Create `research_state/STOP` with a concise reason to stop future research sessions. The scheduled workflow will then exit before starting Kilo. Remove that marker in a reviewed commit to resume.
+Create `AGENT_STOP` with a concise reason to stop future research sessions. The scheduled workflow will then exit before starting Kilo. Remove that marker in a reviewed commit to resume.
 
 ## Research outputs
 
