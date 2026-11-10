@@ -34,7 +34,7 @@ This is a research-only quantitative laboratory. The default research domain is 
 
 At the start of each session:
 
-1. Read this file and `KILO_RESEARCH_PROMPT.md`.
+1. Read this file and `MARKOV_RESEARCH_GUIDELINES.md`.
 2. Read `research_state/agent_handoff.md`, recent research artifacts, and the current Git history/status.
 3. Verify the current task is still relevant; do not trust stale handoff claims without rechecking.
 4. Complete one bounded task, test it, and preserve the evidence.
