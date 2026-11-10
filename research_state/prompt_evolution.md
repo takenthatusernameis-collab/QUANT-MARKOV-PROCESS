@@ -1,6 +1,6 @@
 # Research prompt evolution ledger
 
-Record proposed changes to the research mandate here. Do not edit `AGENTS.md` or `KILO_RESEARCH_PROMPT.md autonomously.
+Record proposed changes to the research mandate here. Do not edit `AGENTS.md` or files matching `*_GUIDELINES.md` / `*_RESEARCH_PROMPT.md` autonomously.
 
 For each proposal record:
 - observed failure or ambiguity;
