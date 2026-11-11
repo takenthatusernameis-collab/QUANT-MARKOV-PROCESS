@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T5b protocol-enforcing holdout runner stub complete; no holdout evaluation executed)
+**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; **no holdout evaluation executed**)
 
 ## Mission
 
@@ -291,22 +291,36 @@ Determine whether Markov-process-based representations can produce a statistical
 - `PYTHONPATH=. python -m pytest -q` → **110 passed in 29.70s** (85 prior + 25 new economic simulation tests)
 - No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
 
-### Task T5b completed (this session): Protocol-enforcing holdout evaluation runner stub (refuses by default)
+### Task T5b completed (prior session): Protocol-enforcing holdout evaluation runner stub (refuses by default)
 
 **Files created / modified**
-- `src/holdout_runner.py` — protocol-enforcing holdout runner stub. Loads frozen protocol (`research/specifications/holdout_evaluation_protocol.md`) and manifest template (`research/specifications/holdout_evaluation_manifest_template.json`), computes/verifies protocol SHA256, and **refuses execution by default** unless `--execute-holdout` and matching `--protocol-hash` are provided. Enforces integrity controls: point-in-time target/history checks (`validate_no_lookahead`), holdout-window filtering (`validate_holdout_window`), expanding-history evaluation, filtered-only inference for C1 (uses `hmm_walkforward` forward/filtered path), train-fitted quantile bins for C2 (bins fit on `<= TRAIN_END`), and frozen configs (C1: 3-state HMM, seeds `[0,1,2]`, refit_every 720, eval_stride 4; C2: order 2, K=5, Laplace α=1.0, eval_stride 4). When authorized, runs C1/C2 over 2024-07-01T00:00:00Z–2025-12-31T23:00:00Z and writes forecast artifacts/metrics/report under `research/forecasts/holdout/`, prepares `research/economic/holdout/`, and populates execution manifest fields (protocol hash, git SHA, command, timestamps, data hashes, `holdout_evaluated: true`). CLI supports `--print-protocol-hash`.
-- `tests/test_holdout_runner.py` — 12 unit tests covering protocol hash computation, refusal without `--execute-holdout`, refusal without hash, refusal on hash mismatch, successful authorization with matching hash, CLI default refusal, no-lookahead rejection (history >= target and target outside holdout), acceptance of valid holdout target, execution-manifest population (template unchanged on disk), holdout-window filtering, and `--print-protocol-hash`.
+- `src/holdout_runner.py` — protocol-enforcing holdout runner stub. Loads frozen protocol (`research/specifications/holdout_evaluation_protocol.md`) and manifest template (`research/specifications/holdout_evaluation_manifest_template.json`), computes/verifies protocol SHA256, and **refuses execution by default** unless `--execute-holdout` and matching `--protocol-hash` are provided. Enforces integrity controls (point-in-time/no-lookahead, holdout-window, expanding history, filtered-only C1, train-fitted C2 bins) and frozen configs.
+- `tests/test_holdout_runner.py` — 12 unit tests covering refusal/hash/no-lookahead/manifest behavior.
+
+**Verification:** `PYTHONPATH=. python src/holdout_runner.py` refused (EXIT 2); protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`; suite was 122 passed at T5b close. **Holdout not executed.**
+
+### Task T5c completed (this session): Extend authorized holdout runner with forecast bootstrap/significance and economic gate artifact wiring (no holdout execution)
+
+**Files created / modified**
+- `src/holdout_runner.py` — extended authorized execution path to produce protocol-complete artifact wiring while preserving default refusal and integrity checks:
+  - Forecast evaluation: stationary block-bootstrap (n^(1/3), 2000 reps) paired comparisons for C1/C2 vs unconditional and EWMA baselines on log score and CRPS with 95% CIs, two-sided p-values, effective n, plus PIT summary/diagnostics (`holdout_forecast_significance.json`, `holdout_forecast_metrics.json`, `holdout_forecast_report.md`).
+  - Economic simulation: integrates `src/economic_simulation.py` primitives (signal/cost/sizing/cost accounting/funding alignment, metrics) on holdout forecast grids for C1/C2 and baselines B3 (no-trade), B4 (buy-hold), B5 (momentum, predeclared lookback) under base/stress costs and theta sensitivity `{0,2,5}` bps; writes trade ledgers, returns series, `holdout_economic_results.json`, and `holdout_economic_report.md` under `research/economic/holdout/`.
+  - Execution manifest: populates protocol hash, git SHA, command, timestamps, data hashes, artifact paths, and `holdout_evaluated: true` on authorized runs (`research/forecasts/holdout/holdout_execution_manifest.json`).
+  - Refusal/authorization unchanged: requires `--execute-holdout` and matching `--protocol-hash` (expected `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`); point-in-time/no-lookahead, holdout-window, filtered-only C1, train-fitted C2 bins, and frozen configs preserved.
+- `tests/test_holdout_runner_t5c.py` — 7 new unit tests (fixtures/mocked small data, no real holdout run): deterministic block-bootstrap significance behavior, paired-comparison output structure (CIs/p-values/effective n/PIT), execution-manifest artifact fields, economic holdout artifact generation on synthetic forecast grids (trade/returns/results/report), and continued refusal/hash enforcement.
 
 **Commands/tests run and outcomes (this session)**
-- `PYTHONPATH=. python -m pytest -q tests/test_holdout_runner.py` → **12 passed in 0.37s** (after fixing test fixture date arithmetic).
+- `PYTHONPATH=. python -m pytest -q --tb=no 2>&1 | tail -5` (baseline) → **122 passed in 29.77s**.
+- `PYTHONPATH=. python -m pytest -q tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py` → **19 passed in 1.58s** (12 existing + 7 new).
 - `PYTHONPATH=. python src/holdout_runner.py; echo EXIT:$?` → **refused by default** (`Holdout execution refused: --execute-holdout not provided...`, `EXIT:2`).
 - `PYTHONPATH=. python src/holdout_runner.py --print-protocol-hash` → `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`.
-- `PYTHONPATH=. python -m pytest -q` → **122 passed in 29.64s** (110 prior + 12 new).
+- `PYTHONPATH=. python -m pytest -q` → **129 passed in 30.46s** (122 prior + 7 new).
 
 **Caveats / blockers**
-- **Holdout not executed** (no explicit authorization provided). Runner enforces refusal and hash check; authorized path writes forecast/economic artifact scaffolding but does not yet implement full bootstrap significance or complete economic gate ledger/metrics parity with `economic_simulation` for holdout outputs (follow-up authorized task required).
-- Purge/embargo is represented by 1-step point-in-time target construction (history < target, 1h horizon) consistent with current walk-forward code; any multi-horizon/overlapping-label extension must re-verify purge/embargo explicitly.
-- Prior model caveats remain: HMM EM convergence/init sensitivity and train-vs-validation transition non-stationarity (Chow p=0.0042); validation forecasts did not clear conservative economic cost thresholds in T5a dry-run.
+- **Holdout not executed** (no explicit authorization provided). Authorized path is wired and unit-tested on fixtures only; real holdout outputs under `research/forecasts/holdout/` and `research/economic/holdout/` do not yet exist and must be generated only with explicit `--execute-holdout` + matching protocol hash.
+- Forecast significance in the runner uses Gaussian-approximated PIT/moment-based scoring helpers consistent with saved per-row metrics (not a re-implementation of full mixture CDF PIT plots/figures); figure generation for holdout PIT/histograms remains a follow-up artifact step if required by protocol reporting.
+- Purge/embargo is 1-step point-in-time (history < target, 1h horizon); any overlapping/multi-horizon labels require re-verification.
+- Prior model caveats remain: HMM EM convergence/init sensitivity and train-vs-validation non-stationarity (Chow p=0.0042); validation dry-run (T5a) showed forecasts did not clear conservative costs at 1h.
 - No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
 
 ---
@@ -379,24 +393,23 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T5c: Extend authorized holdout runner with forecast bootstrap significance and full economic gate artifacts (execute only with explicit authorization)**
+**Task T5d: Authorized locked-holdout execution and gate reporting (only with explicit authorization) — or validation-only robustness if not authorized**
 
-- Extend `src/holdout_runner.py` (or a companion module) so that, when explicitly authorized with matching protocol hash, it produces protocol-complete holdout artifacts:
-  - Forecast evaluation: stationary block-bootstrap paired comparisons (C1/C2 vs B1/B2) for log score and CRPS with 95% CIs, two-sided p-values, effective n, and PIT/calibration summaries/figures per protocol §4.
-  - Economic simulation: integrate `src/economic_simulation.py`-style signal/cost/sizing logic on holdout forecast grids for C1/C2 and baselines B3/B4/B5, producing gross/net metrics (Sharpe, Sortino, Calmar, max DD, expectancy, turnover, trade count, hit rate, etc.), base/stress cost tables, theta sensitivity as predeclared, subperiod splits, trade ledgers/returns series, and figures under `research/economic/holdout/`.
-  - Populate `research/forecasts/holdout/holdout_execution_manifest.json` with full provenance (data hashes, seeds, refit records, commands, timestamps) and write a concise holdout report citing protocol hash and any deviations.
-- Keep default behavior as refusal; do not weaken authorization/integrity checks. Add/extend unit tests for new manifest/report fields and metric wiring (mocked/small fixtures, no real holdout run).
-- Run `PYTHONPATH=. python -m pytest -q`, then update this handoff with exact files/commands/outcomes, blockers, and one next task. **Do not execute on the locked holdout without explicit authorization.**
+- **If and only if explicitly authorized by the user in-session** with `--execute-holdout` and matching protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, run:
+  - `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`
+  This will generate protocol-complete artifacts under `research/forecasts/holdout/` and `research/economic/holdout/` (C1/C2 forecasts, bootstrap significance, B3–B5 baselines, cost/theta sensitivity, ledgers/returns, execution manifest, reports). After the run, write a concise gate decision report (`REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`) citing evidence, uncertainty, and protocol deviations (if any). Do not tune on holdout outcomes; do not rerun with changed configs.
+- **If not explicitly authorized (default):** do **not** run the holdout. Perform a bounded validation-only, no-holdout-tuning task such as: (a) add holdout-report/figure helpers (PIT histograms, calibration plots) exercised only on synthetic fixtures/tests; or (b) consolidate a cross-family validation comparison memo (H1–H4, HMM, EWMA/unconditional) with explicit uncertainty/cost-feasibility implications and predeclared robustness/red-team checks still outstanding. Run `PYTHONPATH=. python -m pytest -q` and update handoff with exact files/commands/outcomes.
+- Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition in §11/AGENTS is truly met.
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5b is complete (this session):** added `src/holdout_runner.py`, a protocol-enforcing holdout evaluation runner stub that loads the frozen protocol/template, computes/verifies protocol SHA256, enforces point-in-time/no-lookahead and holdout-window controls, and **refuses execution by default** unless `--execute-holdout` is provided with a matching `--protocol-hash` (expected: `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). When authorized it is wired to run frozen C1 (filtered HMM, expanding/forward-only) and C2 (order-2 HOM, train-fitted bins) on 2024-07-01–2025-12-31 and write forecast artifacts + populated execution manifest; **holdout was not executed**. Added `tests/test_holdout_runner.py` (12 tests) for refusal/hash/no-lookahead/manifest behavior.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5c is complete (this session):** `src/holdout_runner.py` now produces protocol-complete authorized-run artifacts (stationary block-bootstrap forecast significance for C1/C2 vs B1/B2 with CIs/p-values/effective n and PIT summary; economic gate simulations for C1/C2 and baselines B3–B5 with base/stress costs, theta sensitivity {0,2,5} bps, trade ledgers/returns/results/reports under `research/economic/holdout/`; populated execution manifest with provenance/artifact paths) while **preserving default refusal**, protocol-hash authorization (`50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`), and all point-in-time/no-lookahead/filtered-only/train-fitted/frozen-config controls. Added `tests/test_holdout_runner_t5c.py` (7 tests, fixtures only). **Holdout was not executed.**
 
-**Verification (this session):** `PYTHONPATH=. python -m pytest -q tests/test_holdout_runner.py` → 12 passed; `PYTHONPATH=. python src/holdout_runner.py` → refused (EXIT 2); `PYTHONPATH=. python -m pytest -q` → **122 passed in 29.64s**. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP`.
+**Verification (this session):** `PYTHONPATH=. python -m pytest -q tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py` → 19 passed; `PYTHONPATH=. python src/holdout_runner.py` → refused (EXIT 2); `PYTHONPATH=. python -m pytest -q` → **129 passed in 30.46s**. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP`.
 
-Your bounded task is **T5c**: extend the authorized holdout path to produce protocol-complete forecast bootstrap/significance artifacts and full economic gate simulations/baselines/reports for C1/C2 under `research/forecasts/holdout/` and `research/economic/holdout/` (integrating `src/economic_simulation.py` patterns), while preserving default refusal and all integrity checks. Add tests for the new wiring using fixtures/mocks (no real holdout run), run `PYTHONPATH=. python -m pytest -q`, and update handoff. Do **not** execute the locked holdout without explicit authorization. If independent non-holdout work is higher value, record rationale and do that instead.
+Your bounded task is **T5d**: if you receive explicit user authorization to run the locked holdout, execute the authorized command above once, preserve all artifacts, and write a concise gate decision/evidence report; otherwise do **not** run the holdout and complete a bounded validation-only follow-up (e.g. fixture-tested PIT/calibration figure helpers for holdout artifacts, or a cross-family validation consolidation/robustness memo) with tests and handoff update. State exact commands/outcomes and blockers.
 
 ---
 
