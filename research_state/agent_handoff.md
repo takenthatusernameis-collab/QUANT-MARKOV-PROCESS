@@ -495,17 +495,15 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ---
 
-### Final session (this session): Verification, final decision, and cycle close
+### Current session (2026-11-11): Prior task verified, handoff confirmed, no new work
 
-**Prior task (T5d-robustness-c negative controls) — verified complete**
+**Prior task (T5d-robustness-c negative controls, per handoff) — verified complete**
 - Artifacts present: `src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.json`, `research/forecasts/negative_controls.md`.
-- `AGENT_STOP` was absent at session start, created at session close; holdout runner refusal verified (`PYTHONPATH=. python src/holdout_runner.py` refused by default; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
+- `AGENT_STOP` present with cycle-close reason; `research/final_decision_report.md` present.
+- Holdout runner refused by default: `PYTHONPATH=. python src/holdout_runner.py` → EXIT 2 (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
 - `PYTHONPATH=. python -m pytest -q` → **145 passed in 55.00s**.
 
-**Final assessment and stop condition**
-- Validation-only robustness suite complete (T5d cross-family memo, ETHUSDT asset perturbation, Q1/Q2 period perturbation, negative controls) and evidence supports a decision for the current candidate cycle (AGENTS.md §11 / prompt §11): economic dry-run produced zero trades (forecast means << conservative costs), C2/HOM weak/negative vs white-noise on CRPS and no log-score edge vs white noise, C1/HMM not robustly superior to EWMA and unstable across period/asset, negative controls confirm limited/fragile skill.
-- **Decision:** `RESEARCH_MORE` (no holdout executed; no in-session authorization). Locked holdout not run.
-- `research/final_decision_report.md` and `AGENT_STOP` present with reason; handoff set to `COMPLETE`. No further autonomous tasks started.
+**Assessment:** Validation-only research cycle is complete. Evidence supports `RESEARCH_MORE` for the current C1/C2 candidate cycle (no net-after-cost edge on validation; C2 weak/negative vs white-noise on CRPS; C1 not robustly superior to EWMA and unstable across period/asset). Locked holdout not executed and not authorized. No safe, useful autonomous task remains under current instructions.
 
 **Constraints respected:** no changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`; no credentials; no live trading; no holdout execution/tuning.
 
@@ -515,7 +513,7 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 **None — research cycle closed (`AGENT_STOP` present).**
 - Do not start new tasks. See `AGENT_STOP` and `research/final_decision_report.md`.
-- If a human explicitly authorizes continuation, remove `AGENT_STOP`, record authorization/evidence in this handoff, and begin only a materially different, predeclared, bounded task (or authorized holdout execution per protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Do not tune on holdout outcomes.
+- If a human explicitly authorizes continuation, remove `AGENT_STOP`, record authorization/evidence in this handoff, and begin only a materially different, predeclared, bounded task (or an authorized holdout execution per protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Do not tune on holdout outcomes.
 - Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ---
@@ -524,11 +522,11 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`.
 
-**Status:** `COMPLETE` / `RESEARCH_MORE` for the current C1/C2 candidate cycle (validation-only). No locked holdout was executed. `AGENT_STOP` is present.
+**Status:** `COMPLETE` / `RESEARCH_MORE` (C1/C2, validation-only). Locked holdout not executed. `AGENT_STOP` is present.
 
-**What is done:** Data ingestion/EDA, HMM and Markov-chain family baselines (H1–H4, HMM), forecast validation with bootstrap, H1 sensitivity and cross-family comparison, economic dry-run, holdout protocol/runner (refuses by default), and robustness checks (ETHUSDT asset, Q1/Q2 period, negative controls). Evidence: validation economic dry-run zero trades (means << costs), C2 weak/negative vs white-noise on CRPS, C1 not robustly superior to EWMA and unstable across period/asset. Full test suite: `PYTHONPATH=. python -m pytest -q` → 145 passed (last verified this session).
+**Verified this session:** prior task (T5d-robustness-c negative controls) complete with artifacts/tests; holdout runner refuses by default; `PYTHONPATH=. python -m pytest -q` → 145 passed.
 
-**Next task:** **None.** Do not start work while `AGENT_STOP` exists. If a human explicitly authorizes continuation, they must remove `AGENT_STOP` and state the scope in this handoff; only then pursue a materially different, predeclared, bounded hypothesis/model family or an explicitly authorized holdout run (`src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`) without tuning on holdout outcomes. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
+**Task:** **None.** Do not start work while `AGENT_STOP` exists. If and only if a human explicitly authorizes continuation, remove `AGENT_STOP`, document the authorization and scope in this handoff, then execute only that bounded task (e.g. materially different predeclared model/state family, or authorized holdout run: `src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). No holdout tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ---
 
