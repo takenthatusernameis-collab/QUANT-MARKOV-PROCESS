@@ -182,8 +182,9 @@ def fit_hmm_full_train(train_returns: np.ndarray) -> hmm.GaussianHMM:
         )
         try:
             model.fit(X)
-            if model.monitor_.log_likelihood > best_log_likelihood:
-                best_log_likelihood = model.monitor_.log_likelihood
+            log_likelihood = float(model.score(X))
+            if log_likelihood > best_log_likelihood:
+                best_log_likelihood = log_likelihood
                 best_model = model
         except Exception as e:
             print(f"   Seed {seed} failed: {e}")
@@ -202,6 +203,7 @@ def fit_hmm_full_train(train_returns: np.ndarray) -> hmm.GaussianHMM:
             params="stmc"
         )
         model.fit(X)
+        best_log_likelihood = float(model.score(X))
         best_model = model
 
     # Apply regime identification constraint: order states by mean return (μ₁ < μ₂ < μ₃)
@@ -213,17 +215,27 @@ def fit_hmm_full_train(train_returns: np.ndarray) -> hmm.GaussianHMM:
         best_model.startprob_ = best_model.startprob_[order]
         best_model.transmat_ = best_model.transmat_[order][:, order]
         best_model.means_ = best_model.means_[order]
-        best_model.covars_ = best_model.covars_[order]
+        if hasattr(best_model, "_covars_"):
+            best_model._covars_ = best_model._covars_[order]
+        else:
+            cov = best_model.covars_
+            if cov.ndim == 3:
+                best_model.covars_ = cov[order, :, :]
+            elif cov.ndim == 2:
+                best_model.covars_ = cov[order, :]
+            else:
+                best_model.covars_ = cov[order]
+        best_model.train_log_likelihood_ = float(best_log_likelihood)
 
     return best_model
 
 
-def compute_filtered_probs(model: hmm.GaussianHMM, returns: np.ndarray) -> np.ndarray:
-    """Compute filtered (online) state probabilities using forward algorithm."""
+def compute_filtered_probs(model: hmm.GaussianHMM, returns: np.ndarray):
+    """Compute filtered (online) state probabilities and Viterbi path."""
     X = returns.reshape(-1, 1)
-    logprob, posteriors = model.decode(X, algorithm="viterbi")  # Viterbi path
-    filtered_probs = model.predict_proba(X)  # Filtered (forward) probabilities
-    return filtered_probs, posteriors
+    _, viterbi_states = model.decode(X, algorithm="viterbi")
+    filtered_probs = model.predict_proba(X)
+    return filtered_probs, viterbi_states
 
 
 def compute_regime_statistics(
@@ -488,32 +500,29 @@ def plot_filtered_vs_smoothed_gap(model: hmm.GaussianHMM, returns: np.ndarray, f
     """Visualize filtered vs smoothed probability gap (key diagnostic)."""
     X = returns.reshape(-1, 1)
 
-    # Filtered (online) - forward algorithm
-    filtered_probs = model.predict_proba(X)
+    # Posterior probabilities from forward-backward
+    posterior_probs = model.predict_proba(X)
+    _, map_states = model.decode(X, algorithm="map")
+    map_onehot = np.eye(model.n_components)[map_states]
 
-    # Smoothed (full sample) - forward-backward
-    logprob, posteriors = model.decode(X, algorithm="map")  # MAP = smoothed
-
-    # Compute gap
-    gap = np.abs(filtered_probs - posteriors).max(axis=1)
+    # Gap between posterior probabilities and MAP hard assignment (diagnostic proxy)
+    gap = np.abs(posterior_probs - map_onehot).max(axis=1)
     mean_gap = gap.mean()
     max_gap = gap.max()
 
     fig, axes = plt.subplots(2, 1, figsize=(14, 8), sharex=True)
 
-    # Filtered probs
-    for s in range(3):
-        axes[0].plot(filtered_probs[:, s], alpha=0.7, label=f'State {s}')
-    axes[0].set_ylabel("Filtered Prob")
-    axes[0].set_title(f"Filtered (Online) State Probabilities\nMean Gap: {mean_gap:.4f}, Max Gap: {max_gap:.4f}")
+    for s in range(model.n_components):
+        axes[0].plot(posterior_probs[:, s], alpha=0.7, label=f'State {s}')
+    axes[0].set_ylabel("Posterior Prob")
+    axes[0].set_title(f"Posterior State Probabilities\nMean posterior-vs-MAP gap: {mean_gap:.4f}, Max: {max_gap:.4f}")
     axes[0].legend()
 
-    # Smoothed probs
-    for s in range(3):
-        axes[1].plot(posteriors[:, s], alpha=0.7, label=f'State {s}')
-    axes[1].set_ylabel("Smoothed Prob")
+    for s in range(model.n_components):
+        axes[1].plot(map_onehot[:, s], alpha=0.7, label=f'State {s}')
+    axes[1].set_ylabel("MAP State")
     axes[1].set_xlabel("Time Index")
-    axes[1].set_title("Smoothed (Full-Sample) State Probabilities")
+    axes[1].set_title("MAP (Viterbi-like hard) State Assignment")
     axes[1].legend()
 
     plt.tight_layout()
@@ -553,9 +562,11 @@ def main():
     # Fit HMM on full training data
     print("\n3. Fitting 3-state Gaussian HMM on training data...")
     model = fit_hmm_full_train(train_returns)
-    print(f"   Log-likelihood: {model.monitor_.log_likelihood:.2f}")
+    ll = getattr(model, "train_log_likelihood_", model.score(train_returns.reshape(-1, 1)))
+    stds = model.covars_.reshape(model.n_components, -1).flatten() if hasattr(model, "covars_") else np.sqrt(getattr(model, "_covars_", np.array([[np.nan]]))).flatten()
+    print(f"   Log-likelihood: {ll:.2f}")
     print(f"   Means: {model.means_.flatten()}")
-    print(f"   Std: {np.sqrt(model.covars_.flatten())}")
+    print(f"   Std: {np.sqrt(stds**2)}")
     print(f"   Start prob: {model.startprob_}")
     print(f"   Transmat:\n{model.transmat_}")
 
@@ -658,7 +669,7 @@ def main():
         ax.plot(rolling_occupancy[s], alpha=0.7, label=f'State {s}')
     ax.set_xlabel("Time Index")
     ax.set_ylabel("Rolling Occupancy (30-day window)")
-    ax.set_title("Rolling State Occupancy (Filtered Probabilities)")
+    ax.set_title("Rolling State Occupancy (Posterior Probabilities)")
     ax.legend()
     ax.axvline(len(train_returns), color='black', linestyle='--', label='Train/Val Split')
     plt.tight_layout()
@@ -670,12 +681,13 @@ def main():
     joblib.dump(model, OUTPUT_DIR / "hmm_model_train.pkl")
 
     # Prepare results for markdown
+    ll = float(getattr(model, "train_log_likelihood_", model.score(train_returns.reshape(-1, 1))))
     results = {
         "model": {
             "n_states": N_STATES,
-            "log_likelihood": float(model.monitor_.log_likelihood),
+            "log_likelihood": ll,
             "means": model.means_.flatten().tolist(),
-            "stds": np.sqrt(model.covars_.flatten()).tolist(),
+            "stds": np.sqrt(model.covars_.reshape(model.n_components, -1)).flatten().tolist(),
             "startprob": model.startprob_.tolist(),
             "transmat_model": model.transmat_.tolist(),
             "transmat_empirical_train": train_transmat.tolist(),
@@ -850,13 +862,13 @@ State 2 | {chow_half['transmat_period_2'][2][0]:.3f} | {chow_half['transmat_peri
 
 ## 6. Filtered vs Smoothed Probability Gap (Critical Diagnostic)
 
-> **Key Finding from Literature:** The gap between filtered (online) and smoothed (full-sample) regime probabilities is the #1 backtest trap for HMMs. Large gaps indicate that real-time regime inference is unreliable.
+> **Key Finding from Literature:** The gap between filtered (online) and smoothed (full-sample) regime probabilities is the #1 backtest trap for HMMs. This script reports a posterior-vs-MAP proxy gap using the fitted model on the observed sequence; a true online filtered-vs-smoothed comparison requires forward-only filtering and must be implemented in T4.
 
 | Metric | Value |
 |--------|-------|
-| **Mean Absolute Gap** | {gap['mean_gap']:.4f} |
-| **Max Absolute Gap** | {gap['max_gap']:.4f} |
-| **Assessment** | {'⚠️ LARGE GAP - Real-time regime inference unreliable' if gap['mean_gap'] > 0.1 else '✅ Moderate gap - Acceptable for online use' if gap['mean_gap'] > 0.05 else '✅ Small gap - Good real-time reliability'} |
+| **Mean Posterior-vs-MAP Gap** | {gap['mean_gap']:.4f} |
+| **Max Posterior-vs-MAP Gap** | {gap['max_gap']:.4f} |
+| **Assessment** | {'⚠️ Large uncertainty proxy' if gap['mean_gap'] > 0.3 else '✅ Moderate uncertainty proxy' if gap['mean_gap'] > 0.15 else '✅ Low uncertainty proxy'} |
 
 ---
 
@@ -866,7 +878,7 @@ State 2 | {chow_half['transmat_period_2'][2][0]:.3f} | {chow_half['transmat_peri
 |-----------|-----------|--------|-----------|
 | **Min State Occupancy** | > 1% | State 0: {regime_stats.get('state_0', {}).get('occupancy_pct', 0):.1f}%, State 1: {regime_stats.get('state_1', {}).get('occupancy_pct', 0):.1f}%, State 2: {regime_stats.get('state_2', {}).get('occupancy_pct', 0):.1f}% | {'✅ PASS' if all(regime_stats.get(f'state_{s}', {}).get('occupancy_pct', 0) > 1 for s in range(3)) else '❌ FAIL'} |
 | **Min Transition Count** | > 10 per cell | Min count: {min(min(row) for row in model['transmat_empirical_train']) * splits['train_size']:.0f} | {'✅ PASS' if min(min(row) for row in model['transmat_empirical_train']) * splits['train_size'] > 10 else '❌ FAIL'} |
-| **Regime Flickering** | < 50% switches | Switch rate: {np.sum(np.diff(np.argmax(model['transmat_empirical_train'], axis=1)) != 0) / len(model['transmat_empirical_train']) * 100:.1f}% (approx) | {'✅ PASS' if True else '❌ FAIL'} |
+| **Regime Flickering** | < 50% switches | N/A (not computed in this script) | **TODO** |
 
 ---
 
