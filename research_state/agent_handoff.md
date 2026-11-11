@@ -4,8 +4,8 @@
 **Branch:** `main` (clean at verification start)
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-11T17:17Z (session: read prior durable handoff task, independently re-verified completion state, updated handoff and next-agent initial message)
-**This session:** Prior durable task ("Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent.") was already complete at read time (validation-only cycle closed through T5d-robustness-c, decision `RESEARCH_MORE`, `AGENT_STOP` present). Independently re-verified in this session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`; checked git state (`git status -sb` → `## main...origin/main`, `git log --oneline -10` HEAD `c835729`); confirmed key artifacts exist (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`); re-ran holdout guard `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2, refused by default**; confirmed protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum`. No tests executed (deps/processed-data state not assumed). No holdout run and no new research task started. `AGENT_STOP` respected.
+**Updated:** 2026-11-11T17:18Z (session: read prior durable handoff task, independently re-verified completion state, refreshed handoff and next-agent initial message)
+**This session:** Prior durable task ("Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent.") was already complete at read time (validation-only cycle closed through T5d-robustness-c, decision `RESEARCH_MORE`, `AGENT_STOP` present). Independently re-verified in this session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`; checked git state (`git status -sb` → `## main...origin/main`, HEAD `cbf6c63`); confirmed key artifacts exist (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`); re-ran holdout guard `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2, refused by default**; confirmed protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum`. No tests executed (deps/processed-data state not assumed). No holdout run and no new research task started. `AGENT_STOP` respected.
 
 ## Mission
 
@@ -38,14 +38,14 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-11T17:17Z)
+## Current session (2026-11-11T17:18Z)
 
 **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent."
 
 **Actions taken (independently re-verified):**
 - Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `research/final_decision_report.md`, and `AGENT_STOP`.
 - Confirmed prior task complete at read time: validation-only cycle closed through T5d-robustness-c, decision **`RESEARCH_MORE`**, stop condition met (`AGENT_STOP` present).
-- Git: `git status -sb` → `## main...origin/main`; `git log --oneline -10` shows HEAD `c835729 chore(kilo): checkpoint agent session` (clean working tree at verification start).
+- Git: `git status -sb` → `## main...origin/main` (clean at verification start); `git log --oneline -1` → HEAD `cbf6c63`.
 - Verified key artifacts present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
 - Holdout enforcement re-run: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2, refused by default**. Protocol hash confirmed: `sha256sum research/specifications/holdout_evaluation_protocol.md` → `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`.
 - Tests: not run (dependency/processed-data state not assumed in-session).
@@ -55,33 +55,11 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 **Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
-## Assumptions / blockers (open)
-
-| # | Item | Status |
-|---|------|--------|
-| A1–A2 | Binance S3 klines/funding 2021–2025 completeness | Verified for ingested ranges |
-| A3 | Open interest full history | BLOCKED_EXTERNAL (skipped; NaN column) |
-| A4 | HMM identifiability/stability | Partially informed; convergence/non-stationarity caveats remain |
-| A5 | MS-GARCH convergence | Not run (deferred) |
-| A6 | ~10.6 bps round-trip conservative | Not L2-validated |
-| A7 | Holdout power (2024-07..2025-12) | Not analyzed; holdout not run |
-| A8 | Contract spec stability | Not verified |
-
-## Stop rule
-
-`AGENT_STOP` is present (reason: validation-only cycle complete, `RESEARCH_MORE`; holdout not executed/authorized). While it exists, no autonomous research task should be started.
-
-## Next single bounded task
-
-**None while `AGENT_STOP` exists.** Do not start new autonomous tasks.
-
-**If and only if a human explicitly authorizes continuation:** remove `AGENT_STOP`, record the exact authorization/scope/evidence in this handoff (and update status), then perform exactly one bounded, predeclared task consistent with that authorization (e.g. a materially different model/state/horizon hypothesis with falsifiable criteria, or an authorized locked-holdout run per protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Do not tune on holdout outcomes.
-
 ## Initial task message for next agent
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-11T17:17Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, confirmed by `sha256sum`). Git at verification: `HEAD c835729`, clean working tree (`## main...origin/main`). Note: `data/processed/features.parquet` may be absent and data-dependent tests may fail until `python3 src/data_ingestion.py` completes with deps installed.
+**Repo state (re-verified 2026-11-11T17:18Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, confirmed by `sha256sum`). Git at verification: `HEAD cbf6c63`, clean working tree at verification start (`## main...origin/main`). Note: `data/processed/features.parquet` may be absent and data-dependent tests may fail until `python3 src/data_ingestion.py` completes with deps installed.
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run holdout, and do not bypass stop conditions.
 
