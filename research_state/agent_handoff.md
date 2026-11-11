@@ -4,7 +4,7 @@
 **Branch:** `main` (clean at verification)
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-11T15:48Z (session: seventy-fifth verification — prior durable task completed/re-confirmed at read time; state independently re-verified; clear next-agent initial message refreshed)
+**Updated:** 2026-11-11T15:49Z (session: seventy-sixth verification — prior durable task re-confirmed complete at read time; state independently re-verified; clear next-agent initial message refreshed)
 **This session:** Prior durable task ("Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent.") was already complete at read time (cycle closed at T5d-robustness-c, decision `RESEARCH_MORE`, `AGENT_STOP` present). Independently re-verified in this environment: `git status --short` empty; HEAD `9b64262` (`chore(kilo): checkpoint agent session`); `AGENT_STOP` present and read (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized); `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py` present. Holdout guard re-run this session: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2, refused by default** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, not recomputed). No tests executed this session (deps/processed-data state not assumed); no new research task started. Handoff updated and clear next-agent initial message refreshed below.
 
 ## Mission
@@ -38,7 +38,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-11T15:48Z, seventy-fifth verification)
+## Current session (2026-11-11T15:49Z, seventy-sixth verification)
 
 **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent."
 
@@ -81,7 +81,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-11T15:48Z, seventy-fifth verification):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Git clean at verification start (`git status --short` empty; HEAD `9b64262`). Note: `data/processed/features.parquet` may be absent and full pytest may show data-dependent failures until `python3 src/data_ingestion.py` completes with deps installed.
+**Repo state (re-verified 2026-11-11T15:49Z, seventy-sixth verification):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Git clean at verification start (`git status --short` empty; HEAD `9b64262`). Note: `data/processed/features.parquet` may be absent and full pytest may show data-dependent failures until `python3 src/data_ingestion.py` completes with deps installed.
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run holdout, and do not bypass stop conditions.
 
