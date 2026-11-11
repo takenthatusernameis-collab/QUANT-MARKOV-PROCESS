@@ -5,7 +5,7 @@
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
 **Updated:** 2026-11-11 (session: forty-fifth verification — prior durable task complete at read time; state independently re-verified from clean tree; handoff and next-agent message refreshed)
-**This session:** prior durable task ("read handoff, complete it, update handoff, write next-agent message") was already complete at read time (cycle closed at T5d-robustness-c, decision `RESEARCH_MORE`, `AGENT_STOP` present). Independently re-verified in this environment: `git status --short` empty, `git log --oneline -5` all `chore(kilo): checkpoint agent session` (HEAD `b8cfa56`), `AGENT_STOP` present (validation-only cycle complete, `RESEARCH_MORE`; holdout not executed/authorized), `research/final_decision_report.md` and `research/forecasts/cross_family_validation_comparison.md` present, `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (refused by default, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`), `PYTHONPATH=. python -m pytest -q` → **145 passed (45.30s)**. No new research task started.
+**This session:** prior durable task ("read handoff, complete it, update handoff, write next-agent message") was already complete at read time (cycle closed at T5d-robustness-c, decision `RESEARCH_MORE`, `AGENT_STOP` present). Independently re-verified in this environment: `git status --short` empty, `git log --oneline -5` all `chore(kilo): checkpoint agent session` (HEAD `b8cfa56`), `AGENT_STOP` present (validation-only cycle complete, `RESEARCH_MORE`; holdout not executed/authorized), `research/final_decision_report.md` and `research/forecasts/cross_family_validation_comparison.md` present. Holdout guard: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2** (refused by default, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Environment lacked deps/data artifacts initially; after `pip install -r requirements.txt hmmlearn pytest`, `PYTHONPATH=. python3 -m pytest -q` → **124 passed, 21 failed** (all `FileNotFoundError: data/processed/features.parquet`; raw klines present but `data/processed/` empty). `python3 src/data_ingestion.py` was started to regenerate processed data but exceeded tool timeout (120s) and was not confirmed complete. No new research task started.
 
 ## Mission
 
@@ -38,7 +38,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-11, forty-fifth verification)
+## Current session (2026-11-11, forty-sixth verification)
 
 **Task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent."
 
@@ -48,8 +48,10 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - `AGENT_STOP` present (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized).
 - Git state: `git status --short` empty; `git log --oneline -5` all `chore(kilo): checkpoint agent session` (HEAD `b8cfa56`).
 - Artifacts: `research/final_decision_report.md` and `research/forecasts/cross_family_validation_comparison.md` present.
-- Holdout enforcement: `PYTHONPATH=. python src/holdout_runner.py` → **refused by default, EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
-- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed (45.30s)**.
+- Holdout enforcement: `PYTHONPATH=. python3 src/holdout_runner.py` → **refused by default, EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
+- Environment setup/verification: deps not initially installed (`numpy/pandas/pytest` missing); installed via `pip install -r requirements.txt hmmlearn pytest`. Raw data present (`data/raw/*_klines.parquet`) but `data/processed/features.parquet` missing.
+- Tests: `PYTHONPATH=. python3 -m pytest -q` → **124 passed, 21 failed** (all failures: `FileNotFoundError: data/processed/features.parquet`).
+- Attempted `PYTHONPATH=. python3 src/data_ingestion.py` to regenerate processed data; command exceeded 120s tool timeout and completion not confirmed.
 
 **Result:** Prior task confirmed complete; cycle remains `COMPLETE` / `RESEARCH_MORE`. Handoff updated and initial task message for next agent refreshed below. No new research task started.
 
@@ -81,7 +83,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-11, forty-fifth verification):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed (45.30s)**. Git tree clean at verification (`git status --short` empty; HEAD `b8cfa56`, all recent commits `chore(kilo): checkpoint agent session`). In this environment `data/` and deps are present; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` before tests (without `data/`, tests fail with `FileNotFoundError`).
+**Repo state (re-verified 2026-11-11, forty-sixth verification):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python3 src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Git tree clean at read (`git status --short` empty; HEAD `b8cfa56`). In this sandbox deps were missing and `data/processed/features.parquet` absent (raw klines present); after installing deps, `PYTHONPATH=. python3 -m pytest -q` → **124 passed, 21 failed** due to missing processed features. `python3 src/data_ingestion.py` was started to regenerate processed data but exceeded 120s and completion not confirmed — rerun/confirm it before expecting full 145-test pass.
 
 **Task:** **None while `AGENT_STOP` exists.** Do not start autonomous work.
 
