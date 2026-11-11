@@ -1,0 +1,121 @@
+{
+  "consolidation_report": "h1_mc_sensitivity_consolidation.md",
+  "configs_audited": [
+    {
+      "id": "canonical_t3_q5",
+      "discretization": "quantile_train_fitted",
+      "k_states": 5,
+      "refit_cadence": "expanding_per_step",
+      "source": "h1_markov_chain_validation.json",
+      "provenance": "this_session_canonical"
+    },
+    {
+      "id": "legacy_q3",
+      "discretization": "quantile_train_fitted",
+      "k_states": 3,
+      "refit_cadence": "refit_every_720",
+      "source": "h1_markov_chain_validation_quantile_k3_results.json",
+      "provenance": "legacy"
+    },
+    {
+      "id": "legacy_q5",
+      "discretization": "quantile_train_fitted",
+      "k_states": 5,
+      "refit_cadence": "refit_every_720",
+      "source": "h1_markov_chain_validation_quantile_k5_results.json",
+      "provenance": "legacy"
+    },
+    {
+      "id": "legacy_q7",
+      "discretization": "quantile_train_fitted",
+      "k_states": 7,
+      "refit_cadence": "refit_every_720",
+      "source": "h1_markov_chain_validation_quantile_k7_results.json",
+      "provenance": "legacy"
+    },
+    {
+      "id": "legacy_km3",
+      "discretization": "kmeans_train_fitted",
+      "k_states": 3,
+      "refit_cadence": "refit_every_720",
+      "source": "h1_markov_chain_validation_kmeans_k3_results.json",
+      "provenance": "legacy"
+    },
+    {
+      "id": "legacy_km5",
+      "discretization": "kmeans_train_fitted",
+      "k_states": 5,
+      "refit_cadence": "refit_every_720",
+      "source": "h1_markov_chain_validation_kmeans_k5_results.json",
+      "provenance": "legacy"
+    },
+    {
+      "id": "legacy_km7",
+      "discretization": "kmeans_train_fitted",
+      "k_states": 7,
+      "refit_cadence": "refit_every_720",
+      "source": "h1_markov_chain_validation_kmeans_k7_results.json",
+      "provenance": "legacy"
+    }
+  ],
+  "metrics_summary": {
+    "log_score_higher_better": {
+      "canonical_t3_q5": {"mc": 3.82976, "unc": 3.74821, "ewma": 3.90424},
+      "legacy_q3": {"mc": 3.78924, "unc": 3.77038, "ewma": 3.90220},
+      "legacy_q5": {"mc": 3.83905, "unc": 3.77038, "ewma": 3.90220},
+      "legacy_q7": {"mc": 3.85693, "unc": 3.77038, "ewma": 3.90220},
+      "legacy_km3": {"mc": 3.93189, "unc": 3.77038, "ewma": 3.90220},
+      "legacy_km5": {"mc": 3.92170, "unc": 3.77038, "ewma": 3.90220},
+      "legacy_km7": {"mc": 3.90125, "unc": 3.77038, "ewma": 3.90220}
+    },
+    "crps_lower_better": {
+      "canonical_t3_q5": {"mc": 0.00270785, "unc": 0.00290269, "ewma": 0.00267385},
+      "legacy_q3": {"mc": 0.00275469, "unc": 0.00285362, "ewma": 0.00263060},
+      "legacy_q5": {"mc": 0.00268479, "unc": 0.00285362, "ewma": 0.00263060},
+      "legacy_q7": {"mc": 0.00268312, "unc": 0.00285362, "ewma": 0.00263060},
+      "legacy_km3": {"mc": 0.00265399, "unc": 0.00285362, "ewma": 0.00263060},
+      "legacy_km5": {"mc": 0.00267684, "unc": 0.00285362, "ewma": 0.00263060},
+      "legacy_km7": {"mc": 0.00267238, "unc": 0.00285362, "ewma": 0.00263060}
+    },
+    "pit": {
+      "canonical_t3_q5": {"mean": 0.4988, "std": 0.2788},
+      "legacy_q3": {"mean": 0.5064, "std": 0.2500},
+      "legacy_q5": {"mean": 0.5144, "std": 0.2727},
+      "legacy_q7": {"mean": 0.5116, "std": 0.2708},
+      "legacy_km3": {"mean": 0.5174, "std": 0.2777},
+      "legacy_km5": {"mean": 0.5104, "std": 0.2740},
+      "legacy_km7": {"mean": 0.5077, "std": 0.2660}
+    }
+  },
+  "bootstrap_significance": {
+    "log_score_mc_minus_baseline": {
+      "canonical_t3_q5": {"vs_unc": {"diff": 0.08155, "p": 0.032, "sig": true}, "vs_ewma": {"diff": -0.07447, "p": 0.060, "sig": false}},
+      "legacy_q3": {"vs_unc": {"diff": 0.02285, "p": 0.020, "sig": true}, "vs_ewma": {"diff": -0.10896, "p": 0.0005, "sig": true}},
+      "legacy_q5": {"vs_unc": {"diff": 0.01173, "p": 0.116, "sig": false}, "vs_ewma": {"diff": -0.12009, "p": 0.000, "sig": true}},
+      "legacy_q7": {"vs_unc": {"diff": -0.00008, "p": 0.994, "sig": false}, "vs_ewma": {"diff": -0.13189, "p": 0.000, "sig": true}},
+      "legacy_km3": {"vs_unc": {"diff": 0.16151, "p": 0.0005, "sig": true}, "vs_ewma": {"diff": -0.10896, "p": 0.0005, "sig": true}},
+      "legacy_km5": {"vs_unc": {"diff": 0.01380, "p": 0.502, "sig": false}, "vs_ewma": {"diff": -0.11801, "p": 0.0005, "sig": true}},
+      "legacy_km7": {"vs_unc": {"diff": -0.00563, "p": 0.738, "sig": false}, "vs_ewma": {"diff": -0.13744, "p": 0.0005, "sig": true}}
+    },
+    "crps_baseline_minus_mc": {
+      "canonical_t3_q5": {"vs_unc": {"diff": 1.948e-4, "p": 0.000, "sig": true}, "vs_ewma": {"diff": -3.400e-5, "p": 0.039, "sig": true}},
+      "legacy_q3": {"vs_unc": {"diff": 3.020e-5, "p": 0.035, "sig": false}, "vs_ewma": {"diff": -1.928e-4, "p": 0.000, "sig": true}},
+      "legacy_q5": {"vs_unc": {"diff": 9.521e-6, "p": 0.401, "sig": false}, "vs_ewma": {"diff": -2.135e-4, "p": 0.000, "sig": true}},
+      "legacy_q7": {"vs_unc": {"diff": -1.012e-5, "p": 0.550, "sig": false}, "vs_ewma": {"diff": -2.331e-4, "p": 0.000, "sig": true}},
+      "legacy_km3": {"vs_unc": {"diff": 3.020e-5, "p": 0.035, "sig": false}, "vs_ewma": {"diff": -1.928e-4, "p": 0.000, "sig": true}},
+      "legacy_km5": {"vs_unc": {"diff": -5.750e-6, "p": 0.868, "sig": false}, "vs_ewma": {"diff": -2.288e-4, "p": 0.000, "sig": true}},
+      "legacy_km7": {"vs_unc": {"diff": -2.003e-5, "p": 0.431, "sig": false}, "vs_ewma": {"diff": -2.431e-4, "p": 0.000, "sig": true}}
+    }
+  },
+  "t4_hmm_reference": {"log_score": 4.01643, "crps": 0.00259686},
+  "notes": [
+    "All results validation-only (2024-01 to 2024-06); holdout not used",
+    "Canonical T3 uses expanding per-step refit; legacy uses refit_every=720",
+    "Legacy bootstrap from h1_markov_chain_significance.json sensitivity_check",
+    "Canonical bootstrap from h1_markov_chain_validation.json (Gaussian approx of mixture)",
+    "Effective sample sizes 366-1183 due to temporal dependence",
+    "K-means K=3 best on point metrics but significantly worse than EWMA on both",
+    "Quantile binning shows monotonic log score improvement with K"
+  ],
+  "generated_at": "2026-11-11T02:18:48+00:00"
+}

@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T3 finite-state Markov chain baseline completed)
+**Updated:** 2026-11-11 (T3b H1 Markov chain sensitivity consolidation completed)
 
 ## Mission
 
@@ -137,6 +137,37 @@ Determine whether Markov-process-based representations can produce a statistical
 - Direct aligned MC-vs-HMM mixture scoring was not fully computed against HMM state-mixture parameters because saved T4 CSV stores HMM mixture moments only; any moment-based comparison should be interpreted cautiously.
 - Prior project-level caveats remain: EM convergence warnings in HMM fits and train-vs-validation transition non-stationarity (Chow p=0.0042).
 
+### Task T3b completed (this session): H1 Markov chain sensitivity consolidation (validation only)
+
+**Files created / modified**
+- `research/forecasts/h1_mc_sensitivity_consolidation.md` — consolidation report comparing all 7 H1 configurations (canonical T3 Q5 expanding per-step + 6 legacy configs: quantile K=3,5,7 and k-means K=3,5,7) on log score, CRPS, PIT, and block-bootstrap significance.
+- `research/forecasts/h1_mc_sensitivity_consolidation.json` — machine-readable consolidation data.
+- `src/verify_h1_consolidation.py` — verification script that loads all artifacts and regenerates comparison tables.
+
+**Configurations audited (all validation-only, BTCUSDT 1h, train ≤2023-12-31, val 2024-01 to 2024-06, holdout ≥2024-07 excluded):**
+| Config | Discretization | K | Refit | Log Score (MC) | CRPS (MC) | vs Unc (log) | vs EWMA (log) |
+|--------|---------------|---|-------|----------------|-----------|--------------|---------------|
+| Canonical T3 | Quantile (train edges) | 5 | Expanding/step | 3.8298 | 0.002708 | **+0.0816** (p=0.032) | −0.0745 (p=0.060) |
+| Legacy Q3 | Quantile | 3 | refit_every=720 | 3.7892 | 0.002755 | +0.00007 (p=0.985) | −0.1317 (p=0.000) |
+| Legacy Q5 | Quantile | 5 | refit_every=720 | 3.8390 | 0.002685 | +0.0117 (p=0.116) | −0.1201 (p=0.000) |
+| Legacy Q7 | Quantile | 7 | refit_every=720 | 3.8569 | 0.002683 | −0.0001 (p=0.994) | −0.1319 (p=0.000) |
+| Legacy KM3 | K-means | 3 | refit_every=720 | **3.9319** | **0.002654** | **+0.0228** (p=0.020) | −0.1090 (p=0.0005) |
+| Legacy KM5 | K-means | 5 | refit_every=720 | 3.9217 | 0.002677 | +0.0138 (p=0.502) | −0.1180 (p=0.0005) |
+| Legacy KM7 | K-means | 7 | refit_every=720 | 3.9012 | 0.002672 | −0.0056 (p=0.738) | −0.1374 (p=0.0005) |
+
+**Key findings:**
+- K-means K=3 (Legacy KM3) achieves highest log score (3.9319) and lowest CRPS (0.002654); significantly beats unconditional on both (log p=0.020, CRPS p=0.035) but **significantly worse than EWMA on both** (log p=0.0005, CRPS p=0.000).
+- Canonical T3 (Q5, expanding per-step): significantly beats unconditional on both (log p=0.032, CRPS p=0.000); does not significantly differ from EWMA on log score (p=0.060); EWMA significantly better on CRPS (p=0.039).
+- Quantile binning: monotonic log score improvement with K (3→5→7) but no config significantly beats EWMA; all lose to EWMA on CRPS.
+- EWMA Gaussian (λ=0.94) remains a strong baseline: never significantly beaten by any MC config on log score; significantly beats most on CRPS.
+- T4 HMM (filtered, validation) outperforms all MC configs: log score 4.0164, CRPS 0.002597.
+
+**Leakage controls (all configs):** Bin edges/centroids fitted on training only (≤2023-12-31); expanding history for transitions/state-conditionals; validation window strictly 2024-01 to 2024-06; holdout excluded by construction.
+
+**Verification:** `PYTHONPATH=. python src/verify_h1_consolidation.py` regenerates all tables from saved artifacts. `PYTHONPATH=. python -m pytest -q` → 70 passed.
+
+**Caveats:** Validation-only; no holdout tuning; legacy artifacts have separate provenance; canonical T3 bootstrap uses Gaussian approximation of MC mixture; effective sample sizes 366–1183 due to temporal dependence.
+
 ### Concise findings and sources (prior)
 
 **Literature review** distinguishes six model families with primary references:
@@ -168,9 +199,13 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 - `python src/hmm_walkforward.py` — **success** (prior session); generated `research/forecasts/h2_hmm_validation.md`, `research/forecasts/h2_hmm_validation_results.json`, `research/forecasts/h2_validation_forecasts.csv`, and figures in `research/forecasts/figures/` (1,087 validation forecasts, 7 refits). Non-fatal "Model is not converging" warnings observed on some EM refits/seeds.
 - `python -m pytest -q tests/test_hmm_walkforward.py` — **5 passed** (prior session).
 - `python -m pytest -q` — **54 passed in 11.61s** (prior session; includes existing tests + new HMM walk-forward tests).
-- `PYTHONPATH=. python src/hmm_validation_significance.py` — **success** (this session); generated `research/forecasts/h2_hmm_validation_significance.json`, `research/forecasts/h2_hmm_validation_significance.md`, `research/forecasts/figures/h2_bootstrap_diffs.png`. Non-fatal EM convergence warnings during sensitivity re-run.
-- `PYTHONPATH=. python -m pytest -q tests/test_hmm_validation_significance.py` — **10 passed in 3.11s** (this session).
-- `PYTHONPATH=. python -m pytest -q` — **64 passed in 13.43s** (this session; includes all existing + new bootstrap tests).
+- `PYTHONPATH=. python src/hmm_validation_significance.py` — **success** (prior session); generated `research/forecasts/h2_hmm_validation_significance.json`, `research/forecasts/h2_hmm_validation_significance.md`, `research/forecasts/figures/h2_bootstrap_diffs.png`. Non-fatal EM convergence warnings during sensitivity re-run.
+- `PYTHONPATH=. python -m pytest -q tests/test_hmm_validation_significance.py` — **10 passed in 3.11s** (prior session).
+- `PYTHONPATH=. python -m pytest -q` — **64 passed in 13.43s** (prior session; includes all existing + new bootstrap tests).
+- `PYTHONPATH=. python -m pytest -q tests/test_markov_chain_baseline.py` — **6 passed** (this session).
+- `PYTHONPATH=. python src/markov_chain_baseline.py` — **success** (this session); generated canonical T3 artifacts.
+- `PYTHONPATH=. python -m pytest -q` — **70 passed in 18.56s** (this session; includes all existing + new MC baseline tests).
+- `PYTHONPATH=. python src/verify_h1_consolidation.py` — **success** (this session); regenerated all consolidation tables from saved artifacts.
 
 ### Assumptions and unresolved questions
 
@@ -190,22 +225,32 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T3b (H1 follow-up): Consolidate finite-state Markov chain baseline evidence and K/binning sensitivity (validation only)**
+**Task T3c: Higher-order / state-augmented Markov chain baseline design + implementation (validation only)**
 
-- Audit existing validation-only H1 artifacts in `research/forecasts/` (e.g. `h1_markov_chain_validation*`, `h1_markov_chain_summary.json`, `h1_markov_chain_significance*`, k-means/quantile K=3,5,7 files) and this session's canonical `src/markov_chain_baseline.py` + `h1_markov_chain_validation.*` outputs. Reconcile what is reproducible vs. legacy/unknown provenance; do not overwrite prior results without justification.
-- Produce a concise consolidation report `research/forecasts/h1_mc_sensitivity_consolidation.md` (+ `.json` if useful) comparing log score/CRPS and bootstrap significance across K and discretization methods on the aligned validation grid, explicitly noting leakage controls (train-fitted bins/edges, expanding history, no holdout).
-- If feasible within one bounded run, add a small reproducible sensitivity script/test that can regenerate or verify the comparison table from saved artifacts (no new model families, no holdout evaluation).
-- Run targeted tests / `python -m pytest -q` as appropriate and update handoff with findings, verification, blockers, and next task (e.g., T3c higher-order/state-augmented chain baseline design+implementation on validation, or holdout-evaluation protocol design without executing it).
+- Design a second-order Markov chain or MTD (Mixture Transition Distribution) baseline following the same leakage controls: train-fitted discretization (quantile or k-means), expanding history for transition estimation, validation window 2024-01 to 2024-06, holdout excluded.
+- Implement in `src/higher_order_markov.py` with tests in `tests/test_higher_order_markov.py`.
+- Key design decisions: order m=2 (state space K^2), MTD vs full second-order, Laplace smoothing, state-conditional return distributions (Gaussian per state-pair).
+- Produce validation metrics (log score, CRPS, PIT) and block-bootstrap significance vs unconditional/EWMA baselines.
+- Compare with H1 (first-order) and H2 (HMM) on validation grid.
+- Run `python -m pytest -q` and update handoff with findings, verification, blockers, and next task (e.g., T3d semi-Markov/duration-dependent baseline, or holdout-evaluation protocol design without executing it).
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T3 is now complete (this session): `src/markov_chain_baseline.py`, `tests/test_markov_chain_baseline.py`, and validation-only artifacts `research/forecasts/h1_markov_chain_validation.{md,json,csv}` + figures `research/forecasts/figures/h1_mc_{next_state_probs,pit_hist}.png`. Saved T3 run (K=5 quantile bins fitted on train only, eval_stride=4, expanding history, Laplace smoothing): 1,087 validation forecasts; log score mean MC 3.82976 vs unconditional 3.74821 vs EWMA 3.90424; CRPS mean MC 0.00270785 vs unconditional 0.00290269 vs EWMA 0.00267385; PIT mean/std 0.4988/0.2788. Block bootstrap (2000, stationary): MC significantly beats unconditional on log score (p=0.032, +0.0816) and CRPS (p=0.000, +1.95e-4); MC not significantly different from EWMA on log score (p=0.060) and EWMA significantly better on CRPS (p=0.039, diff −3.40e-5 favoring EWMA). Effective n 366–979. Holdout (>=2024-07-01) not used. Caveats: no exhaustive K/binning sweep in this run; pre-existing H1 k-means/quantile K=3,5,7 artifacts exist in `research/forecasts/` with separate provenance; aligned MC-vs-HMM mixture comparison limited by T4 CSV storing HMM mixture moments only.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T3b is now complete (this session): consolidation of all H1 Markov chain validation evidence across 7 configurations (canonical T3 Q5 expanding per-step + 6 legacy configs: quantile K=3,5,7 and k-means K=3,5,7). Artifacts: `research/forecasts/h1_mc_sensitivity_consolidation.{md,json}`, `src/verify_h1_consolidation.py`.
 
-Verification this session: `PYTHONPATH=. python -m pytest -q tests/test_markov_chain_baseline.py` (6 passed), `PYTHONPATH=. python src/markov_chain_baseline.py` (artifacts generated), `PYTHONPATH=. python -m pytest -q` (70 passed, 18.33s).
+**Key consolidated findings (validation only, BTCUSDT 1h, 1,087 forecasts):**
+- Best MC config: K-means K=3 (log score 3.9319, CRPS 0.002654) — significantly beats unconditional on both (log p=0.020, CRPS p=0.035) but **significantly worse than EWMA on both** (log p=0.0005, CRPS p=0.000).
+- Canonical T3 (Q5, expanding per-step): log score 3.8298, CRPS 0.002708 — significantly beats unconditional on both (log p=0.032, CRPS p=0.000); not significantly different from EWMA on log score (p=0.060); EWMA significantly better on CRPS (p=0.039).
+- Quantile binning: monotonic log score improvement with K (3→5→7) but no config beats EWMA; all lose to EWMA on CRPS.
+- EWMA Gaussian (λ=0.94) remains a strong baseline: never significantly beaten by any MC on log score; significantly beats most on CRPS.
+- T4 HMM (filtered) outperforms all MC: log score 4.0164, CRPS 0.002597.
+- All leakage controls observed: train-fitted bins/edges, expanding history, holdout excluded.
 
-Your bounded task is **T3b**: consolidate/audit H1 Markov-chain validation evidence and K/binning sensitivity from existing artifacts plus this session's canonical outputs (validation only). Produce a reproducible consolidation report/table with leakage notes; add a small verification script/test if feasible. Run `python -m pytest -q` (or targeted tests) and update handoff with exact verification, blockers, and next task (e.g., T3c higher-order/state-augmented chain baseline design+implementation on validation, or holdout-evaluation protocol design without executing it).
+**Verification this session:** `PYTHONPATH=. python src/verify_h1_consolidation.py` (tables regenerated), `PYTHONPATH=. python -m pytest -q` (70 passed, 18.56s).
+
+Your bounded task is **T3c**: design and implement a higher-order/state-augmented Markov chain baseline (e.g., second-order chain or MTD) on validation following same leakage controls. Implement in `src/higher_order_markov.py` with tests. Produce validation metrics and block-bootstrap significance vs baselines. Compare with H1 (first-order) and H2 (HMM). Run `python -m pytest -q` and update handoff with findings, verification, blockers, and next task (e.g., T3d semi-Markov/duration-dependent baseline, or holdout-evaluation protocol design without executing it).
 
 ## Stop rule
 
