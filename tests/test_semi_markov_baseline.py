@@ -1,0 +1,131 @@
+import numpy as np
+import pandas as pd
+
+from src.semi_markov_baseline import (
+    TRAIN_END,
+    VAL_END,
+    VAL_START,
+    HOLDOUT_START,
+    assign_states,
+    compute_sojourns,
+    estimate_transition_counts,
+    expanding_unconditional_params,
+    fit_quantile_bins,
+    fit_sojourn_distributions,
+    hazard_and_transition_probs,
+    load_btc_returns,
+    run_semi_markov_walkforward,
+    state_conditional_params,
+    transition_probs_from_counts,
+)
+
+
+def test_fit_quantile_bins_increasing_and_fixed_on_train():
+    rng = np.random.default_rng(0)
+    train = rng.normal(0, 0.01, 5000)
+    edges = fit_quantile_bins(train, k=5)
+    assert len(edges) == 4
+    assert np.all(np.diff(edges) > 0)
+    edges2 = fit_quantile_bins(train, k=5)
+    assert np.allclose(edges, edges2)
+
+
+def test_assign_states_range_and_deterministic():
+    edges = np.array([-0.01, 0.0, 0.01])
+    x = np.array([-0.02, -0.005, 0.005, 0.02])
+    s = assign_states(x, edges)
+    assert s.tolist() == [0, 1, 2, 3]
+    s2 = assign_states(x, edges)
+    assert np.array_equal(s, s2)
+
+
+def test_compute_sojourns_shape_and_counts():
+    states = np.array([0, 0, 1, 1, 1, 2, 0, 0])
+    sojs = compute_sojourns(states, k=3)
+    assert set(sojs.keys()) == {0, 1, 2}
+    assert sojs[0].tolist() == [2, 2]
+    assert sojs[1].tolist() == [3]
+    assert sojs[2].tolist() == [1]
+
+
+def test_fit_sojourn_distributions_fallback_and_shapes():
+    sojs = {0: np.array([1, 2, 2, 3]), 1: np.array([5, 6, 7]), 2: np.array([1])}
+    fitted = fit_sojourn_distributions(sojs)
+    assert set(fitted.keys()) == {0, 1, 2}
+    for s in range(3):
+        assert "r" in fitted[s] and "p" in fitted[s]
+        assert fitted[s]["r"] >= 0.5
+        assert 0 < fitted[s]["p"] <= 1.0
+        assert fitted[s]["mean"] > 0
+        assert fitted[s]["n_samples"] == len(sojs[s])
+
+
+def test_hazard_and_transition_probs_stochastic_and_bounds():
+    k = 4
+    fitted = {0: {'r': 1.0, 'p': 0.2}, 1: {'r': 2.0, 'p': 0.3}, 2: {'r': 1.5, 'p': 0.4}, 3: {'r': 1.0, 'p': 0.5}}
+    trans = np.array([[0.7, 0.1, 0.1, 0.1],
+                      [0.2, 0.6, 0.1, 0.1],
+                      [0.1, 0.2, 0.6, 0.1],
+                      [0.1, 0.1, 0.1, 0.7]])
+    for state in range(k):
+        for d in [1, 2, 5, 10, 50]:
+            probs = hazard_and_transition_probs(state, d, fitted, trans, k)
+            assert probs.shape == (k,)
+            assert np.allclose(probs.sum(), 1.0, atol=1e-8)
+            assert np.all(probs >= 0) and np.all(probs <= 1.0)
+
+
+def test_transition_counts_and_probs_row_stochastic():
+    states = np.array([0, 1, 1, 2, 2, 0, 1])
+    counts = estimate_transition_counts(states, k=3)
+    assert counts.shape == (3, 3)
+    assert counts.sum() == len(states) - 1
+    probs = transition_probs_from_counts(counts, alpha=1.0)
+    assert probs.shape == (3, 3)
+    assert np.allclose(probs.sum(axis=1), 1.0)
+    assert np.all(probs > 0)  # Laplace smoothing
+
+
+def test_state_conditional_params_fallback():
+    hist_r = np.array([0.01, 0.02, -0.01, 0.0, 0.03])
+    hist_s = np.array([0, 0, 1, 2, 2])
+    mu, var = state_conditional_params(hist_r, hist_s, k=4, global_mu=0.001, global_var=0.0004, min_samples=2)
+    assert mu.shape == (4,) and var.shape == (4,)
+    # state 3 unseen -> global fallback
+    assert np.isclose(mu[3], 0.001)
+    assert var[3] >= 1e-10
+    assert np.all(var > 0)
+
+
+def test_expanding_unconditional_no_future():
+    h1 = np.array([0.1, -0.2, 0.05])
+    h2 = np.array([0.1, -0.2, 0.05, 10.0])
+    mu1, v1 = expanding_unconditional_params(h1)
+    mu2, v2 = expanding_unconditional_params(h2)
+    assert mu2 != mu1 and v2 > v1
+
+
+def test_walkforward_validation_only_no_holdout_and_shapes():
+    df = load_btc_returns()
+    # restrict to data up to validation end for speed and to ensure no holdout access by inputs
+    df = df[df["timestamp"] <= VAL_END].copy()
+    out = run_semi_markov_walkforward(df, k=5, eval_stride=24)
+    payload = out["payload"]
+    results = out["results"]
+    assert payload["counts"]["validation_forecasts"] > 0
+    for r in results:
+        assert r.timestamp >= VAL_START
+        assert r.timestamp <= VAL_END
+        assert r.timestamp < HOLDOUT_START
+        assert r.next_state_probs.shape == (5,)
+        assert np.allclose(r.next_state_probs.sum(), 1.0, atol=1e-8)
+        assert np.all(r.next_state_probs >= 0)
+        assert r.duration_curr >= 1
+        assert np.isfinite(r.sm_mu)
+        assert r.sm_var > 0
+    m = payload["metrics"]
+    assert "log_score_higher_is_better" in m
+    assert "crps_lower_is_better" in m
+    assert "bootstrap" in payload
+    assert "pit_semi_markov" in m
+    assert "duration_stats" in m

@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T3c H1 higher-order Markov chain baseline completed)
+**Updated:** 2026-11-11 (T3d semi-Markov / duration-dependent baseline completed)
 
 ## Mission
 
