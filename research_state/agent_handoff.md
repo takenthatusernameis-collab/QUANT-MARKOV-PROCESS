@@ -299,7 +299,7 @@ Determine whether Markov-process-based representations can produce a statistical
 
 **Verification:** `PYTHONPATH=. python src/holdout_runner.py` refused (EXIT 2); protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`; suite was 122 passed at T5b close. **Holdout not executed.**
 
-### Task T5c completed (this session): Extend authorized holdout runner with forecast bootstrap/significance and economic gate artifact wiring (no holdout execution)
+### Task T5c completed (prior session): Extend authorized holdout runner with forecast bootstrap/significance and economic gate artifact wiring (no holdout execution)
 
 **Files created / modified**
 - `src/holdout_runner.py` — extended authorized execution path to produce protocol-complete artifact wiring while preserving default refusal and integrity checks:
@@ -309,7 +309,7 @@ Determine whether Markov-process-based representations can produce a statistical
   - Refusal/authorization unchanged: requires `--execute-holdout` and matching `--protocol-hash` (expected `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`); point-in-time/no-lookahead, holdout-window, filtered-only C1, train-fitted C2 bins, and frozen configs preserved.
 - `tests/test_holdout_runner_t5c.py` — 7 new unit tests (fixtures/mocked small data, no real holdout run): deterministic block-bootstrap significance behavior, paired-comparison output structure (CIs/p-values/effective n/PIT), execution-manifest artifact fields, economic holdout artifact generation on synthetic forecast grids (trade/returns/results/report), and continued refusal/hash enforcement.
 
-**Commands/tests run and outcomes (this session)**
+**Commands/tests run and outcomes (prior session)**
 - `PYTHONPATH=. python -m pytest -q --tb=no 2>&1 | tail -5` (baseline) → **122 passed in 29.77s**.
 - `PYTHONPATH=. python -m pytest -q tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py` → **19 passed in 1.58s** (12 existing + 7 new).
 - `PYTHONPATH=. python src/holdout_runner.py; echo EXIT:$?` → **refused by default** (`Holdout execution refused: --execute-holdout not provided...`, `EXIT:2`).
@@ -322,6 +322,39 @@ Determine whether Markov-process-based representations can produce a statistical
 - Purge/embargo is 1-step point-in-time (history < target, 1h horizon); any overlapping/multi-horizon labels require re-verification.
 - Prior model caveats remain: HMM EM convergence/init sensitivity and train-vs-validation non-stationarity (Chow p=0.0042); validation dry-run (T5a) showed forecasts did not clear conservative costs at 1h.
 - No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
+
+---
+
+### Task T5d completed (this session): Cross-family validation comparison memo (validation-only, no holdout execution)
+
+**Files created**
+- `research/forecasts/cross_family_validation_comparison.md` — comprehensive consolidation memo comparing all validation-period model families (H1–H4, HMM, EWMA/unconditional) with:
+  - Point-estimate metrics table (log score, CRPS, PIT) across 11 model configurations
+  - Block-bootstrap significance results for each family vs unconditional and EWMA baselines
+  - Aligned model comparisons (HOM vs H1, SM vs H1/H3, etc.) on identical 1,087-timestamp grid
+  - H1 sensitivity summary across 7 configurations (quantile K=3/5/7, k-means K=3/5/7, canonical T3)
+  - Calibration (PIT) assessment for all models
+  - Economic feasibility summary from T5a dry-run (zero trades, forecast means << cost thresholds)
+  - Cross-cutting methodological issues table (non-stationarity, EM convergence, discretization arbitrariness, etc.)
+  - Outstanding robustness/red-team checks predeclared in protocol (period/asset/state/cost perturbations, negative controls, FDR)
+  - Forecast Validation Gate assessment per plan criteria
+  - Economic Simulation Gate projection for holdout (high failure risk given validation results)
+  - Recommendations for next steps (validation-only robustness checks, holdout execution conditions, research extensions)
+  - Reproducibility index linking all artifacts to generators
+
+**Commands/tests run and outcomes (this session)**
+- `PYTHONPATH=. python -m pytest -q` → **129 passed in 30.32s** (all existing tests pass; no new tests added for memo artifact).
+
+**Key consolidated findings:**
+- **H2 HMM (filtered, 3-state) dominates** on validation: log score 4.0164, CRPS 0.002597 — significantly beats unconditional on both metrics (p<0.001) but **does not significantly beat EWMA on log score (p=0.44)**; EWMA significantly beats HMM on CRPS (p=0.006).
+- **H3 HOM (2nd-order, K=5)** is best non-latent Markov chain: significantly improves on H1 canonical (log score +0.0287, p=0.001; CRPS -2.04e-5, p=0.004) but does not significantly differ from EWMA on either metric.
+- **H4 Semi-Markov ≈ H1 Canonical**: near-identical metrics; duration dependence minimal at 1h K=5 stride-4 grid.
+- **EWMA Gaussian (λ=0.94) is a strong baseline**: never significantly beaten by any MC config on log score; significantly beats most on CRPS.
+- **H1 sensitivity**: K-means K=3 best MC variant but significantly worse than EWMA on both metrics; quantile binning monotonic in K but never beats EWMA.
+- **Economic feasibility negative on validation**: max forecast |μ| ≈ 3–7 bps vs 8–16 bps/side cost threshold → zero trades, zero Sharpe for C1/C2.
+- **Gate projection**: Both C1 (HMM) and C2 (HOM) likely to fail Economic Simulation Gate on holdout unless holdout regime structure yields substantially larger conditional means.
+
+**No holdout executed.** No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
 
 ---
 
@@ -393,23 +426,19 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T5d: Authorized locked-holdout execution and gate reporting (only with explicit authorization) — or validation-only robustness if not authorized**
+**Task T5d (conditional): Authorized locked-holdout execution and gate reporting (only with explicit authorization) — or validation-only robustness if not authorized**
 
 - **If and only if explicitly authorized by the user in-session** with `--execute-holdout` and matching protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, run:
   - `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`
   This will generate protocol-complete artifacts under `research/forecasts/holdout/` and `research/economic/holdout/` (C1/C2 forecasts, bootstrap significance, B3–B5 baselines, cost/theta sensitivity, ledgers/returns, execution manifest, reports). After the run, write a concise gate decision report (`REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`) citing evidence, uncertainty, and protocol deviations (if any). Do not tune on holdout outcomes; do not rerun with changed configs.
-- **If not explicitly authorized (default):** do **not** run the holdout. Perform a bounded validation-only, no-holdout-tuning task such as: (a) add holdout-report/figure helpers (PIT histograms, calibration plots) exercised only on synthetic fixtures/tests; or (b) consolidate a cross-family validation comparison memo (H1–H4, HMM, EWMA/unconditional) with explicit uncertainty/cost-feasibility implications and predeclared robustness/red-team checks still outstanding. Run `PYTHONPATH=. python -m pytest -q` and update handoff with exact files/commands/outcomes.
+- **If not explicitly authorized (default):** do **not** run the holdout. Perform a bounded validation-only, no-holdout-tuning task such as: (a) add holdout-report/figure helpers (PIT histograms, calibration plots) exercised only on synthetic fixtures/tests; or (b) execute predeclared robustness checks on validation grid (asset perturbation on ETHUSDT 1h, period perturbation on 2024 Q1 vs Q2, negative controls label-permutation/white-noise). Run `PYTHONPATH=. python -m pytest -q` and update handoff with exact files/commands/outcomes.
 - Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition in §11/AGENTS is truly met.
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5c is complete (this session):** `src/holdout_runner.py` now produces protocol-complete authorized-run artifacts (stationary block-bootstrap forecast significance for C1/C2 vs B1/B2 with CIs/p-values/effective n and PIT summary; economic gate simulations for C1/C2 and baselines B3–B5 with base/stress costs, theta sensitivity {0,2,5} bps, trade ledgers/returns/results/reports under `research/economic/holdout/`; populated execution manifest with provenance/artifact paths) while **preserving default refusal**, protocol-hash authorization (`50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`), and all point-in-time/no-lookahead/filtered-only/train-fitted/frozen-config controls. Added `tests/test_holdout_runner_t5c.py` (7 tests, fixtures only). **Holdout was not executed.**
-
-**Verification (this session):** `PYTHONPATH=. python -m pytest -q tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py` → 19 passed; `PYTHONPATH=. python src/holdout_runner.py` → refused (EXIT 2); `PYTHONPATH=. python -m pytest -q` → **129 passed in 30.46s**. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP`.
-
-Your bounded task is **T5d**: if you receive explicit user authorization to run the locked holdout, execute the authorized command above once, preserve all artifacts, and write a concise gate decision/evidence report; otherwise do **not** run the holdout and complete a bounded validation-only follow-up (e.g. fixture-tested PIT/calibration figure helpers for holdout artifacts, or a cross-family validation consolidation/robustness memo) with tests and handoff update. State exact commands/outcomes and blockers.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5d is complete (this session):** Created `research/forecasts/cross_family_validation_comparison.md` — comprehensive cross-family validation comparison memo consolidating H1–H4, HMM, EWMA/unconditional results on the 2024-01 to 2024-06 validation grid (1,087 forecasts, stride 4). Key findings: H2 HMM (filtered, 3-state) dominates validation metrics (log score 4.0164, CRPS 0.002597) but does not significantly beat EWMA on log score (p=0.44); EWMA significantly beats HMM on CRPS (p=0.006). H3 HOM (2nd-order) is best non-latent MC, significantly improving on H1 but not beating EWMA. H4 Semi-Markov ≈ H1 Canonical. Economic dry-run shows zero trades for C1/C2 (forecast means 3–7 bps << 8–16 bps/side cost threshold). Gate projection: high failure risk for both candidates on holdout. All 129 tests pass. **No holdout executed.** No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
 
 ---
 
