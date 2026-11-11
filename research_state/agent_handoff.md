@@ -4,7 +4,7 @@
 **Branch:** `main` @ `d55cd5b`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-11 (session: twentieth verification — prior task read and completed; AGENT_STOP, holdout refusal, artifacts, and tests independently re-verified; handoff updated)
+**Updated:** 2026-11-11 (session: twenty-first verification — prior task read and completed; AGENT_STOP, holdout refusal, artifacts, and tests independently re-verified; handoff updated)
 
 ## Mission
 
@@ -37,7 +37,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-11, twentieth verification)
+## Current session (2026-11-11, twenty-first verification)
 
 **Task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent."
 
@@ -46,8 +46,8 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - Confirmed prior durable task/cycle closure (T5d-robustness-c, decision `RESEARCH_MORE`) complete with required artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, negative controls, period/ETH perturbations, economic dry-run, holdout protocol/runner/tests).
 - `AGENT_STOP` present (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized).
 - Holdout enforcement: `PYTHONPATH=. python src/holdout_runner.py` → **refused by default, EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
-- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.65s**.
-- Git state: `main` @ `d55cd5b`, clean before this handoff update (commit/push handled by workflow controller, not this agent).
+- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.20s**.
+- Git state: `main` @ `d55cd5b`, clean before this handoff update (commit/push handled by workflow controller, not this agent). Two later checkpoint commits (`e253451`, `179082d`) touch only `research_state/agent_handoff.md`; no new research work.
 
 **Result:** Prior task already complete; cycle remains `COMPLETE` / `RESEARCH_MORE`. Handoff updated and a clear initial task message recorded below. No new research task started.
 
@@ -79,7 +79,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-11, `main` @ `d55cd5b`):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts present; decision documented in `research/final_decision_report.md`. `AGENT_STOP` exists (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed (45.65s)**. `data/` and deps are present in this environment; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` first (without `data/`, tests fail with `FileNotFoundError`).
+**Repo state (re-verified 2026-11-11, `main` @ `d55cd5b`):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts present; decision documented in `research/final_decision_report.md`. `AGENT_STOP` exists (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed (45.20s)**. `data/` and deps are present in this environment; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` first (without `data/`, tests fail with `FileNotFoundError`).
 
 **Task:** **None while `AGENT_STOP` exists.** Do not start autonomous work.
 
