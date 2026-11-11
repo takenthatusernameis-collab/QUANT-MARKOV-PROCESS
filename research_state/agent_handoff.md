@@ -752,18 +752,18 @@ Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_dec
 
 **If (and only if) a human explicitly authorizes continuation:** remove `AGENT_STOP`, record the exact authorization, scope, and evidence in this handoff (and update status), then perform exactly one bounded, predeclared task consistent with that authorization — e.g. a materially different model/state/horizon hypothesis with falsifiable criteria, or an authorized locked-holdout run per protocol: `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`. Do not tune on holdout outcomes, do not trade/deploy/use credentials, and do not edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Update this handoff with results, verification, blockers, and one next task or renewed stop.
 
-### Current session (2026-11-11, thirteenth verification): Prior task read and completed — independently verified from this environment
+### Current session (2026-11-11, fourteenth verification): Prior task read and completed — independently re-verified from this environment
 
-**Task (from durable handoff):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." **Status: already complete.**
+**Task (from durable handoff):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent."
 
 **Actions taken:**
-- Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`.
-- Confirmed cycle-close artifacts present: `AGENT_STOP` (REASON: validation-only cycle complete, `RESEARCH_MORE`), `research/final_decision_report.md` (decision `RESEARCH_MORE`), `src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.{json,md}`, `src/holdout_runner.py`, `research/specifications/holdout_evaluation_protocol.md`.
+- Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `research/final_decision_report.md`, and `AGENT_STOP`.
+- Confirmed prior task (T5d-robustness-c negative controls + validation-only cycle closure, `RESEARCH_MORE`) complete; all required artifacts present: `AGENT_STOP` (reason: validation-only cycle complete, `RESEARCH_MORE`), `research/final_decision_report.md`, `src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.{json,md}`, `research/forecasts/period_perturbation_q1q2.{json,md}`, `research/forecasts/h2_hmm_validation_ethusdt.{json,md,csv}`, `research/economic/validation_dryrun/`, `src/holdout_runner.py`, `research/specifications/holdout_evaluation_protocol.md`.
 - Holdout protocol enforcement: `PYTHONPATH=. python src/holdout_runner.py` → refused by default (**EXIT 2**, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
-- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.48s** (all tests pass; `data/` and deps present in this environment).
-- Git state: clean working tree; recent checkpoint commits on `main`; commit/push handled by workflow controller, not this agent.
+- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.89s** (all tests pass; `data/` and deps present in this environment).
+- Git/repo state: uncommitted work limited to this handoff refresh; recent checkpoint commits on `main`. Commit/push handled by workflow controller, not this agent.
 
-**Result:** Prior task already complete; cycle status remains `COMPLETE` / `RESEARCH_MORE`. No new research task started.
+**Result:** Prior task already complete; cycle status remains `COMPLETE` / `RESEARCH_MORE`. Handoff refreshed with this verification and a clear initial task message for the next agent. No new research task started.
 
 **Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
@@ -778,7 +778,7 @@ Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_dec
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-11, this environment):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Prior tasks through T5d-robustness-c (negative controls) are complete with required artifacts present. `AGENT_STOP` exists with the cycle-close reason. Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.48s**. `data/` and deps are present in this environment; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` first (without `data/`, tests fail with `FileNotFoundError`).
+**Repo state (re-verified 2026-11-11, this environment):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Prior tasks through T5d-robustness-c (negative controls) are complete with required artifacts present. `AGENT_STOP` exists with the cycle-close reason. Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.89s**. `data/` and deps are present in this environment; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` first (without `data/`, tests fail with `FileNotFoundError`).
 
 **Task:** **None while `AGENT_STOP` exists.** Do not start autonomous work.
 
