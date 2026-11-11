@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; T5d cross-family validation memo + ETHUSDT asset-perturbation robustness + validation Q1/Q2 period perturbation (C1/C2) completed; **no holdout evaluation executed**)
+**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; T5d cross-family validation memo + ETHUSDT asset-perturbation robustness + validation Q1/Q2 period perturbation (C1/C2) completed; **T5d-robustness-c negative controls for C1/C2 completed**; **no holdout evaluation executed**)
 
 ## Mission
 
@@ -404,7 +404,28 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ---
 
-### Concise findings and sources (prior)
+### Task T5d-robustness-c completed (this session): Negative controls for C1/C2 on saved validation grids (no holdout execution)
+
+**Files created**
+- `src/negative_controls.py` — red-team negative-control module (research prompt §7, §8 priority 7): compares real-model skill against two no-information controls on the saved BTCUSDT 1h validation grids (stride 4, 1,087 forecasts each, holdout excluded):
+  - NC_A white noise: Gaussian N(0, sigma_y^2), pure no-information forecast.
+  - NC_B target-shuffled: model (mu, var) moments paired with stationary-bootstrap resampled y_true (200 resamples averaged), destroying the genuine forecast->target relationship.
+  - Stationary block bootstrap (block length n^(1/3), 2000 reps, 95% CI, two-sided p-values) on paired differences: real-vs-white-noise, real-vs-shuffled, shuffled-vs-white-noise.
+- `tests/test_negative_controls.py` — 7 unit tests (scoring finiteness/ordering, bootstrap index shape/range, CI containment, white-noise shapes, shuffled shapes, saved-grid load + validation window, artifact/holdout-not-used assertions).
+- `research/forecasts/negative_controls.json` — machine-readable point means and bootstrap paired-difference results for C1 and C2.
+- `research/forecasts/negative_controls.md` — markdown report.
+
+**Key findings (validation-only, point estimates + bootstrap diagnostics)**
+- **C1/HMM:** real log score 3.922 vs white noise 3.848 → real significantly better (paired diff +0.0739, 95% CI [+0.028, +0.125], p=0.0025). Real vs target-shuffled log score significantly better (+0.185, p=0.000). CRPS: real vs white noise not significant (p=0.37); real vs shuffled not significant (p=0.196). Shuffled vs white noise log score borderline (p=0.033, shuffled slightly worse) — consistent with shuffling destroying genuine state information.
+- **C2/HOM:** real vs target-shuffled log score significantly better (+0.101, p=0.0035) — genuine state information present. Real vs white noise log score not significant (p=0.37); CRPS real significantly *worse* than white noise (-5.9e-5, p=0.0005) — weak/negative economic signal consistent with validation dry-run zero trades. Shuffled vs white noise not significant on both metrics (p=0.198/0.284) — confirms shuffle removes information without spurious skill.
+- **Interpretation:** C1/HMM carries real (log-score) information but CRPS edge over white noise is not significant; C2/HOM's edge is weak. Combined with T5a (zero trades after costs), T5d asset (ETHUSDT) and period (Q1/Q2) instability, the economic gate is unlikely to clear on holdout. Negative controls complete the validation-only robustness suite (period, asset, negative controls).
+
+**Commands/tests run and outcomes (this session)**
+- `PYTHONPATH=. python src/negative_controls.py` — **success**; wrote `research/forecasts/negative_controls.{json,md}`.
+- `PYTHONPATH=. python -m pytest -q` → **145 passed in 54.83s** (138 prior + 7 new negative-control tests).
+- No holdout executed. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
+
+---
 
 **Literature review** distinguishes six model families with primary references:
 
@@ -480,7 +501,12 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
   - `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`
   This will generate protocol-complete artifacts under `research/forecasts/holdout/` and `research/economic/holdout/` (C1/C2 forecasts, bootstrap significance, B3–B5 baselines, cost/theta sensitivity, ledgers/returns, execution manifest, reports). After the run, write a concise gate decision report (`REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`) citing evidence, uncertainty, and protocol deviations (if any). Do not tune on holdout outcomes; do not rerun with changed configs.
 
-**If not explicitly authorized (default):** do **not** run the holdout. Completed validation-only robustness so far: ETHUSDT asset perturbation (T5d) and BTCUSDT Q1 vs Q2 period perturbation for C1/C2 (`research/forecasts/period_perturbation_q1q2.*`, `src/validation_period_perturbation.py`). Remaining bounded validation-only, no-holdout-tuning options: (a) **negative controls** (e.g. label-permutation or white-noise/constant forecasts) for C1/C2 on the saved validation grids with bootstrap comparison to real forecasts/baselines; (b) **holdout-report/figure helpers** (PIT histograms, calibration/diagnostic plots) exercised only on synthetic fixtures/tests consistent with `src/holdout_runner.py` wiring. Pick one, run `PYTHONPATH=. python -m pytest -q`, and update handoff with exact files/commands/outcomes and a clear next-agent message.
+**If not explicitly authorized (default):** do **not** run the holdout. The validation-only robustness suite is now complete:
+- ETHUSDT asset perturbation (T5d-robustness, `research/forecasts/h2_hmm_validation_ethusdt.*`)
+- BTCUSDT Q1 vs Q2 period perturbation for C1/C2 (T5d-robustness-b, `research/forecasts/period_perturbation_q1q2.*`, `src/validation_period_perturbation.py`)
+- Negative controls for C1/C2 (T5d-robustness-c, `research/forecasts/negative_controls.*`, `src/negative_controls.py`)
+
+Remaining bounded option (no holdout tuning): (b) **holdout-report/figure helpers** (PIT histograms, calibration/diagnostic plots) exercised only on synthetic fixtures/tests consistent with `src/holdout_runner.py` wiring. Otherwise, per `AGENTS.md` §11 / research prompt §11, assess whether the cycle is complete (evidence: economic gate unlikely to clear — validation dry-run zero trades; weak/negative negative-control signal for C2; asset/period instability) and prepare a final decision report or `AGENT_STOP`. Do not create `AGENT_STOP` unless a stop condition is truly met.
 
 - Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition in §11/AGENTS is truly met.
 
@@ -490,9 +516,9 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff.
 
-**Completed this session:** Validation-only period perturbation (Q1 vs Q2 2024) for C1 filtered HMM and C2 higher-order Markov on saved BTCUSDT 1h validation forecast grids (1,087 forecasts each, stride 4; holdout excluded). Added `src/validation_period_perturbation.py`, `tests/test_validation_period_perturbation.py`, and `research/forecasts/period_perturbation_q1q2.{json,md}`. Key result: raw scores improve Q1→Q2 for both models, but relative edges vs unconditional/EWMA are period-unstable (e.g. C1 significant vs unconditional in Q1 but not Q2 on log/CRPS; C1 worse than EWMA on CRPS in Q1 only), reinforcing non-stationarity/robustness concerns (consistent with ETHUSDT asset perturbation). `PYTHONPATH=. python -m pytest -q` → **138 passed**.
+**Completed this session:** Validation-only negative controls for C1 (filtered HMM) and C2 (higher-order Markov) on saved BTCUSDT 1h validation forecast grids (1,087 forecasts each, stride 4; holdout excluded). Added `src/negative_controls.py`, `tests/test_negative_controls.py`, and `research/forecasts/negative_controls.{json,md}`. Two no-information controls: NC_A white noise (Gaussian N(0, sigma_y^2)) and NC_B target-shuffled (model moments vs stationary-bootstrap resampled y_true), compared via stationary block bootstrap (n^(1/3) block, 2000 reps). Key result: C1 beats both controls significantly on log score (real-vs-white-noise p=0.0025; real-vs-shuffled p=0.000) but CRPS edge is not significant; C2 beats shuffled on log score (p=0.0035) but its edge over white noise is weak/non-significant (log p=0.37; CRPS significantly worse, p=0.0005). Shuffled-vs-white-noise not significant for C2 (confirms shuffle removes information without spurious skill). This completes the validation-only robustness suite (period perturbation, ETHUSDT asset perturbation, negative controls). `PYTHONPATH=. python -m pytest -q` → **145 passed**.
 
-**Next task:** If explicitly authorized by the user with `--execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, execute the locked holdout via `src/holdout_runner.py --execute-holdout --protocol-hash <hash>` and write the gate decision report. Otherwise (default), perform a remaining validation-only robustness check: (a) negative controls (label-permutation or white-noise forecasts) for C1/C2 with bootstrap comparison on saved validation grids, or (b) holdout-report/figure helpers exercised on synthetic fixtures/tests only. Do not run the holdout without explicit authorization. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition is met.
+**Next task:** If explicitly authorized by the user with `--execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, execute the locked holdout via `src/holdout_runner.py --execute-holdout --protocol-hash <hash>` and write the gate decision report. Otherwise (default), the validation-only robustness suite is complete; either (b) implement holdout-report/figure helpers (PIT histograms, calibration plots) on synthetic fixtures/tests only, or per `AGENTS.md` §11 assess whether the research cycle is complete and prepare a final decision report / `AGENT_STOP`. Evidence weighs toward the economic gate failing (validation dry-run zero trades; weak negative-control signal for C2; asset/period instability). Do not run the holdout without explicit authorization. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ---
 
