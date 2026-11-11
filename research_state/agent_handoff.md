@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T3b H1 Markov chain sensitivity consolidation completed)
+**Updated:** 2026-11-11 (T3c H1 higher-order Markov chain baseline completed)
 
 ## Mission
 
@@ -168,6 +168,44 @@ Determine whether Markov-process-based representations can produce a statistical
 
 **Caveats:** Validation-only; no holdout tuning; legacy artifacts have separate provenance; canonical T3 bootstrap uses Gaussian approximation of MC mixture; effective sample sizes 366–1183 due to temporal dependence.
 
+### Task T3c completed (this session): Higher-order / state-augmented Markov chain baseline (validation only)
+
+**Files created / modified**
+- `src/higher_order_markov.py` — second-order Markov chain baseline: state pair X_t = (S_{t-1}, S_t) in {0..K-1}^2 (K^2=25 pairs for K=5); quantile-bin discretization fitted on training data only (<=2023-12-31); expanding transition counts P(S_t=j | S_{t-2}=a, S_{t-1}=b) with Laplace smoothing (alpha=1.0); pair-conditional Gaussian return distributions E[r_t | (S_{t-1}, S_t)=(b, j)]; 1-step-ahead filtered state probabilities and pair-mixture return forecast for target t using history up to t-1 only. Baselines: unconditional expanding Gaussian and EWMA Gaussian (lambda=0.94). Metrics: log score, CRPS (mixture via grid integration), PIT, stationary block-bootstrap significance (2000 reps, n^(1/3) block). Validation window 2024-01-01 to 2024-06-30 only; holdout (>=2024-07-01) excluded. Aligned comparison vs saved H1 canonical (Q5 expanding) mixture on identical timestamps and vs saved HMM (T4) where grids align.
+- `tests/test_higher_order_markov.py` — tests for bin determinism/range, state assignment, order-2 transition-count/shape and row-stochasticity, pair-conditional fallback, expanding-unconditional no-future, and validation-only/no-holdout walk-forward with bounded runtime config.
+- `research/forecasts/h3_higher_order_markov_validation.json` — machine-readable config, metrics, bootstrap comparisons (incl. aligned H1), metadata.
+- `research/forecasts/h3_higher_order_markov_validation.md` — markdown report.
+- `research/forecasts/h3_higher_order_markov_validation.csv` — per-forecast rows (timestamps, realized returns, s_prev/s_curr, next-state probs, pair-conditional moments, HOM/unc/EWMA moments).
+- `research/forecasts/figures/h3_hom_next_state_probs.png`, `research/forecasts/figures/h3_hom_pit_hist.png`.
+
+**Run configuration (bounded, not holdout-tuned):** order m=2, K=5 quantile states (train edges), 25 state-pairs, `eval_stride=4`, expanding refit per evaluated step, Laplace alpha=1.0, min pair samples 20 with global fallback.
+
+**Validation metrics (1,087 forecasts, stride 4)**
+- Log score mean (higher better): HOM mixture 3.85845 vs unconditional Gaussian 3.74821 vs EWMA Gaussian 3.90424.
+- CRPS mean (lower better): HOM mixture 0.002687 vs unconditional Gaussian 0.002903 vs EWMA Gaussian 0.002674.
+- HOM PIT mean/std: 0.4993 / 0.2799 (uniform ideal ~0.5 / 0.289).
+- Pair occupancy spread across all 25 pairs (min ~0.024, max ~0.055), no fully empty pairs at forecast times.
+
+**Block-bootstrap significance (stationary bootstrap, 2000 reps, block length ≈10.28, validation grid)**
+- Log score (HOM − baseline, higher better): HOM vs unconditional +0.1102, 95% CI [+0.0370, +0.1814], p=0.002, eff_n=685, significant@5% (HOM better). HOM vs EWMA −0.0458, 95% CI [−0.1148, +0.0259], p=0.21, eff_n=1020, not significant.
+- CRPS (baseline − HOM, lower better): HOM vs unconditional +2.15e-4, 95% CI [+1.61e-4, +2.70e-4], p=0.000, eff_n=435, significant@5% (HOM better). HOM vs EWMA −1.36e-5, 95% CI [−4.50e-5, +1.86e-5], p=0.41, eff_n=901, not significant.
+
+**Aligned comparison with H1 (first-order MC, saved canonical grid, 1,087 identical timestamps)**
+- Log score (HOM − H1): +0.0287, 95% CI [+0.0124, +0.0455], p=0.001, eff_n=1310, significant@5% (HOM better).
+- CRPS (H1 − HOM): +2.04e-5, 95% CI [+6.2e-6, +3.53e-5], p=0.004, eff_n=1000, significant@5% (HOM better).
+- HOM improves on H1 on both metrics; HOM is the best Markov-chain (non-latent) configuration on validation.
+
+**Aligned comparison with HMM (T4): not computed**
+- The saved HMM forecast grid (h2_validation_forecasts.csv) is offset by one hour (01:00, 05:00, ...) relative to the H1/H3 grid (00:00, 04:00, ...), so direct timestamp alignment would pair mismatched realized-return targets and was not computed. H2 reference metrics from the T4 report: log score 4.0164, CRPS 0.002597 — HMM remains the best model on validation.
+
+**Caveats / interpretation**
+- Validation-only H1-family baseline; not a trading simulation and not a locked-holdout evaluation. Point estimates/significance are on the sampled validation grid (stride 4).
+- Order m=2 and K=5 quantile bins are design choices; state space K^2=25 with sparse pairs handled via Laplace smoothing + global-moment fallback.
+- EWMA Gaussian remains a strong baseline: HOM not significantly different from EWMA on log score (p=0.21) or CRPS (p=0.41); EWMA CRPS point estimate marginally lower (0.002674 vs 0.002687).
+- Prior project-level caveats remain: EM convergence warnings in HMM fits, train-vs-validation transition non-stationarity (Chow p=0.0042).
+
+**Verification:** `PYTHONPATH=. python src/higher_order_markov.py` regenerated all artifacts; `PYTHONPATH=. python -m pytest -q` → 76 passed in ~22s (70 prior + 6 new HOM tests).
+
 ### Concise findings and sources (prior)
 
 **Literature review** distinguishes six model families with primary references:
@@ -206,6 +244,8 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 - `PYTHONPATH=. python src/markov_chain_baseline.py` — **success** (this session); generated canonical T3 artifacts.
 - `PYTHONPATH=. python -m pytest -q` — **70 passed in 18.56s** (this session; includes all existing + new MC baseline tests).
 - `PYTHONPATH=. python src/verify_h1_consolidation.py` — **success** (this session); regenerated all consolidation tables from saved artifacts.
+- `PYTHONPATH=. python src/higher_order_markov.py` — **success** (this session); generated `research/forecasts/h3_higher_order_markov_validation.{json,csv,md}`, CSV, and figures.
+- `PYTHONPATH=. python -m pytest -q` — **76 passed in ~22s** (this session; 70 prior + 6 new HOM tests).
 
 ### Assumptions and unresolved questions
 
@@ -238,19 +278,18 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T3b is now complete (this session): consolidation of all H1 Markov chain validation evidence across 7 configurations (canonical T3 Q5 expanding per-step + 6 legacy configs: quantile K=3,5,7 and k-means K=3,5,7). Artifacts: `research/forecasts/h1_mc_sensitivity_consolidation.{md,json}`, `src/verify_h1_consolidation.py`.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T3c is now complete (this session): a second-order / state-augmented Markov chain baseline (BTCUSDT 1h, validation only) implemented in `src/higher_order_markov.py` with tests in `tests/test_higher_order_markov.py`. Artifacts: `research/forecasts/h3_higher_order_markov_validation.{json,csv,md}` and figures `h3_hom_next_state_probs.png`, `h3_hom_pit_hist.png`.
 
-**Key consolidated findings (validation only, BTCUSDT 1h, 1,087 forecasts):**
-- Best MC config: K-means K=3 (log score 3.9319, CRPS 0.002654) — significantly beats unconditional on both (log p=0.020, CRPS p=0.035) but **significantly worse than EWMA on both** (log p=0.0005, CRPS p=0.000).
-- Canonical T3 (Q5, expanding per-step): log score 3.8298, CRPS 0.002708 — significantly beats unconditional on both (log p=0.032, CRPS p=0.000); not significantly different from EWMA on log score (p=0.060); EWMA significantly better on CRPS (p=0.039).
-- Quantile binning: monotonic log score improvement with K (3→5→7) but no config beats EWMA; all lose to EWMA on CRPS.
-- EWMA Gaussian (λ=0.94) remains a strong baseline: never significantly beaten by any MC on log score; significantly beats most on CRPS.
-- T4 HMM (filtered) outperforms all MC: log score 4.0164, CRPS 0.002597.
-- All leakage controls observed: train-fitted bins/edges, expanding history, holdout excluded.
+**Key consolidated findings (validation only, BTCUSDT 1h, 1,087 forecasts, order m=2, K=5, 25 pairs):**
+- HOM log score 3.85845, CRPS 0.002687, PIT mean/std 0.4993/0.2799.
+- HOM significantly beats unconditional on log score (+0.1102, p=0.002) and CRPS (+2.15e-4, p=0.000); not significantly different from EWMA on either (log p=0.21, CRPS p=0.41).
+- HOM significantly improves on H1 (first-order MC) on aligned timestamps: log score +0.0287 (p=0.001), CRPS +2.04e-5 H1-minus-HOM (p=0.004). HOM is the best non-latent Markov-chain config on validation.
+- HMM (T4) remains best overall: log score 4.0164, CRPS 0.002597. Direct aligned HOM-vs-HMM comparison not computed because the saved HMM grid is offset by one hour vs the H1/H3 grid (mismatched targets).
+- All leakage controls observed: train-fitted bins, expanding history, holdout excluded.
 
-**Verification this session:** `PYTHONPATH=. python src/verify_h1_consolidation.py` (tables regenerated), `PYTHONPATH=. python -m pytest -q` (70 passed, 18.56s).
+**Verification this session:** `PYTHONPATH=. python src/higher_order_markov.py` regenerated all artifacts; `PYTHONPATH=. python -m pytest -q` → 76 passed in ~22s.
 
-Your bounded task is **T3c**: design and implement a higher-order/state-augmented Markov chain baseline (e.g., second-order chain or MTD) on validation following same leakage controls. Implement in `src/higher_order_markov.py` with tests. Produce validation metrics and block-bootstrap significance vs baselines. Compare with H1 (first-order) and H2 (HMM). Run `python -m pytest -q` and update handoff with findings, verification, blockers, and next task (e.g., T3d semi-Markov/duration-dependent baseline, or holdout-evaluation protocol design without executing it).
+Your bounded task is **T3d**: design and implement a semi-Markov / duration-dependent Markov baseline on validation following the same leakage controls. Implement in `src/semi_markov_baseline.py` with tests. Produce validation metrics and block-bootstrap significance vs baselines; compare with H1/H3/H2. Run `python -m pytest -q` and update handoff with findings, verification, blockers, and next task (e.g., holdout-evaluation protocol design / economic simulation gate design without executing the holdout).
 
 ## Stop rule
 

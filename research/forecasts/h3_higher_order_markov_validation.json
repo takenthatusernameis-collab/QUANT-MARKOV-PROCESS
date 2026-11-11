@@ -1,0 +1,218 @@
+{
+  "config": {
+    "symbol": "BTCUSDT",
+    "frequency": "1h",
+    "order": 2,
+    "k_states": 5,
+    "n_pairs": 25,
+    "discretization": "quantile_bins_fit_on_train",
+    "bin_edges_train": [
+      -0.0033587787627379555,
+      -0.0008130932380376499,
+      0.000903029165434925,
+      0.003473754864225222
+    ],
+    "eval_stride": 4,
+    "laplace_alpha": 1.0,
+    "min_state_samples_for_params": 20,
+    "train_end": "2023-12-31 00:00:00+00:00",
+    "val_start": "2024-01-01 00:00:00+00:00",
+    "val_end": "2024-06-30 00:00:00+00:00",
+    "holdout_start": "2024-07-01 00:00:00+00:00"
+  },
+  "counts": {
+    "validation_forecasts": 1087
+  },
+  "pair_occupancy_at_forecast_times": [
+    [
+      0.03955841766329347,
+      0.03035878564857406,
+      0.02483900643974241,
+      0.040478380864765406,
+      0.04139834406623735
+    ],
+    [
+      0.03403863845446182,
+      0.046918123275068994,
+      0.045998160073597055,
+      0.04415823367065318,
+      0.027598896044158234
+    ],
+    [
+      0.03955841766329347,
+      0.045998160073597055,
+      0.05519779208831647,
+      0.050597976080956765,
+      0.025758969641214352
+    ],
+    [
+      0.027598896044158234,
+      0.051517939282428704,
+      0.04967801287948482,
+      0.04139834406623735,
+      0.04231830726770929
+    ],
+    [
+      0.04415823367065318,
+      0.051517939282428704,
+      0.029438822447102116,
+      0.029438822447102116,
+      0.040478380864765406
+    ]
+  ],
+  "metrics": {
+    "log_score_higher_is_better": {
+      "higher_order_markov_mixture": {
+        "mean": 3.858447023318452,
+        "median": 4.334735681234001,
+        "std": 1.1615740195697337
+      },
+      "unconditional_gaussian": {
+        "mean": 3.7482109476116183,
+        "median": 3.9802943078754707,
+        "std": 0.9434928098198987
+      },
+      "ewma_gaussian": {
+        "mean": 3.904236719560291,
+        "median": 4.204800121229517,
+        "std": 1.5329232343527013
+      }
+    },
+    "crps_lower_is_better": {
+      "higher_order_markov_mixture": {
+        "mean": 0.002687486837139978,
+        "median": 0.0017398210355191956,
+        "std": 0.0030131582407935025
+      },
+      "unconditional_gaussian": {
+        "mean": 0.0029026889294053886,
+        "median": 0.00196859522966986,
+        "std": 0.0028057227660281594
+      },
+      "ewma_gaussian": {
+        "mean": 0.0026738528769909295,
+        "median": 0.0017223000922270979,
+        "std": 0.0029868857215599592
+      }
+    },
+    "pit_higher_order_markov": {
+      "mean": 0.49929238783816604,
+      "std": 0.27989345715193514,
+      "hist_density": [
+        0.6071757129714811,
+        1.40754369825207,
+        1.1131554737810483,
+        1.0303587856485743,
+        0.9199632014719413,
+        0.7451701931922717,
+        1.113155473781049,
+        1.0487580496780131,
+        1.2603495860165594,
+        0.7543698252069919
+      ],
+      "bin_edges": [
+        0.0,
+        0.1,
+        0.2,
+        0.30000000000000004,
+        0.4,
+        0.5,
+        0.6000000000000001,
+        0.7000000000000001,
+        0.8,
+        0.9,
+        1.0
+      ]
+    },
+    "n_obs": 1087
+  },
+  "bootstrap": {
+    "log_score_higher_better_diff_hom_minus_baseline": {
+      "hom_vs_unconditional": {
+        "mean_difference": 0.11023607570683423,
+        "ci_95": [
+          0.03696223876776857,
+          0.18142137311518278
+        ],
+        "p_value_two_sided": 0.002,
+        "block_length": 10.281974316354445,
+        "n_bootstrap": 2000,
+        "effective_sample_size": 685,
+        "n_obs": 1087,
+        "significant_at_05": true
+      },
+      "hom_vs_ewma": {
+        "mean_difference": -0.045789696241838186,
+        "ci_95": [
+          -0.11483510177792185,
+          0.025907242590919234
+        ],
+        "p_value_two_sided": 0.2125,
+        "block_length": 10.281974316354445,
+        "n_bootstrap": 2000,
+        "effective_sample_size": 1020,
+        "n_obs": 1087,
+        "significant_at_05": false
+      }
+    },
+    "crps_lower_better_diff_baseline_minus_hom": {
+      "hom_vs_unconditional": {
+        "mean_difference": 0.00021520209226541016,
+        "ci_95": [
+          0.00016132711379770545,
+          0.0002701554841748738
+        ],
+        "p_value_two_sided": 0.0,
+        "block_length": 10.281974316354445,
+        "n_bootstrap": 2000,
+        "effective_sample_size": 435,
+        "n_obs": 1087,
+        "significant_at_05": true
+      },
+      "hom_vs_ewma": {
+        "mean_difference": -1.3633960149049053e-05,
+        "ci_95": [
+          -4.503268682573613e-05,
+          1.8636517628235802e-05
+        ],
+        "p_value_two_sided": 0.412,
+        "block_length": 10.281974316354445,
+        "n_bootstrap": 2000,
+        "effective_sample_size": 901,
+        "n_obs": 1087,
+        "significant_at_05": false
+      }
+    },
+    "aligned_h1_comparison": {
+      "n_obs": 1087,
+      "note": "HOM vs saved H1 canonical (Q5 expanding) mixture on identical timestamps.",
+      "log_score_diff_hom_minus_h1": {
+        "mean_difference": 0.028683698995047965,
+        "ci_95": [
+          0.01235175778219728,
+          0.045481738536162344
+        ],
+        "p_value_two_sided": 0.001,
+        "block_length": 10.281974316354445,
+        "n_bootstrap": 2000,
+        "effective_sample_size": 1310,
+        "n_obs": 1087,
+        "significant_at_05": true
+      },
+      "crps_diff_h1_minus_hom": {
+        "mean_difference": 2.0363458440888104e-05,
+        "ci_95": [
+          6.246010614749736e-06,
+          3.530306418116527e-05
+        ],
+        "p_value_two_sided": 0.004,
+        "block_length": 10.281974316354445,
+        "n_bootstrap": 2000,
+        "effective_sample_size": 1000,
+        "n_obs": 1087,
+        "significant_at_05": true
+      }
+    }
+  },
+  "generated_at": "2026-11-11T02:33:07.964915+00:00"
+}
