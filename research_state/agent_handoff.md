@@ -499,14 +499,13 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 **Prior task (T5d-robustness-c negative controls) — verified complete**
 - Artifacts present: `src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.json`, `research/forecasts/negative_controls.md`.
-- `AGENT_STOP` absent at session start; holdout runner refusal verified (`PYTHONPATH=. python src/holdout_runner.py` refused by default; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
+- `AGENT_STOP` was absent at session start, created at session close; holdout runner refusal verified (`PYTHONPATH=. python src/holdout_runner.py` refused by default; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
 - `PYTHONPATH=. python -m pytest -q` → **145 passed in 55.00s**.
 
 **Final assessment and stop condition**
 - Validation-only robustness suite complete (T5d cross-family memo, ETHUSDT asset perturbation, Q1/Q2 period perturbation, negative controls) and evidence supports a decision for the current candidate cycle (AGENTS.md §11 / prompt §11): economic dry-run produced zero trades (forecast means << conservative costs), C2/HOM weak/negative vs white-noise on CRPS and no log-score edge vs white noise, C1/HMM not robustly superior to EWMA and unstable across period/asset, negative controls confirm limited/fragile skill.
 - **Decision:** `RESEARCH_MORE` (no holdout executed; no in-session authorization). Locked holdout not run.
-- Created `research/final_decision_report.md` (concise evidence summary, decision, and recommended materially different next work if continued).
-- Created `AGENT_STOP` with reason; handoff set to `COMPLETE`. No further autonomous tasks started.
+- `research/final_decision_report.md` and `AGENT_STOP` present with reason; handoff set to `COMPLETE`. No further autonomous tasks started.
 
 **Constraints respected:** no changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`; no credentials; no live trading; no holdout execution/tuning.
 
