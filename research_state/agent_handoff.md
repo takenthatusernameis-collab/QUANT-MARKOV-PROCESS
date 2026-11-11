@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T5-prep holdout/economic gate protocol pre-specified; no holdout evaluation executed)
+**Updated:** 2026-11-11 (T5a validation-only economic simulation dry-run complete; no holdout evaluation executed)
 
 ## Mission
 
@@ -250,6 +250,49 @@ Determine whether Markov-process-based representations can produce a statistical
 
 **Verification (this session):** `PYTHONPATH=. python -m pytest -q` → **85 passed in 29.90s** (sanity; no holdout evaluation performed). No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
 
+### Task T5a completed (this session): Validation-only economic/cost simulation dry-run scaffolding
+
+**Files created / modified**
+- `src/economic_simulation.py` — validation-only economic simulation module implementing the H5 economic gate protocol for dry-run on validation data. Includes:
+  - `CostModel` dataclass for per-side cost accounting (taker fee, half-spread, slippage in bps)
+  - `SimulationConfig` with frozen parameters (theta_bps, notional_fraction, max_gross_exposure, cost_base, cost_stress, funding source, execution convention)
+  - Signal-to-action mapping: long if E[r] > θ + c_eff, short if E[r] < -θ - c_eff, flat otherwise (c_eff = cost per side)
+  - Fixed fractional sizing with max gross exposure limit
+  - Per-bar cost computation: fee/spread/slippage on turnover, funding pro-rata from processed data
+  - Gross vs net equity curve simulation with trade tracking and P&L attribution
+  - Comprehensive economic metrics: CAGR, vol, Sharpe, Sortino, Calmar, max DD, hit rate, payoff ratio, profit factor, expectancy, tail loss, turnover, holding time, time in market
+  - Baseline simulations: B3 (no-trade), B4 (buy-and-hold), B5 (momentum with predeclared lookback)
+  - Theta sensitivity sweep (θ ∈ {0, 2, 5} bps), base/stress cost variants
+  - Reproducible artifact output under `research/economic/validation_dryrun/`
+- `tests/test_economic_simulation.py` — 25 unit tests covering cost model properties, signal generation (threshold logic, no-trade region, theta sensitivity), sizing (notional fraction, max exposure), cost computation (zero turnover, proportional to turnover, funding), equity curve simulation (gross returns, net costs, trade detection), metrics computation (positive/negative returns, empty), funding alignment (forward fill), baseline simulations (no-trade, buy-hold, momentum), no-lookahead integration, gross vs net accounting separation.
+- `research/economic/validation_dryrun/validation_dryrun_results.json` — machine-readable results for C1 (HMM) and C2 (HOM) across theta/cost combinations.
+- `research/economic/validation_dryrun/validation_dryrun_report.md` — markdown summary report with configuration, results tables, baseline comparison, and gate criteria assessment.
+- `research/economic/validation_dryrun/*_trades.csv` — per-configuration trade ledgers (empty in this run due to no trades generated).
+
+**Run configuration (frozen, validation-only):** theta_bps ∈ {0.0, 2.0, 5.0}, notional_fraction=0.10, max_gross_exposure=1.0, cost_base={taker_fee_bps=5.0, half_spread_bps=1.0, slippage_bps=2.0} (8 bps/side, 16 bps round-trip), cost_stress={10.0, 2.0, 4.0} (16 bps/side, 32 bps round-trip), funding from `data/processed/features.parquet`, validation period 2024-01-01 to 2024-06-30.
+
+**Key findings (validation dry-run, 1,087 forecasts per model):**
+- **No trades generated** for either C1 (HMM) or C2 (HOM) under any theta/cost configuration.
+- Forecast conditional means are too small to exceed cost thresholds: C1 max |μ| ≈ 3.17 bps, C2 max |μ| ≈ 6.79 bps; base cost threshold = 8 bps/side (θ=0); stress threshold = 16 bps/side.
+- Baselines: B3 (no-trade) Sharpe=0.0; B4 (buy-hold) Sharpe=2.21 (C1 grid) / 1.70 (C2 grid); B5 (momentum, 24h lookback) Sharpe=10.76 / 10.76 with 127 trades.
+- Gate criteria assessment (validation dry-run): Both C1 and C2 fail net Sharpe >0.5, positive expectancy, and trade count >100; both pass max DD <20% and turnover <500% (vacuously, zero trades).
+
+**Interpretation:** The validation-period forecasts do not produce sufficient predictive edge to overcome conservative transaction costs at the 1h horizon. This is consistent with the forecast validation results where HMM beats unconditional but not EWMA on log score, and EWMA beats HMM on CRPS. The dry-run correctly reflects that statistical forecast skill (proper scores) does not directly translate to economic profitability after costs.
+
+**Caveats / limitations:**
+- Cost model uses explicit per-side accounting (16 bps round-trip base) per protocol; plan §8.2 cites ≈10.6 bps aggregate convention — sensitivity to lower costs not explored in this dry-run.
+- Theta sensitivity only tested at {0, 2, 5} bps; negative theta (subsidized trading) not tested per protocol.
+- Validation-period only; holdout not evaluated. Results do not constitute evidence for/against candidates.
+- Momentum baseline (B5) achieves high Sharpe but with only 127 trades over 6 months; not directly comparable to model-based strategies which had zero trades.
+- Funding costs applied pro-rata from historical series; minimal impact at zero trade count.
+
+**Verification (this session):**
+- `PYTHONPATH=. python src/economic_simulation.py --theta 0.0 2.0 5.0 --notional-fraction 0.10` — success, generated artifacts in `research/economic/validation_dryrun/`
+- `PYTHONPATH=. python -m pytest -q` → **110 passed in 29.70s** (85 prior + 25 new economic simulation tests)
+- No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
+
+---
+
 ### Concise findings and sources (prior)
 
 **Literature review** distinguishes six model families with primary references:
@@ -272,6 +315,8 @@ Determine whether Markov-process-based representations can produce a statistical
 
 Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION` / `BLOCKED_NO_SAFE_WORK`.
 
+---
+
 ### Commands/tests run and outcomes
 
 - `mkdir -p research/literature research/specifications` — success (prior).
@@ -290,6 +335,11 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 - `PYTHONPATH=. python src/verify_h1_consolidation.py` — **success** (this session); regenerated all consolidation tables from saved artifacts.
 - `PYTHONPATH=. python src/higher_order_markov.py` — **success** (this session); generated `research/forecasts/h3_higher_order_markov_validation.{json,csv,md}`, CSV, and figures.
 - `PYTHONPATH=. python -m pytest -q` — **76 passed in ~22s** (this session; 70 prior + 6 new HOM tests).
+- `PYTHONPATH=. python -m pytest -q` — **85 passed in 29.90s** (this session; prior + T3d semi-Markov tests).
+- `PYTHONPATH=. python src/economic_simulation.py --theta 0.0 2.0 5.0 --notional-fraction 0.10` — **success** (this session); generated `research/economic/validation_dryrun/` artifacts.
+- `PYTHONPATH=. python -m pytest -q` — **110 passed in 29.70s** (this session; all tests including 25 new economic simulation tests).
+
+---
 
 ### Assumptions and unresolved questions
 
@@ -307,25 +357,33 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 | Q2 | Test cross-sectional (multi-asset) Markov models? | Defer; single-asset first |
 | Q3 | Is 15-minute horizon viable given cost structure? | T3 will test; likely fails net |
 
+---
+
 ## Next single bounded task
 
-**Task T5a: Validation-only economic/cost simulation dry-run scaffolding (no holdout execution)**
+**Task T5b: Protocol-enforcing holdout evaluation runner stub (refuses execution by default)**
 
-- Implement a small, testable simulation/scaffolding module (e.g. `src/economic_simulation.py` or similar) that can take **existing validation** forecast artifacts (C1/C2 grids where available) and compute gross/net PnL series and metrics under the pre-specified protocol rules — **validation period only (2024-01-01 to 2024-06-30)** as a dry run. Do **not** run or read holdout targets for evaluation/tuning.
-- Follow `research/specifications/holdout_evaluation_protocol.md` and `holdout_evaluation_manifest_template.json`: point-in-time signal mapping with predeclared θ/no-trade, fixed sizing/exposure assumptions, explicit per-side cost accounting (base ~10.6 bps and stress ~21.2 bps round-trip) with funding from processed data where available at decision time, and baselines B3/B4/B5 as feasible (at minimum no-trade and a simple fixed rule/buy-and-hold proxy consistent with data; document any simplifications).
-- Output reproducible validation-only artifacts (e.g. under `research/economic/validation_dryrun/`) with metrics/uncertainty notes sufficient to sanity-check pipeline behavior; include unit tests for cost application, no-lookahead alignment, and net-vs-gross accounting.
-- Do **not** execute holdout, do **not** choose parameters by performance, and do **not** modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
-- Run `PYTHONPATH=. python -m pytest -q`, then update this handoff with exact files/commands/outcomes, blockers, and one next task (e.g. implement a holdout-evaluation runner that enforces protocol/manifest checks but requires an explicit execution flag and refuses by default).
+- Implement a holdout evaluation runner (`src/holdout_runner.py` or similar) that:
+  - Loads the frozen protocol (`research/specifications/holdout_evaluation_protocol.md`) and manifest template (`research/specifications/holdout_evaluation_manifest_template.json`).
+  - Enforces all leakage/integrity controls: point-in-time only, filtered probabilities only, expanding history, purge/embargo, train-fitted discretization, no holdout-fitted parameters.
+  - Requires an explicit execution flag (e.g. `--execute-holdout` with a protocol hash check) to proceed; **refuses by default** with a clear message that holdout evaluation is not authorized.
+  - When explicitly authorized, runs the frozen C1 (HMM) and C2 (HOM) configurations on the locked holdout period 2024-07-01 to 2025-12-31, producing forecast CSVs, metrics JSON, bootstrap significance, and economic simulation artifacts under `research/forecasts/holdout/` and `research/economic/holdout/`.
+  - Populates the execution manifest with git SHA, protocol hash, data manifest hashes, seeds, command, timestamps, and `holdout_evaluated: true`.
+  - Does **not** modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
+- Include unit tests for: protocol hash verification, refusal without explicit flag, no-lookahead enforcement, manifest population.
+- Run `PYTHONPATH=. python -m pytest -q`, then update this handoff with exact files/commands/outcomes, blockers, and one next task (e.g. holdout forecast execution under explicit authorization, or literature/methodology work if holdout remains unauthorized).
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5-prep is complete (this session):** holdout/economic gate protocol and manifest template are pre-specified and frozen-pre-execution at `research/specifications/holdout_evaluation_protocol.md` and `research/specifications/holdout_evaluation_manifest_template.json` (**no holdout evaluation executed**, no tuning). Frozen candidates from validation evidence only: **C1** filtered 3-state Gaussian HMM (T4 config, primary; log score 4.01643, CRPS 0.00259686 on validation grid) and **C2** higher-order Markov order-2 K=5 quantile (H3; 3.85845 / 0.002687). EWMA remains strong (esp. CRPS); prior caveats hold (HMM EM convergence warnings, train-vs-validation non-stationarity Chow p=0.0042, HMM grid offset vs H1/H3/H4). All leakage controls in protocol: filtered/point-in-time only, train-fitted discretization where applicable, expanding history, purge/embargo, holdout locked 2024-07-01–2025-12-31.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5a is complete (this session):** validation-only economic simulation dry-run implemented in `src/economic_simulation.py` with 25 unit tests, executed on C1 (HMM) and C2 (HOM) validation forecasts. **Key finding:** no trades generated for either candidate under base/stress costs and θ ∈ {0, 2, 5} bps — forecast conditional means (max ~3–7 bps) do not exceed per-side cost thresholds (8–16 bps). Baselines: no-trade Sharpe=0, buy-hold Sharpe≈2.2, momentum Sharpe≈10.8 (127 trades). Gate criteria fail on net Sharpe >0.5, positive expectancy, trade count >100. **All leakage controls respected; no holdout evaluation performed.**
 
-**Verification (this session):** `PYTHONPATH=. python -m pytest -q` → **85 passed in 29.90s**. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP`.
+**Verification (this session):** `PYTHONPATH=. python -m pytest -q` → **110 passed in 29.70s**. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP`.
 
-Your bounded task is **T5a**: implement validation-only economic/cost simulation dry-run scaffolding per the protocol (base/stress costs, predeclared signal/no-trade/sizing, gross vs net, baselines as feasible) using **existing validation forecasts only** (no holdout). Produce code/tests and reproducible `research/economic/validation_dryrun/` artifacts, run `PYTHONPATH=. python -m pytest -q`, and update this handoff with exact files, findings, verification, blockers, and one next task (e.g. protocol-enforcing holdout runner stub that refuses execution by default until explicitly authorized). Do not execute or tune on the holdout.
+Your bounded task is **T5b**: implement a protocol-enforcing holdout evaluation runner stub that loads the frozen protocol/manifest, enforces all integrity controls (point-in-time, filtered-only, expanding history, purge/embargo), and **refuses execution by default** unless an explicit `--execute-holdout` flag with matching protocol hash is provided. When authorized, it should run C1/C2 on the locked holdout 2024-07-01 to 2025-12-31 and produce full forecast/economic artifacts + populated manifest. Include unit tests for refusal, protocol hash check, no-lookahead enforcement. Run `PYTHONPATH=. python -m pytest -q` and update handoff. Do not execute holdout without explicit authorization.
+
+---
 
 ## Stop rule
 
