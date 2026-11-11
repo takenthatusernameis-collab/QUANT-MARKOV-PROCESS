@@ -66,6 +66,12 @@ class ForecastResult:
     ewma_mu: float
     ewma_var: float
     realized_state: Optional[int]
+    hmm_log: float = 0.0
+    unc_log: float = 0.0
+    ewma_log: float = 0.0
+    hmm_crps: float = 0.0
+    unc_crps: float = 0.0
+    ewma_crps: float = 0.0
 
 
 def load_btc_returns(path: Path = DATA_PATH) -> pd.DataFrame:
@@ -336,6 +342,12 @@ def run_walkforward(
         realized_state = int(np.argmax(filt_t1))
 
         y_true = float(returns[i + 1])
+        hmm_log = mixture_logpdf(y_true, next_probs, mix_means, mix_vars)
+        unc_log = float(gaussian_logpdf(np.array([y_true]), np.array([unc_mu]), np.array([unc_var]))[0])
+        ewma_log = float(gaussian_logpdf(np.array([y_true]), np.array([ewma_mu]), np.array([ewma_var]))[0])
+        hmm_crps = mixture_crps_grid(y_true, next_probs, mix_means, mix_vars)
+        unc_crps = gaussian_crps(y_true, unc_mu, math.sqrt(unc_var))
+        ewma_crps = gaussian_crps(y_true, ewma_mu, math.sqrt(ewma_var))
         results.append(ForecastResult(
             timestamp=target_ts,
             y_true=y_true,
@@ -349,6 +361,12 @@ def run_walkforward(
             ewma_mu=ewma_mu,
             ewma_var=ewma_var,
             realized_state=realized_state,
+            hmm_log=hmm_log,
+            unc_log=unc_log,
+            ewma_log=ewma_log,
+            hmm_crps=hmm_crps,
+            unc_crps=unc_crps,
+            ewma_crps=ewma_crps,
         ))
 
     metrics = compute_metrics(results)
@@ -384,6 +402,8 @@ def row_to_dict(r: ForecastResult) -> Dict:
         "timestamp": str(r.timestamp),
         "y_true": r.y_true,
         "hmm_state_probs_next": r.hmm_state_probs_next.tolist(),
+        "hmm_mix_means": r.hmm_mix_means.tolist(),
+        "hmm_mix_vars": r.hmm_mix_vars.tolist(),
         "hmm_mu": r.hmm_mu,
         "hmm_var": r.hmm_var,
         "unc_mu": r.unc_mu,
@@ -391,27 +411,26 @@ def row_to_dict(r: ForecastResult) -> Dict:
         "ewma_mu": r.ewma_mu,
         "ewma_var": r.ewma_var,
         "realized_state_diagnostic": r.realized_state,
+        "hmm_log": r.hmm_log,
+        "unc_log": r.unc_log,
+        "ewma_log": r.ewma_log,
+        "hmm_crps": r.hmm_crps,
+        "unc_crps": r.unc_crps,
+        "ewma_crps": r.ewma_crps,
     }
 
 
 def compute_metrics(results: List[ForecastResult]) -> Dict:
-    y = np.array([r.y_true for r in results], dtype=float)
-    hmm_log = []
-    unc_log = []
-    ewma_log = []
-    hmm_crps = []
-    unc_crps = []
-    ewma_crps = []
+    hmm_log = np.array([r.hmm_log for r in results], dtype=float)
+    unc_log = np.array([r.unc_log for r in results], dtype=float)
+    ewma_log = np.array([r.ewma_log for r in results], dtype=float)
+    hmm_crps = np.array([r.hmm_crps for r in results], dtype=float)
+    unc_crps = np.array([r.unc_crps for r in results], dtype=float)
+    ewma_crps = np.array([r.ewma_crps for r in results], dtype=float)
     brier = []
     slog = []
     pit_hmm = []
     for r in results:
-        hmm_log.append(mixture_logpdf(r.y_true, r.hmm_state_probs_next, r.hmm_mix_means, r.hmm_mix_vars))
-        unc_log.append(float(gaussian_logpdf(np.array([r.y_true]), np.array([r.unc_mu]), np.array([r.unc_var]))[0]))
-        ewma_log.append(float(gaussian_logpdf(np.array([r.y_true]), np.array([r.ewma_mu]), np.array([r.ewma_var]))[0]))
-        hmm_crps.append(mixture_crps_grid(r.y_true, r.hmm_state_probs_next, r.hmm_mix_means, r.hmm_mix_vars))
-        unc_crps.append(gaussian_crps(r.y_true, r.unc_mu, math.sqrt(r.unc_var)))
-        ewma_crps.append(gaussian_crps(r.y_true, r.ewma_mu, math.sqrt(r.ewma_var)))
         if r.realized_state is not None:
             brier.append(brier_score_state(r.hmm_state_probs_next, r.realized_state))
             slog.append(state_log_loss(r.hmm_state_probs_next, r.realized_state))
@@ -451,7 +470,7 @@ def compute_metrics(results: List[ForecastResult]) -> Dict:
             "hist_density": pit_hist.tolist() if len(pit) else [],
             "bin_edges": pit_edges.tolist() if len(pit) else [],
         },
-        "n_obs": int(len(y)),
+        "n_obs": int(len(hmm_log)),
     }
 
 
@@ -495,6 +514,12 @@ def save_outputs(payload: Dict, results: List[ForecastResult], refits: List[Dict
             "unc_var": r.unc_var,
             "ewma_mu": r.ewma_mu,
             "ewma_var": r.ewma_var,
+            "hmm_log": r.hmm_log,
+            "unc_log": r.unc_log,
+            "ewma_log": r.ewma_log,
+            "hmm_crps": r.hmm_crps,
+            "unc_crps": r.unc_crps,
+            "ewma_crps": r.ewma_crps,
         })
     pd.DataFrame(rows).to_csv(out_dir / "h2_validation_forecasts.csv", index=False)
 
