@@ -1,140 +1,90 @@
 import numpy as np
 import pandas as pd
-import pytest
 
 from src.markov_chain_baseline import (
     TRAIN_END,
     VAL_END,
     VAL_START,
-    discretize_returns,
-    estimate_transition_matrix,
+    HOLDOUT_START,
+    assign_states,
+    estimate_transition_counts,
     expanding_unconditional_params,
-    forecast_next_state_probs,
+    fit_quantile_bins,
     load_btc_returns,
     run_markov_chain_walkforward,
+    state_conditional_params,
+    transition_probs_from_counts,
 )
 
 
-def test_discretize_quantile_ordering():
+def test_fit_quantile_bins_increasing_and_fixed_on_train():
     rng = np.random.default_rng(0)
-    x = np.concatenate([
-        rng.normal(-0.01, 0.02, 400),
-        rng.normal(0.0, 0.005, 400),
-        rng.normal(0.01, 0.01, 400),
-    ])
-    labels, means, vars_ = discretize_returns(x, n_states=3, method="quantile")
-    assert labels.shape == (len(x),)
-    assert means.shape == (3,)
-    assert vars_.shape == (3,)
-    assert means[0] <= means[1] <= means[2]
-    assert np.all(vars_ > 0)
-    assert np.all(labels >= 0) and np.all(labels < 3)
+    train = rng.normal(0, 0.01, 5000)
+    edges = fit_quantile_bins(train, k=5)
+    assert len(edges) == 4
+    assert np.all(np.diff(edges) > 0)
+    # applying to other data does not change edges
+    edges2 = fit_quantile_bins(train, k=5)
+    assert np.allclose(edges, edges2)
 
 
-def test_discretize_kmeans_ordering():
-    rng = np.random.default_rng(1)
-    x = np.concatenate([
-        rng.normal(-0.01, 0.02, 400),
-        rng.normal(0.0, 0.005, 400),
-        rng.normal(0.01, 0.01, 400),
-    ])
-    labels, means, vars_ = discretize_returns(x, n_states=3, method="kmeans")
-    assert labels.shape == (len(x),)
-    assert means.shape == (3,)
-    assert vars_.shape == (3,)
-    assert means[0] <= means[1] <= means[2]
-    assert np.all(vars_ > 0)
-    assert np.all(labels >= 0) and np.all(labels < 3)
+def test_assign_states_range_and_deterministic():
+    edges = np.array([-0.01, 0.0, 0.01])
+    x = np.array([-0.02, -0.005, 0.005, 0.02])
+    s = assign_states(x, edges)
+    assert s.tolist() == [0, 1, 2, 3]
+    s2 = assign_states(x, edges)
+    assert np.array_equal(s, s2)
 
 
-def test_discretize_kmeans_deterministic():
-    rng = np.random.default_rng(2)
-    x = rng.normal(0, 0.01, 600)
-    labels1, means1, vars1 = discretize_returns(x, n_states=3, method="kmeans", random_state=42)
-    labels2, means2, vars2 = discretize_returns(x, n_states=3, method="kmeans", random_state=42)
-    assert np.array_equal(labels1, labels2)
-    assert np.allclose(means1, means2)
-    assert np.allclose(vars1, vars2)
+def test_transition_counts_and_probs_row_stochastic():
+    states = np.array([0, 1, 1, 2, 2, 0, 1])
+    counts = estimate_transition_counts(states, k=3)
+    assert counts.shape == (3, 3)
+    assert counts.sum() == len(states) - 1
+    probs = transition_probs_from_counts(counts, alpha=1.0)
+    assert probs.shape == (3, 3)
+    assert np.allclose(probs.sum(axis=1), 1.0)
+    assert np.all(probs > 0)  # Laplace smoothing
 
 
-def test_transition_matrix_shape_and_stochastic():
-    labels = np.array([0, 1, 2, 0, 1, 1, 2, 2, 0], dtype=int)
-    transmat = estimate_transition_matrix(labels, n_states=3)
-    assert transmat.shape == (3, 3)
-    assert np.allclose(transmat.sum(axis=1), 1.0, atol=1e-8)
-    assert np.all(transmat >= 0)
-    # Check specific transitions
-    # 0 -> 1 occurs once, 0 -> 2 occurs once (from 0,1,2,0... last 0 has no next)
-    # With pseudocounts, row 0 should have mass on 1 and 2
-    assert transmat[0, 1] > 0
-    assert transmat[0, 2] > 0
+def test_state_conditional_params_fallback():
+    hist_r = np.array([0.01, 0.02, -0.01, 0.0, 0.03])
+    hist_s = np.array([0, 0, 1, 2, 2])
+    mu, var = state_conditional_params(hist_r, hist_s, k=4, global_mu=0.001, global_var=0.0004, min_samples=2)
+    assert mu.shape == (4,) and var.shape == (4,)
+    # state 3 unseen -> global fallback
+    assert np.isclose(mu[3], 0.001)
+    assert var[3] >= 1e-10
+    assert np.all(var > 0)
 
 
-def test_forecast_next_state_probs():
-    transmat = np.array([
-        [0.8, 0.1, 0.1],
-        [0.2, 0.7, 0.1],
-        [0.1, 0.2, 0.7],
-    ])
-    probs = forecast_next_state_probs(0, transmat)
-    assert probs.shape == (3,)
-    assert np.allclose(probs.sum(), 1.0, atol=1e-8)
-    assert np.allclose(probs, transmat[0])
+def test_expanding_unconditional_no_future():
+    h1 = np.array([0.1, -0.2, 0.05])
+    h2 = np.array([0.1, -0.2, 0.05, 10.0])
+    mu1, v1 = expanding_unconditional_params(h1)
+    mu2, v2 = expanding_unconditional_params(h2)
+    assert mu2 != mu1 and v2 > v1
 
 
-def test_expanding_unconditional_params_no_future():
-    hist1 = np.array([0.1, -0.2, 0.05])
-    hist2 = np.array([0.1, -0.2, 0.05, 10.0])
-    mu1, var1 = expanding_unconditional_params(hist1)
-    mu2, var2 = expanding_unconditional_params(hist2)
-    assert mu2 != mu1
-    assert var2 > var1
-
-
-def test_walkforward_validation_only_and_no_holdout_leakage():
+def test_walkforward_validation_only_no_holdout_and_shapes():
     df = load_btc_returns()
+    # restrict to data up to validation end for speed and to ensure no holdout access by inputs
     df = df[df["timestamp"] <= VAL_END].copy()
-    out = run_markov_chain_walkforward(df, n_states=3, discretization="quantile", refit_every=2200, eval_stride=24)
+    out = run_markov_chain_walkforward(df, k=5, eval_stride=24)
     payload = out["payload"]
     results = out["results"]
     assert payload["counts"]["validation_forecasts"] > 0
     for r in results:
         assert r.timestamp >= VAL_START
         assert r.timestamp <= VAL_END
-        assert r.timestamp < pd.Timestamp("2024-07-01 00:00:00", tz="UTC")
-    for rec in payload["refits"]:
-        assert rec["refit_timestamp"] <= str(VAL_END)
-        assert rec["train_size"] >= (df["timestamp"] <= TRAIN_END).sum()
+        assert r.timestamp < HOLDOUT_START
+        assert r.next_state_probs.shape == (5,)
+        assert np.allclose(r.next_state_probs.sum(), 1.0, atol=1e-8)
+        assert np.all(r.next_state_probs >= 0)
+        assert np.isfinite(r.mc_mu)
+        assert r.mc_var > 0
     m = payload["metrics"]
     assert "log_score_higher_is_better" in m
     assert "crps_lower_is_better" in m
-    assert m["n_obs"] == payload["counts"]["validation_forecasts"]
-
-
-def test_walkforward_kmeans_config():
-    df = load_btc_returns()
-    df = df[df["timestamp"] <= VAL_END].copy()
-    out = run_markov_chain_walkforward(df, n_states=5, discretization="kmeans", refit_every=2200, eval_stride=24)
-    payload = out["payload"]
-    assert payload["counts"]["validation_forecasts"] > 0
-    assert payload["config"]["n_states"] == 5
-    assert payload["config"]["discretization"] == "kmeans"
-
-
-def test_walkforward_different_n_states():
-    df = load_btc_returns()
-    df = df[df["timestamp"] <= VAL_END].copy()
-    for k in [3, 5, 7]:
-        out = run_markov_chain_walkforward(df, n_states=k, discretization="quantile", refit_every=2200, eval_stride=24)
-        payload = out["payload"]
-        assert payload["counts"]["validation_forecasts"] > 0
-        assert payload["config"]["n_states"] == k
-        # Check state probabilities dimension
-        for r in out["results"]:
-            assert len(r.mc_state_probs_next) == k
-            assert len(r.mc_state_means) == k
-            assert len(r.mc_state_vars) == k
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    assert "bootstrap" in payload

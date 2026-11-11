@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T4b H2 significance analysis completed)
+**Updated:** 2026-11-11 (T3 finite-state Markov chain baseline completed)
 
 ## Mission
 
@@ -72,7 +72,7 @@ Determine whether Markov-process-based representations can produce a statistical
 - Prior EDA showed train-vs-validation transition non-stationarity (Chow p=0.0042); EM convergence/init sensitivity persists and may affect refit stability and forecast comparability.
 - "Unconditional historical transition distribution" baseline is not yet implemented as a discrete-state Markov baseline in this run; unconditional/EWMA Gaussian return-distribution baselines were used for proper scoring.
 
-### Task T4b completed (this session): Block-bootstrap uncertainty and sensitivity for validation forecast scores (validation only)
+### Task T4b completed (prior session): Block-bootstrap uncertainty and sensitivity for validation forecast scores (validation only)
 
 **Files created / modified**
 - `src/hmm_validation_significance.py` — block bootstrap analysis script using stationary bootstrap (Politis & Romano 1994) with n^(1/3) block length, 2000 replications. Computes paired score differences (HMM vs Unconditional, HMM vs EWMA) for log score and CRPS using Gaussian mixture scores from saved forecasts. Reports mean differences, 95% percentile CIs, two-sided p-values, effective sample sizes. Includes bounded sensitivity check (narrower validation sub-window Jan-Mar 2024, refit_every=1440, eval_stride=8).
@@ -108,6 +108,34 @@ Determine whether Markov-process-based representations can produce a statistical
 - Train-vs-validation non-stationarity (Chow p=0.0042) from T2 remains a concern for parameter stability.
 - Saved forecast CSV lacks state-level mixture parameters; bootstrap used Gaussian approximation of mixture moments.
 - Validation-only results; holdout (>=2024-07-01) not used.
+
+### Task T3 completed (this session): Finite-state Markov chain baseline (BTCUSDT 1h, validation only)
+
+**Files created / modified**
+- `src/markov_chain_baseline.py` — first-order finite-state Markov chain baseline: quantile-bin discretization (K=5) fitted on training returns only (<=2023-12-31), expanding transition-count estimation with Laplace smoothing, 1-step-ahead state probabilities and state-mixture return forecast for target *t* using history up to *t-1*; baselines unconditional expanding Gaussian and EWMA Gaussian (λ=0.94); log score/CRPS (mixture via grid integration), PIT, and stationary block-bootstrap significance (2000 reps, n^(1/3) block). Validation window 2024-01-01 to 2024-06-30 only; holdout (>=2024-07-01) excluded.
+- `tests/test_markov_chain_baseline.py` — tests for quantile-bin determinism/range, state assignment, transition-count/probability validity (row-stochastic, smoothed), state-conditional fallback behavior, expanding-baseline no-future behavior, and validation-only/no-holdout walk-forward with bounded runtime config.
+- `research/forecasts/h1_markov_chain_validation.json` — machine-readable config, metrics, bootstrap comparisons, and metadata.
+- `research/forecasts/h1_markov_chain_validation.md` — markdown report.
+- `research/forecasts/h1_markov_chain_validation.csv` — per-forecast rows (timestamps, realized returns, current state, next-state probabilities, MC/unc/EWMA moments).
+- `research/forecasts/figures/h1_mc_next_state_probs.png`, `research/forecasts/figures/h1_mc_pit_hist.png`.
+
+**Run configuration (bounded, not holdout-tuned):** K=5 quantile states, `eval_stride=4`, expanding refit per evaluated step (transition/state-conditional parameters from all history < target), Laplace α=1.0.
+
+**Validation metrics (1,087 forecasts, stride 4)**
+- Log score mean (higher better): MC mixture 3.82976 vs unconditional Gaussian 3.74821 vs EWMA Gaussian 3.90424.
+- CRPS mean (lower better): MC mixture 0.00270785 vs unconditional Gaussian 0.00290269 vs EWMA Gaussian 0.00267385.
+- MC PIT mean/std: 0.4988 / 0.2788.
+- State occupancy at forecast times: [0.1849, 0.2263, 0.2052, 0.2061, 0.1776].
+
+**Block-bootstrap significance (stationary bootstrap, 2000 reps, block length ≈10.28, validation grid)**
+- Log score (MC − baseline, higher better): MC vs unconditional +0.08155, 95% CI [+0.00791, +0.15577], p=0.032, eff_n=558, significant@5% (MC better). MC vs EWMA −0.07447, 95% CI [−0.14881, +0.00591], p=0.060, eff_n=979, not significant.
+- CRPS (baseline − MC, lower better): MC vs unconditional +1.948e-4, 95% CI [+1.407e-4, +2.475e-4], p=0.000, eff_n=366, significant@5% (MC better). MC vs EWMA −3.400e-5, 95% CI [−6.606e-5, −1.743e-6], p=0.039, eff_n=882, significant@5% (EWMA better).
+
+**Caveats / interpretation**
+- Validation-only H1 baseline; not a trading simulation and not a locked-holdout evaluation. Point estimates/significance are on the sampled validation grid (stride 4) and do not constitute final evidence.
+- Discretization choice (K=5 quantiles, train-fitted edges) and Laplace smoothing affect forecasts; sensitivity across K/binning methods is not exhaustively re-swept in this run (other pre-existing H1 k-means/quantile artifacts exist under `research/forecasts/` from prior work but were not consolidated here).
+- Direct aligned MC-vs-HMM mixture scoring was not fully computed against HMM state-mixture parameters because saved T4 CSV stores HMM mixture moments only; any moment-based comparison should be interpreted cautiously.
+- Prior project-level caveats remain: EM convergence warnings in HMM fits and train-vs-validation transition non-stationarity (Chow p=0.0042).
 
 ### Concise findings and sources (prior)
 
@@ -162,21 +190,22 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T3 (H1): Finite-state Markov chain baseline on validation period**
+**Task T3b (H1 follow-up): Consolidate finite-state Markov chain baseline evidence and K/binning sensitivity (validation only)**
 
-- Implement a first-order finite-state Markov chain baseline for BTCUSDT 1h returns on the validation window (2024-01-01 to 2024-06-30).
-- Discretize returns into K states (e.g., K=3, 5, 7 via quantiles or k-means on training data); estimate transition matrix on expanding history; produce 1-step-ahead state probabilities and implied return distribution forecast.
-- Evaluate with same proper scoring rules (log score, CRPS) and block-bootstrap significance vs. HMM and Gaussian baselines.
-- Save as `src/markov_chain_baseline.py`, `tests/test_markov_chain_baseline.py`, `research/forecasts/h1_markov_chain_validation.md/json/csv`, and figures.
-- Run `python -m pytest -q` and update handoff with findings, verification, blockers, and next task (e.g., T3b higher-order/state-augmented baseline or holdout-evaluation protocol design).
+- Audit existing validation-only H1 artifacts in `research/forecasts/` (e.g. `h1_markov_chain_validation*`, `h1_markov_chain_summary.json`, `h1_markov_chain_significance*`, k-means/quantile K=3,5,7 files) and this session's canonical `src/markov_chain_baseline.py` + `h1_markov_chain_validation.*` outputs. Reconcile what is reproducible vs. legacy/unknown provenance; do not overwrite prior results without justification.
+- Produce a concise consolidation report `research/forecasts/h1_mc_sensitivity_consolidation.md` (+ `.json` if useful) comparing log score/CRPS and bootstrap significance across K and discretization methods on the aligned validation grid, explicitly noting leakage controls (train-fitted bins/edges, expanding history, no holdout).
+- If feasible within one bounded run, add a small reproducible sensitivity script/test that can regenerate or verify the comparison table from saved artifacts (no new model families, no holdout evaluation).
+- Run targeted tests / `python -m pytest -q` as appropriate and update handoff with findings, verification, blockers, and next task (e.g., T3c higher-order/state-augmented chain baseline design+implementation on validation, or holdout-evaluation protocol design without executing it).
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T4 and T4b are complete: `src/hmm_walkforward.py`, `src/hmm_validation_significance.py`, tests, and validation-only artifacts in `research/forecasts/`. Saved T4 run: 1,087 validation forecasts (eval_stride=4), 7 refits (720-bar), seeds [0,1,2]; mean log score HMM 4.016 vs unconditional 3.770 vs EWMA 3.902 and mean CRPS HMM 0.002597 vs unconditional 0.002854 vs EWMA 0.002631. T4b block bootstrap (2000 reps, stationary bootstrap): HMM significantly beats unconditional Gaussian on log score (p<0.001, mean diff +0.152) and CRPS (p<0.001, mean diff +1.78e-4); HMM does not significantly beat EWMA on log score (p=0.44); EWMA significantly beats HMM on CRPS (p=0.006). Effective n ≈ 576–1170 << 1087 due to autocorrelation. Sensitivity check (Jan-Mar 2024, refit_every=1440, stride=8) shows moderate metric sensitivity to cadence. Holdout (>=2024-07-01) not used. Caveats: EM non-convergence warnings, train-vs-validation non-stationarity (Chow p=0.0042), Gaussian approximation of HMM mixture for CRPS.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T3 is now complete (this session): `src/markov_chain_baseline.py`, `tests/test_markov_chain_baseline.py`, and validation-only artifacts `research/forecasts/h1_markov_chain_validation.{md,json,csv}` + figures `research/forecasts/figures/h1_mc_{next_state_probs,pit_hist}.png`. Saved T3 run (K=5 quantile bins fitted on train only, eval_stride=4, expanding history, Laplace smoothing): 1,087 validation forecasts; log score mean MC 3.82976 vs unconditional 3.74821 vs EWMA 3.90424; CRPS mean MC 0.00270785 vs unconditional 0.00290269 vs EWMA 0.00267385; PIT mean/std 0.4988/0.2788. Block bootstrap (2000, stationary): MC significantly beats unconditional on log score (p=0.032, +0.0816) and CRPS (p=0.000, +1.95e-4); MC not significantly different from EWMA on log score (p=0.060) and EWMA significantly better on CRPS (p=0.039, diff −3.40e-5 favoring EWMA). Effective n 366–979. Holdout (>=2024-07-01) not used. Caveats: no exhaustive K/binning sweep in this run; pre-existing H1 k-means/quantile K=3,5,7 artifacts exist in `research/forecasts/` with separate provenance; aligned MC-vs-HMM mixture comparison limited by T4 CSV storing HMM mixture moments only.
 
-Your bounded task is **T3**: implement a finite-state Markov chain baseline on the validation period. Discretize returns (quantiles/k-means), estimate expanding transition matrices, produce 1-step-ahead forecasts, evaluate with log score/CRPS + block-bootstrap significance vs. HMM/Gaussian baselines. Save artifacts under `research/forecasts/` (e.g., `h1_markov_chain_validation.*`), add tests, run `python -m pytest -q`, update handoff with exact verification, blockers, and next task (e.g., T3b higher-order/state-augmented baseline or holdout-evaluation protocol design without executing it).
+Verification this session: `PYTHONPATH=. python -m pytest -q tests/test_markov_chain_baseline.py` (6 passed), `PYTHONPATH=. python src/markov_chain_baseline.py` (artifacts generated), `PYTHONPATH=. python -m pytest -q` (70 passed, 18.33s).
+
+Your bounded task is **T3b**: consolidate/audit H1 Markov-chain validation evidence and K/binning sensitivity from existing artifacts plus this session's canonical outputs (validation only). Produce a reproducible consolidation report/table with leakage notes; add a small verification script/test if feasible. Run `python -m pytest -q` (or targeted tests) and update handoff with exact verification, blockers, and next task (e.g., T3c higher-order/state-augmented chain baseline design+implementation on validation, or holdout-evaluation protocol design without executing it).
 
 ## Stop rule
 
