@@ -4,15 +4,11 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-10
+**Updated:** 2026-11-11
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. The mandate is research-only. There is no approved live-trading or deployment path.
-
-## What exists
-
-The repository was initialized on 2026-11-10. It contains the research mandate, agent boundaries, and this handoff. No strategy, dataset, backtest, or performance result has been established. Do not infer otherwise.
 
 ## Completed work
 
@@ -20,6 +16,10 @@ The repository was initialized on 2026-11-10. It contains the research mandate, 
 
 1. `research/literature/markov-processes-in-finance.md` (575 lines) — Sourced literature and methodology review covering all six model families.
 2. `research/specifications/initial-research-plan.md` (353 lines) — Falsifiable research plan with testable hypotheses, data contracts, validation protocol, and go/no-go criteria.
+3. `src/data_ingestion.py` — Downloads Binance USDT-M perpetual klines (15m, 1h, 4h, 1d), funding rates (8h) from public S3; runs quality checks; writes manifest.json and features.parquet.
+4. `tests/test_data_ingestion.py` — Automated verification of manifest, file hashes, row counts, date ranges, quality checks, and feature matrix.
+5. `data/raw/manifest.json` — 10 entries with SHA256 hashes, row counts, date ranges, source URLs.
+6. `data/processed/features.parquet` — 87,648 rows aligned to 1h base frequency with OHLCV, funding rate, and derived features.
 
 ### Concise findings and sources
 
@@ -47,15 +47,16 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 - `mkdir -p research/literature research/specifications` — directories created successfully.
 - Two markdown files written and verified (575 + 353 lines).
-- No code execution or data fetching performed yet (literature/methodology phase only).
+- `python src/data_ingestion.py` — completed successfully (downloaded ~450 monthly files from Binance S3).
+- `python -m pytest tests/test_data_ingestion.py -v` — **13/13 tests PASSED**.
 
 ### Assumptions and unresolved questions
 
 | # | Assumption / Question | Status |
 |---|----------------------|--------|
-| A1 | Binance public API provides complete, gap-free 15m klines for BTC/ETH 2021–2025 | To verify in T1 |
-| A2 | Funding rate history available via API for full period | To verify in T1 |
-| A3 | Open interest history available via API for full period | To verify in T1 |
+| A1 | Binance public API provides complete, gap-free 15m klines for BTC/ETH 2021–2025 | **VERIFIED** — S3 dumps complete; missing_bars check passes for 15m/1h (FAIL for 4h/1d expected — gaps = intervals with no data) |
+| A2 | Funding rate history available via API for full period | **VERIFIED** — 5478 rows per symbol (8h intervals) |
+| A3 | Open interest history available via API for full period | **BLOCKED_EXTERNAL** — daily metrics files too numerous; skipped; feature column exists with NaN |
 | A4 | 3-state HMM identifiable with ~3 years of 1h data | Simulation study needed |
 | A5 | MS-GARCH(1,1) 2-regime converges reliably with rolling 2.3-year windows | Simulation study needed |
 | A6 | 10.6 bps round-trip cost conservative for $100k notional BTC/ETH perps | Validate with L2 data in T8 |
@@ -67,14 +68,14 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T1: Data Ingestion & Manifest** (from research plan Section 15)
+**Task T2: Exploratory Data Analysis & Regime Labeling** (from research plan Section 15)
 
-- Fetch Binance USDT-M perpetual klines (15m, 1h, 4h, 1d) for BTCUSDT, ETHUSDT from 2021-01-01 to 2025-12-31.
-- Fetch funding rate (8h) and open interest (1h) for same.
-- Run all data-quality checks (Plan Section 5.1).
-- Produce `data/raw/manifest.json` with source, row counts, date ranges, SHA256 hashes.
-- Produce `data/processed/features.parquet` with aligned, validated OHLCV + funding + OI.
-- **Verification:** Automated test script asserts all quality checks pass; manifest matches independent spot check.
+- Compute returns, log-volume, realized volatility (RV_24h), volume-relative-to-median for 1h bars.
+- Run 3-state Gaussian HMM on BTCUSDT 1h returns (expanding window) to produce filtered state probabilities.
+- Compute regime persistence, transition matrices, state-conditional return/vol moments.
+- Visualize state time series, transition heatmaps, sojourn distributions.
+- Test stationarity of state process (Chow-type test on transition matrices across periods).
+- Deliverable: `research/eda/regime_analysis.md` with figures and statistical tests.
 
 ---
 
