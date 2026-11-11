@@ -5,6 +5,7 @@
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
 **Updated:** 2026-11-11 (session: twenty-fourth verification — prior task read and completed; AGENTS.md, MARKOV_RESEARCH_PROMPT.md, handoff, final_decision_report.md, AGENT_STOP, holdout refusal, and full tests independently re-verified in this environment; handoff and next-agent message updated)
+**This session:** independently re-verified — `AGENT_STOP` present, working tree clean, `PYTHONPATH=. python -m pytest -q` → **145 passed in 44.82s**; next-agent message present and unchanged below.
 
 ## Mission
 
