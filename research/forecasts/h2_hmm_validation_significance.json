@@ -1,0 +1,123 @@
+{
+  "t4_config": {
+    "refit_every": 720,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "eval_stride": 4,
+    "train_end": "2023-12-31 00:00:00+00:00",
+    "val_start": "2024-01-01 00:00:00+00:00",
+    "val_end": "2024-06-30 00:00:00+00:00",
+    "holdout_start": "2024-07-01 00:00:00+00:00"
+  },
+  "bootstrap_results": [
+    {
+      "metric": "log_score",
+      "comparison": "hmm_vs_unc",
+      "mean_difference": 0.1517661626145668,
+      "median_difference": 0.15939805272731045,
+      "ci_lower": 0.11039314673953188,
+      "ci_upper": 0.19064022846718126,
+      "confidence_level": 0.95,
+      "p_value_two_sided": 0.0,
+      "effective_sample_size": 677,
+      "original_n": 1087,
+      "block_length": 10.281974316354445,
+      "n_bootstrap": 2000,
+      "significant_at_05": true,
+      "direction": "HMM better"
+    },
+    {
+      "metric": "log_score",
+      "comparison": "hmm_vs_ewma",
+      "mean_difference": 0.019952364198261324,
+      "median_difference": -0.06793774612187686,
+      "ci_lower": -0.02925598057625627,
+      "ci_upper": 0.07277252884342217,
+      "confidence_level": 0.95,
+      "p_value_two_sided": 0.4365,
+      "effective_sample_size": 1170,
+      "original_n": 1087,
+      "block_length": 10.281974316354445,
+      "n_bootstrap": 2000,
+      "significant_at_05": false,
+      "direction": "HMM better"
+    },
+    {
+      "metric": "crps",
+      "comparison": "hmm_vs_unc",
+      "mean_difference": 0.00017759016070691312,
+      "median_difference": 0.00018505684280166034,
+      "ci_lower": 0.00013424710053034383,
+      "ci_upper": 0.0002193697620441387,
+      "confidence_level": 0.95,
+      "p_value_two_sided": 0.0,
+      "effective_sample_size": 576,
+      "original_n": 1087,
+      "block_length": 10.281974316354445,
+      "n_bootstrap": 2000,
+      "significant_at_05": true,
+      "direction": "HMM better"
+    },
+    {
+      "metric": "crps",
+      "comparison": "hmm_vs_ewma",
+      "mean_difference": -4.5428405060322326e-05,
+      "median_difference": -5.331892820766232e-05,
+      "ci_lower": -7.625504525000701e-05,
+      "ci_upper": -1.200835352189997e-05,
+      "confidence_level": 0.95,
+      "p_value_two_sided": 0.006,
+      "effective_sample_size": 633,
+      "original_n": 1087,
+      "block_length": 10.281974316354445,
+      "n_bootstrap": 2000,
+      "significant_at_05": true,
+      "direction": "Baseline better"
+    }
+  ],
+  "sensitivity_check": {
+    "sensitivity_config": {
+      "refit_every": 1440,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "eval_stride": 8,
+      "val_start": "2024-01-01 00:00:00+00:00",
+      "val_end": "2024-03-31 00:00:00+00:00"
+    },
+    "main_config_on_same_window": {
+      "refit_every": 720,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "eval_stride": 4,
+      "val_start": "2024-01-01 00:00:00+00:00",
+      "val_end": "2024-03-31 00:00:00+00:00"
+    },
+    "metrics_main_config": {
+      "log_score_hmm": 3.9241605103877046,
+      "crps_hmm": 0.0028484496163307324,
+      "n_forecasts": 541,
+      "n_refits": 4
+    },
+    "metrics_sensitivity_config": {
+      "log_score_hmm": 3.8652222395769447,
+      "crps_hmm": 0.0029951783259392867,
+      "n_forecasts": 271,
+      "n_refits": 2
+    },
+    "deltas": {
+      "log_score_delta": -0.058938270810759974,
+      "crps_delta": 0.00014672870960855426
+    },
+    "note": "Sensitivity check on first half of validation window (Jan-Mar 2024) with coarser stride and less frequent refitting. Not tuned on holdout."
+  },
+  "generated": "2026-11-11T01:52:01.709518+00:00"
+}

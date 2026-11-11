@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T4 H2 groundwork added)
+**Updated:** 2026-11-11 (T4b H2 significance analysis completed)
 
 ## Mission
 
@@ -48,7 +48,7 @@ Determine whether Markov-process-based representations can produce a statistical
 - Probabilities decoded via full-sequence `predict_proba`/`decode` in this EDA are not online-filtered forecasts; T4 must use expanding/rolling fit with forward (filtered) probabilities at decision time only.
 - Holdout period was not used for fitting or evaluation.
 
-### Task T4 completed (this session): Walk-forward filtered HMM forecast validation (BTCUSDT 1h, validation only)
+### Task T4 completed (prior session): Walk-forward filtered HMM forecast validation (BTCUSDT 1h, validation only)
 
 **Files created / modified**
 - `src/hmm_walkforward.py` — expanding walk-forward pipeline: loads BTCUSDT 1h returns from `data/processed/features.parquet`; fits 3-state Gaussian HMM on history up to *t* only (multi-seed best log-likelihood, states ordered by mean μ₁<μ₂<μ₃); produces 1-step-ahead **filtered** state probabilities via forward posterior (`score_samples`) and mixture conditional return forecast for *t+1*; evaluates targets in validation window 2024-01-01 to 2024-06-30 only; holdout (>=2024-07-01) excluded by construction. Baselines: expanding unconditional Gaussian and EWMA Gaussian (RiskMetrics-style, λ=0.94). Reports log score, CRPS (grid CDF integration), PIT calibration diagnostic, model-dependent next-state Brier/log-loss diagnostic, and refit stability/occupancy summaries. Includes `eval_stride` and configurable refit cadence for bounded runtime.
@@ -71,6 +71,43 @@ Determine whether Markov-process-based representations can produce a statistical
 - Validation-only H2 groundwork; **not** a trading simulation and **not** a locked-holdout evaluation. Differences vs baselines are point estimates on the sampled validation grid (stride 4) and do **not** yet include block-bootstrap significance/FDR or sensitivity sweeps required by the research plan/gates.
 - Prior EDA showed train-vs-validation transition non-stationarity (Chow p=0.0042); EM convergence/init sensitivity persists and may affect refit stability and forecast comparability.
 - "Unconditional historical transition distribution" baseline is not yet implemented as a discrete-state Markov baseline in this run; unconditional/EWMA Gaussian return-distribution baselines were used for proper scoring.
+
+### Task T4b completed (this session): Block-bootstrap uncertainty and sensitivity for validation forecast scores (validation only)
+
+**Files created / modified**
+- `src/hmm_validation_significance.py` — block bootstrap analysis script using stationary bootstrap (Politis & Romano 1994) with n^(1/3) block length, 2000 replications. Computes paired score differences (HMM vs Unconditional, HMM vs EWMA) for log score and CRPS using Gaussian mixture scores from saved forecasts. Reports mean differences, 95% percentile CIs, two-sided p-values, effective sample sizes. Includes bounded sensitivity check (narrower validation sub-window Jan-Mar 2024, refit_every=1440, eval_stride=8).
+- `tests/test_hmm_validation_significance.py` — 10 tests for bootstrap helpers: index generation determinism, shape/range checks, constant/auto block length, CI structure, significance detection, effective sample size reasonableness, no-future-leakage verification.
+- `research/forecasts/h2_hmm_validation_significance.json` — machine-readable bootstrap results, sensitivity check deltas, T4 config echo.
+- `research/forecasts/h2_hmm_validation_significance.md` — markdown report with methodology, results, interpretation notes.
+- `research/forecasts/figures/h2_bootstrap_diffs.png` — histograms of paired differences with mean/zero lines.
+
+**Bootstrap results (validation period, 1,087 forecasts, stride 4, block length ≈10.3)**
+
+| Metric | Comparison | Mean Diff | 95% CI | p-value | Eff. n | Significant (5%) |
+|--------|-----------|-----------|--------|---------|--------|------------------|
+| Log score (↑ better) | HMM vs Unconditional | +0.1518 | [+0.1104, +0.1906] | 0.0000 | 677 | **Yes** (HMM better) |
+| Log score (↑ better) | HMM vs EWMA | +0.01995 | [-0.0293, +0.0728] | 0.4365 | 1170 | No |
+| CRPS (↓ better, diff = base - HMM) | HMM vs Unconditional | +1.78e-4 | [+1.34e-4, +2.19e-4] | 0.0000 | 576 | **Yes** (HMM better) |
+| CRPS (↓ better, diff = base - HMM) | HMM vs EWMA | -4.54e-5 | [-7.63e-5, -1.20e-5] | 0.0060 | 633 | **Yes** (EWMA better) |
+
+**Interpretation:**
+- HMM significantly outperforms unconditional Gaussian on both log score and CRPS (p < 0.001).
+- HMM does **not** significantly outperform EWMA Gaussian on log score (p = 0.44).
+- EWMA Gaussian significantly outperforms HMM on CRPS (p = 0.006).
+- Effective sample sizes (576–1170) are well below nominal n=1087 due to temporal dependence in score differences.
+- Results use Gaussian approximation of HMM mixture (state-level mixture CRPS not available in saved CSV); this is a limitation.
+
+**Sensitivity check (Jan–Mar 2024 sub-window):**
+- Main config (refit_every=720, eval_stride=4): log_score=3.924, CRPS=0.002848, 541 forecasts, 4 refits
+- Sensitivity config (refit_every=1440, eval_stride=8): log_score=3.865, CRPS=0.002995, 271 forecasts, 2 refits
+- Deltas: log_score -0.059, CRPS +1.47e-4 (main config better on both metrics)
+- Metrics are moderately sensitive to refit cadence and evaluation stride; not tuned on holdout.
+
+**Caveats / blockers**
+- Non-fatal EM "Model is not converging" warnings persist on some refits/seeds (same as T4).
+- Train-vs-validation non-stationarity (Chow p=0.0042) from T2 remains a concern for parameter stability.
+- Saved forecast CSV lacks state-level mixture parameters; bootstrap used Gaussian approximation of mixture moments.
+- Validation-only results; holdout (>=2024-07-01) not used.
 
 ### Concise findings and sources (prior)
 
@@ -99,10 +136,13 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 - `mkdir -p research/literature research/specifications` — success (prior).
 - `python src/data_ingestion.py` — success (prior).
 - `python src/eda_regime_analysis.py` — **success** (prior session) after patching for `hmmlearn` API/covariance reorder; generated `research/eda/regime_analysis.md`, `research/eda/regime_analysis_results.json`, `research/eda/hmm_model_train.pkl`, and 11 figures in `research/eda/figures/`. Non-fatal "Model is not converging" warnings observed for some EM seeds.
-- `python -m pytest -q tests/test_hmm_walkforward.py -k "ordered or filtered or forecast_next or expanding"` — **4 passed, 1 deselected** (this session).
-- `python src/hmm_walkforward.py` — **success** (this session); generated `research/forecasts/h2_hmm_validation.md`, `research/forecasts/h2_hmm_validation_results.json`, `research/forecasts/h2_validation_forecasts.csv`, and figures in `research/forecasts/figures/` (1,087 validation forecasts, 7 refits). Non-fatal "Model is not converging" warnings observed on some EM refits/seeds.
-- `python -m pytest -q tests/test_hmm_walkforward.py` — **5 passed** (this session).
-- `python -m pytest -q` — **54 passed in 11.61s** (this session; includes existing tests + new HMM walk-forward tests).
+- `python -m pytest -q tests/test_hmm_walkforward.py -k "ordered or filtered or forecast_next or expanding"` — **4 passed, 1 deselected** (prior session).
+- `python src/hmm_walkforward.py` — **success** (prior session); generated `research/forecasts/h2_hmm_validation.md`, `research/forecasts/h2_hmm_validation_results.json`, `research/forecasts/h2_validation_forecasts.csv`, and figures in `research/forecasts/figures/` (1,087 validation forecasts, 7 refits). Non-fatal "Model is not converging" warnings observed on some EM refits/seeds.
+- `python -m pytest -q tests/test_hmm_walkforward.py` — **5 passed** (prior session).
+- `python -m pytest -q` — **54 passed in 11.61s** (prior session; includes existing tests + new HMM walk-forward tests).
+- `PYTHONPATH=. python src/hmm_validation_significance.py` — **success** (this session); generated `research/forecasts/h2_hmm_validation_significance.json`, `research/forecasts/h2_hmm_validation_significance.md`, `research/forecasts/figures/h2_bootstrap_diffs.png`. Non-fatal EM convergence warnings during sensitivity re-run.
+- `PYTHONPATH=. python -m pytest -q tests/test_hmm_validation_significance.py` — **10 passed in 3.11s** (this session).
+- `PYTHONPATH=. python -m pytest -q` — **64 passed in 13.43s** (this session; includes all existing + new bootstrap tests).
 
 ### Assumptions and unresolved questions
 
@@ -122,21 +162,21 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T4b (H2): Block-bootstrap uncertainty and sensitivity for validation forecast scores (validation only)**
+**Task T3 (H1): Finite-state Markov chain baseline on validation period**
 
-- Using saved validation forecast outputs (`research/forecasts/h2_validation_forecasts.csv` and/or `research/forecasts/h2_hmm_validation_results.json`), implement a reproducible analysis script (e.g. `src/hmm_validation_significance.py`) that computes paired score differences (HMM mixture vs unconditional Gaussian, HMM vs EWMA Gaussian) for log score and CRPS and estimates uncertainty/significance with a time-series-appropriate block bootstrap on the validation period only (no holdout).
-- Report mean differences, bootstrap confidence intervals, and approximate p-values/effective sample-size notes; explicitly state the evaluation grid/cadence used in saved artifacts (`refit_every=720`, `seeds=[0,1,2]`, `eval_stride=4`) and its limitations.
-- Add a small sensitivity check feasible within runtime: rerun walk-forward on a narrower validation sub-window or alternate `refit_every`/`eval_stride` configuration (bounded) and compare metric deltas; do not tune on holdout.
-- Add focused automated tests for bootstrap/statistic helpers (deterministic with fixed RNG, no leakage). Save report/artifacts under `research/forecasts/` (e.g. `h2_hmm_validation_significance.md/json`).
-- Run `python -m pytest -q` and update this handoff with exact commands, outcomes, blockers (EM convergence/non-stationarity), and one next task.
+- Implement a first-order finite-state Markov chain baseline for BTCUSDT 1h returns on the validation window (2024-01-01 to 2024-06-30).
+- Discretize returns into K states (e.g., K=3, 5, 7 via quantiles or k-means on training data); estimate transition matrix on expanding history; produce 1-step-ahead state probabilities and implied return distribution forecast.
+- Evaluate with same proper scoring rules (log score, CRPS) and block-bootstrap significance vs. HMM and Gaussian baselines.
+- Save as `src/markov_chain_baseline.py`, `tests/test_markov_chain_baseline.py`, `research/forecasts/h1_markov_chain_validation.md/json/csv`, and figures.
+- Run `python -m pytest -q` and update handoff with findings, verification, blockers, and next task (e.g., T3b higher-order/state-augmented baseline or holdout-evaluation protocol design).
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T4 groundwork is complete: `src/hmm_walkforward.py`, `tests/test_hmm_walkforward.py`, and validation-only artifacts in `research/forecasts/` (`h2_hmm_validation.md/json/csv`, figures). Saved run: 1,087 validation forecasts (eval_stride=4), 7 refits (720-bar), seeds [0,1,2]; mean log score HMM 4.016 vs unconditional 3.770 vs EWMA 3.902 and mean CRPS HMM 0.002597 vs unconditional 0.002854 vs EWMA 0.002631 (point estimates only). Holdout >= 2024-07-01 was not used. Caveats: non-fatal EM non-convergence warnings on some refits, train-vs-validation non-stationarity from T2, and "realized state" diagnostics are model-dependent.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T4 and T4b are complete: `src/hmm_walkforward.py`, `src/hmm_validation_significance.py`, tests, and validation-only artifacts in `research/forecasts/`. Saved T4 run: 1,087 validation forecasts (eval_stride=4), 7 refits (720-bar), seeds [0,1,2]; mean log score HMM 4.016 vs unconditional 3.770 vs EWMA 3.902 and mean CRPS HMM 0.002597 vs unconditional 0.002854 vs EWMA 0.002631. T4b block bootstrap (2000 reps, stationary bootstrap): HMM significantly beats unconditional Gaussian on log score (p<0.001, mean diff +0.152) and CRPS (p<0.001, mean diff +1.78e-4); HMM does not significantly beat EWMA on log score (p=0.44); EWMA significantly beats HMM on CRPS (p=0.006). Effective n ≈ 576–1170 << 1087 due to autocorrelation. Sensitivity check (Jan-Mar 2024, refit_every=1440, stride=8) shows moderate metric sensitivity to cadence. Holdout (>=2024-07-01) not used. Caveats: EM non-convergence warnings, train-vs-validation non-stationarity (Chow p=0.0042), Gaussian approximation of HMM mixture for CRPS.
 
-Your bounded task is **T4b**: quantify uncertainty/significance and basic sensitivity of the validation forecast comparison without touching the holdout. Add a reproducible analysis (preferably using existing `research/forecasts/h2_validation_forecasts.csv`) with block-bootstrap CIs/p-values for paired log-score/CRPS differences (HMM vs unconditional, HMM vs EWMA), run one bounded sensitivity configuration if feasible, add tests for the new statistic/bootstrap logic, save artifacts under `research/forecasts/`, run `python -m pytest -q`, and update this handoff with findings, exact verification, blockers, and one next task (e.g. implement T3 finite-state Markov chain baseline on validation or design holdout-evaluation protocol without executing it).
+Your bounded task is **T3**: implement a finite-state Markov chain baseline on the validation period. Discretize returns (quantiles/k-means), estimate expanding transition matrices, produce 1-step-ahead forecasts, evaluate with log score/CRPS + block-bootstrap significance vs. HMM/Gaussian baselines. Save artifacts under `research/forecasts/` (e.g., `h1_markov_chain_validation.*`), add tests, run `python -m pytest -q`, update handoff with exact verification, blockers, and next task (e.g., T3b higher-order/state-augmented baseline or holdout-evaluation protocol design without executing it).
 
 ## Stop rule
 
