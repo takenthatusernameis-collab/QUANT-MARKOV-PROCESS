@@ -1,10 +1,10 @@
 # Agent handoff
 
 **Repository:** `takenthatusernameis-collab/QUANT-MARKOV-PROCESS`
-**Branch:** `main` @ `3ea3e76` (working tree clean at verification)
+**Branch:** `main` @ `4562bf5` (clean at verification)
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-11 (session: twenty-third verification — prior task read and completed; AGENTS.md, MARKOV_RESEARCH_PROMPT.md, handoff, final_decision_report.md, AGENT_STOP, holdout refusal, and full tests independently re-verified in this environment; handoff and next-agent message updated)
+**Updated:** 2026-11-11 (session: twenty-fourth verification — prior task read and completed; AGENTS.md, MARKOV_RESEARCH_PROMPT.md, handoff, final_decision_report.md, AGENT_STOP, holdout refusal, and full tests independently re-verified in this environment; handoff and next-agent message updated)
 
 ## Mission
 
@@ -37,17 +37,17 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-11, twenty-third verification)
+## Current session (2026-11-11, twenty-fourth verification)
 
 **Task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent."
 
 **Actions taken (independently re-verified in this environment):**
 - Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`.
-- Confirmed prior durable task/cycle closure (T5d-robustness-c, decision `RESEARCH_MORE`) complete with required artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, negative controls, period/ETH perturbations, economic dry-run, holdout protocol/runner/tests).
+- Confirmed prior durable task/cycle closure (T5d-robustness-c, decision `RESEARCH_MORE`) complete with required artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, holdout protocol/manifest, economic dry-run, robustness artifacts).
 - `AGENT_STOP` present (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized).
 - Holdout enforcement: `PYTHONPATH=. python src/holdout_runner.py` → **refused by default, EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
-- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 44.55s**.
-- Git state: `main` @ `4562bf5` (working tree clean at verification; commit/push handled by workflow controller, not this agent).
+- Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 45.37s**.
+- Git state: `main...origin/main` @ `4562bf5` (working tree clean at verification; commit/push handled by workflow controller, not this agent).
 
 **Result:** Prior task already complete; cycle remains `COMPLETE` / `RESEARCH_MORE`. Handoff updated and a clear initial task message recorded below. No new research task started.
 
@@ -79,7 +79,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-11, `main` @ `4562bf5`):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts present; decision documented in `research/final_decision_report.md`. `AGENT_STOP` exists (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed (44.55s)**. `data/` and deps are present in this environment; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` first (without `data/`, tests fail with `FileNotFoundError`).
+**Repo state (re-verified 2026-11-11, `main` @ `4562bf5`):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts present; decision documented in `research/final_decision_report.md`. `AGENT_STOP` exists (reason: validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default: `PYTHONPATH=. python src/holdout_runner.py` → **EXIT 2** (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Full tests pass: `PYTHONPATH=. python -m pytest -q` → **145 passed (45.37s)**. `data/` and deps are present in this environment; if a future sandbox is bare, run `pip install -r requirements.txt hmmlearn` and `PYTHONPATH=. python src/data_ingestion.py` first (without `data/`, tests fail with `FileNotFoundError`).
 
 **Task:** **None while `AGENT_STOP` exists.** Do not start autonomous work.
 
