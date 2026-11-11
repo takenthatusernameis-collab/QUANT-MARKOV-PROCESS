@@ -1,0 +1,53 @@
+{
+  "configs": [
+    {
+      "n_states": 3,
+      "discretization": "quantile",
+      "validation_forecasts": 1087,
+      "refits": 6,
+      "log_score": 3.789236082919075,
+      "crps": 0.002754688712748384
+    },
+    {
+      "n_states": 5,
+      "discretization": "quantile",
+      "validation_forecasts": 1087,
+      "refits": 6,
+      "log_score": 3.839049125606558,
+      "crps": 0.002684785785067295
+    },
+    {
+      "n_states": 7,
+      "discretization": "quantile",
+      "validation_forecasts": 1087,
+      "refits": 6,
+      "log_score": 3.85692996286357,
+      "crps": 0.0026831201931152193
+    },
+    {
+      "n_states": 3,
+      "discretization": "kmeans",
+      "validation_forecasts": 1087,
+      "refits": 6,
+      "log_score": 3.9318900671745634,
+      "crps": 0.002653991936848187
+    },
+    {
+      "n_states": 5,
+      "discretization": "kmeans",
+      "validation_forecasts": 1087,
+      "refits": 6,
+      "log_score": 3.921701136933638,
+      "crps": 0.0026768428259822314
+    },
+    {
+      "n_states": 7,
+      "discretization": "kmeans",
+      "validation_forecasts": 1087,
+      "refits": 6,
+      "log_score": 3.9012472635258195,
+      "crps": 0.0026723841923195595
+    }
+  ],
+  "generated": "2026-11-11T01:58:07.981867+00:00"
+}
