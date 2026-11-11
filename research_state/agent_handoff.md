@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11
+**Updated:** 2026-11-11 (T4 H2 groundwork added)
 
 ## Mission
 
@@ -21,7 +21,7 @@ Determine whether Markov-process-based representations can produce a statistical
 5. `data/raw/manifest.json` — 10 entries with SHA256 hashes, row counts, date ranges, source URLs.
 6. `data/processed/features.parquet` — 87,648 rows aligned to 1h base frequency with OHLCV, funding rate, and derived features.
 
-### Task T2 completed (this session): EDA & regime labeling (BTCUSDT 1h)
+### Task T2 completed (prior session): EDA & regime labeling (BTCUSDT 1h)
 
 **Files created / modified**
 - `src/eda_regime_analysis.py` — fixed for installed `hmmlearn` API (log-likelihood extraction via `model.score`, diagonal-covariance reorder via internal `_covars_`, robust std/log-likelihood reporting) and clarified that the plotted diagnostic is a posterior-vs-MAP proxy (not a true online filtered-vs-smoothed gap). Script now runs end-to-end on `data/processed/features.parquet`.
@@ -47,6 +47,30 @@ Determine whether Markov-process-based representations can produce a statistical
 - `hmmlearn` EM runs emitted "Model is not converging" warnings for some seeds; best-seed selection used. Convergence sensitivity and initialization robustness remain open (relevant to A4).
 - Probabilities decoded via full-sequence `predict_proba`/`decode` in this EDA are not online-filtered forecasts; T4 must use expanding/rolling fit with forward (filtered) probabilities at decision time only.
 - Holdout period was not used for fitting or evaluation.
+
+### Task T4 completed (this session): Walk-forward filtered HMM forecast validation (BTCUSDT 1h, validation only)
+
+**Files created / modified**
+- `src/hmm_walkforward.py` — expanding walk-forward pipeline: loads BTCUSDT 1h returns from `data/processed/features.parquet`; fits 3-state Gaussian HMM on history up to *t* only (multi-seed best log-likelihood, states ordered by mean μ₁<μ₂<μ₃); produces 1-step-ahead **filtered** state probabilities via forward posterior (`score_samples`) and mixture conditional return forecast for *t+1*; evaluates targets in validation window 2024-01-01 to 2024-06-30 only; holdout (>=2024-07-01) excluded by construction. Baselines: expanding unconditional Gaussian and EWMA Gaussian (RiskMetrics-style, λ=0.94). Reports log score, CRPS (grid CDF integration), PIT calibration diagnostic, model-dependent next-state Brier/log-loss diagnostic, and refit stability/occupancy summaries. Includes `eval_stride` and configurable refit cadence for bounded runtime.
+- `tests/test_hmm_walkforward.py` — tests for ordered state means, filtered posterior simplex/shape, one-step transition forecast consistency, expanding-baseline no-future behavior, and validation-only/no-holdout leakage with bounded runtime config.
+- `research/forecasts/h2_hmm_validation.md` — validation report (scope/leakage controls, metrics, baselines, refit stability, caveats).
+- `research/forecasts/h2_hmm_validation_results.json` — machine-readable config, metrics, refit records, and samples.
+- `research/forecasts/h2_validation_forecasts.csv` — per-forecast rows (timestamps, realized returns, HMM state probs, HMM/unc/EWMA moments).
+- `research/forecasts/figures/h2_next_state_probs.png`, `research/forecasts/figures/h2_pit_hist.png`.
+
+**Bounded run configuration used for saved artifacts** (runtime/convergence tradeoff; not holdout-tuned): `refit_every=720`, `seeds=[0,1,2]`, `eval_stride=4` over validation targets. EM emitted non-fatal "Model is not converging" warnings on some refits/seeds; best-seed selection by training log-likelihood applied per refit.
+
+**Validation metrics (1,087 scored forecasts, 7 refits)**
+- Log score mean (higher better): HMM mixture 4.01643 vs unconditional Gaussian 3.77038 vs EWMA Gaussian 3.90220.
+- CRPS mean (lower better): HMM mixture 0.00259686 vs unconditional Gaussian 0.00285362 vs EWMA Gaussian 0.00263060.
+- HMM PIT mean/std: 0.5105 / 0.2697 (uniform ideal ~0.5 / 0.289).
+- Model-dependent next-state diagnostic (argmax filtered prob at *t+1* under refit model, not ground truth): Brier 0.22934, log loss 0.42197.
+- Refit occupancy proxy mean [S0,S1,S2]=[0.0882, 0.4852, 0.4267] with small std across refits; state means varied modestly across refits (see JSON/report).
+
+**Caveats / interpretation**
+- Validation-only H2 groundwork; **not** a trading simulation and **not** a locked-holdout evaluation. Differences vs baselines are point estimates on the sampled validation grid (stride 4) and do **not** yet include block-bootstrap significance/FDR or sensitivity sweeps required by the research plan/gates.
+- Prior EDA showed train-vs-validation transition non-stationarity (Chow p=0.0042); EM convergence/init sensitivity persists and may affect refit stability and forecast comparability.
+- "Unconditional historical transition distribution" baseline is not yet implemented as a discrete-state Markov baseline in this run; unconditional/EWMA Gaussian return-distribution baselines were used for proper scoring.
 
 ### Concise findings and sources (prior)
 
@@ -74,8 +98,11 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 - `mkdir -p research/literature research/specifications` — success (prior).
 - `python src/data_ingestion.py` — success (prior).
-- `python src/eda_regime_analysis.py` — **success** (this session) after patching `src/eda_regime_analysis.py` for `hmmlearn` API/covariance reorder; generated `research/eda/regime_analysis.md`, `research/eda/regime_analysis_results.json`, `research/eda/hmm_model_train.pkl`, and 11 figures in `research/eda/figures/`. Non-fatal "Model is not converging" warnings observed for some EM seeds.
-- `python -m pytest -q` — **49 passed in 1.12s** (this session; includes existing `tests/test_data_ingestion.py`).
+- `python src/eda_regime_analysis.py` — **success** (prior session) after patching for `hmmlearn` API/covariance reorder; generated `research/eda/regime_analysis.md`, `research/eda/regime_analysis_results.json`, `research/eda/hmm_model_train.pkl`, and 11 figures in `research/eda/figures/`. Non-fatal "Model is not converging" warnings observed for some EM seeds.
+- `python -m pytest -q tests/test_hmm_walkforward.py -k "ordered or filtered or forecast_next or expanding"` — **4 passed, 1 deselected** (this session).
+- `python src/hmm_walkforward.py` — **success** (this session); generated `research/forecasts/h2_hmm_validation.md`, `research/forecasts/h2_hmm_validation_results.json`, `research/forecasts/h2_validation_forecasts.csv`, and figures in `research/forecasts/figures/` (1,087 validation forecasts, 7 refits). Non-fatal "Model is not converging" warnings observed on some EM refits/seeds.
+- `python -m pytest -q tests/test_hmm_walkforward.py` — **5 passed** (this session).
+- `python -m pytest -q` — **54 passed in 11.61s** (this session; includes existing tests + new HMM walk-forward tests).
 
 ### Assumptions and unresolved questions
 
@@ -95,21 +122,21 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T4 (H2 groundwork): Walk-forward filtered HMM forecast validation on BTCUSDT 1h (validation period only)**
+**Task T4b (H2): Block-bootstrap uncertainty and sensitivity for validation forecast scores (validation only)**
 
-- Implement a reproducible expanding (or rolling) walk-forward pipeline in `src/` that, at each re-estimation step, fits a 3-state Gaussian HMM on training data only (respecting regime ID constraint μ₁<μ₂<μ₃), computes **forward/filtered** 1-step-ahead state probabilities and conditional next-return distribution forecasts for BTCUSDT 1h, and records outputs on the **validation** window (2024-01-01 to 2024-06-30). Do **not** touch the locked holdout (2024-07-01 onward) for model selection or evaluation.
-- Compare against simple baselines on validation: unconditional historical transition/return distribution and a single-regime rolling/GARCH-like volatility baseline as feasible (document exact baseline definitions).
-- Report calibration/discrimination metrics relevant to H2 (e.g., state-probability calibration/Brier/log-loss where applicable; CRPS/log-score or comparable for conditional return distribution), regime stability/occupancy across refits, and note sensitivity to re-estimation cadence/seeds.
-- Add focused automated tests for the walk-forward/forecast logic (no leakage, filtered-not-smoothed usage, deterministic shapes given fixtures).
-- Deliverables: `src/hmm_walkforward.py` (or similar), `research/forecasts/h2_hmm_validation.md`, results/figures/json under `research/forecasts/`, and updated handoff with exact commands and outcomes.
+- Using saved validation forecast outputs (`research/forecasts/h2_validation_forecasts.csv` and/or `research/forecasts/h2_hmm_validation_results.json`), implement a reproducible analysis script (e.g. `src/hmm_validation_significance.py`) that computes paired score differences (HMM mixture vs unconditional Gaussian, HMM vs EWMA Gaussian) for log score and CRPS and estimates uncertainty/significance with a time-series-appropriate block bootstrap on the validation period only (no holdout).
+- Report mean differences, bootstrap confidence intervals, and approximate p-values/effective sample-size notes; explicitly state the evaluation grid/cadence used in saved artifacts (`refit_every=720`, `seeds=[0,1,2]`, `eval_stride=4`) and its limitations.
+- Add a small sensitivity check feasible within runtime: rerun walk-forward on a narrower validation sub-window or alternate `refit_every`/`eval_stride` configuration (bounded) and compare metric deltas; do not tune on holdout.
+- Add focused automated tests for bootstrap/statistic helpers (deterministic with fixed RNG, no leakage). Save report/artifacts under `research/forecasts/` (e.g. `h2_hmm_validation_significance.md/json`).
+- Run `python -m pytest -q` and update this handoff with exact commands, outcomes, blockers (EM convergence/non-stationarity), and one next task.
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T2 (BTCUSDT 1h EDA + 3-state Gaussian HMM regime labeling on training split) is complete: see `research/eda/regime_analysis.md`, `research/eda/regime_analysis_results.json`, and `research/eda/figures/`. Key caveats: training-vs-validation transition matrices are non-stationary (Chow p=0.0042) and the EDA used full-sequence posteriors (not true online filtered forecasts); `src/eda_regime_analysis.py` was patched to run with installed `hmmlearn`.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T4 groundwork is complete: `src/hmm_walkforward.py`, `tests/test_hmm_walkforward.py`, and validation-only artifacts in `research/forecasts/` (`h2_hmm_validation.md/json/csv`, figures). Saved run: 1,087 validation forecasts (eval_stride=4), 7 refits (720-bar), seeds [0,1,2]; mean log score HMM 4.016 vs unconditional 3.770 vs EWMA 3.902 and mean CRPS HMM 0.002597 vs unconditional 0.002854 vs EWMA 0.002631 (point estimates only). Holdout >= 2024-07-01 was not used. Caveats: non-fatal EM non-convergence warnings on some refits, train-vs-validation non-stationarity from T2, and "realized state" diagnostics are model-dependent.
 
-Your bounded task is **T4 (H2 groundwork): walk-forward filtered HMM forecast validation on the validation period only**. Build `src/hmm_walkforward.py` (or equivalent) to refit on expanding/rolling training data only, produce 1-step-ahead **filtered** state probabilities and conditional return forecasts for BTCUSDT 1h over 2024-01-01–2024-06-30, and compare to predeclared simple baselines with proper scoring/calibration metrics. Do not use the holdout (>=2024-07-01) for tuning/evaluation. Add tests, save artifacts under `research/forecasts/`, run `python -m pytest -q`, then update this handoff with findings, exact verification, blockers (e.g., non-stationarity/refit instability), and one next task.
+Your bounded task is **T4b**: quantify uncertainty/significance and basic sensitivity of the validation forecast comparison without touching the holdout. Add a reproducible analysis (preferably using existing `research/forecasts/h2_validation_forecasts.csv`) with block-bootstrap CIs/p-values for paired log-score/CRPS differences (HMM vs unconditional, HMM vs EWMA), run one bounded sensitivity configuration if feasible, add tests for the new statistic/bootstrap logic, save artifacts under `research/forecasts/`, run `python -m pytest -q`, and update this handoff with findings, exact verification, blockers, and one next task (e.g. implement T3 finite-state Markov chain baseline on validation or design holdout-evaluation protocol without executing it).
 
 ## Stop rule
 
