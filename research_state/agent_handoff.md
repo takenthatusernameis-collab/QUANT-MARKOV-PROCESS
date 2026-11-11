@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; T5d cross-family validation memo + ETHUSDT asset-perturbation robustness completed; **no holdout evaluation executed**)
+**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; T5d cross-family validation memo + ETHUSDT asset-perturbation robustness + validation Q1/Q2 period perturbation (C1/C2) completed; **no holdout evaluation executed**)
 
 ## Mission
 
@@ -383,6 +383,27 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ---
 
+### Task T5d-robustness-b completed (this session): Validation period perturbation Q1 vs Q2 for C1/C2 (no holdout execution)
+
+**Files created**
+- `src/validation_period_perturbation.py` — validation-only robustness script on saved BTCUSDT 1h forecast grids (stride 4, 1,087 forecasts each): splits validation window into Q1 (2024-01-01 <= t < 2024-04-01, n=546) and Q2 (2024-04-01 <= t < 2024-07-01, n=541), computes Gaussian-moment log scores/CRPS for C1 (HMM, `h2_validation_forecasts.csv`) and C2 (HOM, `h3_higher_order_markov_validation.csv`) vs unconditional/EWMA baselines, and reports stationary block-bootstrap (n^(1/3), 2000 reps, fixed seeds) 95% CIs and two-sided p-values for mean scores and paired differences plus Q2−Q1 stability deltas. No holdout data used; no model tuning.
+- `tests/test_validation_period_perturbation.py` — 5 tests covering scoring helpers, stationary bootstrap indices/range, bootstrap CI sanity, Q1/Q2 split + score-frame behavior on saved HMM grid, and artifact/holdout-not-used assertions.
+- `research/forecasts/period_perturbation_q1q2.json` — machine-readable Q1/Q2 metrics, bootstrap summaries, and stability deltas for C1/C2.
+- `research/forecasts/period_perturbation_q1q2.md` — markdown report.
+
+**Key findings (validation-only, point estimates with bootstrap diagnostics)**
+- **C1/HMM:** Q1 log score 3.8505, CRPS 0.002899; Q2 log score 3.9945, CRPS 0.002451 (Q2 raw scores better). Paired-diff significance vs baselines is **period-unstable**: vs unconditional significant in Q1 (log +0.224, p=0.000; CRPS edge +2.26e-4, p=0.000) but not in Q2 (log +0.079, p=0.097; CRPS edge +1.29e-4, p=0.081); vs EWMA not significant on log in either period and EWMA significantly better on CRPS in Q1 (p=0.010) but not Q2 (p=0.233). Q2−Q1 edge deltas are negative vs both baselines on log/CRPS margins in this sample.
+- **C2/HOM:** Q1 log score 3.7185, CRPS 0.002931; Q2 log score 3.9997, CRPS 0.002442 (Q2 raw scores better). Does **not** significantly beat unconditional on log in either subperiod (Q1 p=0.165, Q2 p=0.051) though CRPS edge vs unconditional is significant in both; vs EWMA not significant on log and significantly worse on CRPS in Q1 (p=0.026) / not significant in Q2 (p=0.383).
+- **Interpretation:** Raw performance and relative edges vary materially between Q1 and Q2 on the sampled validation grid, consistent with prior train-vs-validation non-stationarity and cross-asset instability (ETHUSDT). Subperiod effective sample sizes are reduced; results are robustness diagnostics, not confirmatory/holdout evidence. Negative controls and any further perturbations remain relevant.
+
+**Commands/tests run and outcomes (this session)**
+- `PYTHONPATH=. python src/validation_period_perturbation.py` — **success**; wrote `research/forecasts/period_perturbation_q1q2.json` and `research/forecasts/period_perturbation_q1q2.md`.
+- `PYTHONPATH=. python -m pytest -q tests/test_validation_period_perturbation.py` → **5 passed in 0.48s**.
+- `PYTHONPATH=. python -m pytest -q` → **138 passed in 55.41s** (133 prior + 5 new).
+- No holdout executed. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
+
+---
+
 ### Concise findings and sources (prior)
 
 **Literature review** distinguishes six model families with primary references:
@@ -429,6 +450,10 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 - `PYTHONPATH=. python src/economic_simulation.py --theta 0.0 2.0 5.0 --notional-fraction 0.10` — **success** (this session); generated `research/economic/validation_dryrun/` artifacts.
 - `PYTHONPATH=. python -m pytest -q` — **110 passed in 29.70s** (this session; all tests including 25 new economic simulation tests).
 
+- `PYTHONPATH=. python src/validation_period_perturbation.py` — **success** (this session); generated `research/forecasts/period_perturbation_q1q2.json` and `research/forecasts/period_perturbation_q1q2.md`.
+- `PYTHONPATH=. python -m pytest -q tests/test_validation_period_perturbation.py` — **5 passed in 0.48s** (this session).
+- `PYTHONPATH=. python -m pytest -q` — **138 passed in 55.41s** (this session; 133 prior + 5 new period-perturbation tests).
+
 ---
 
 ### Assumptions and unresolved questions
@@ -455,7 +480,7 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
   - `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`
   This will generate protocol-complete artifacts under `research/forecasts/holdout/` and `research/economic/holdout/` (C1/C2 forecasts, bootstrap significance, B3–B5 baselines, cost/theta sensitivity, ledgers/returns, execution manifest, reports). After the run, write a concise gate decision report (`REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`) citing evidence, uncertainty, and protocol deviations (if any). Do not tune on holdout outcomes; do not rerun with changed configs.
 
-**If not explicitly authorized (default):** do **not** run the holdout. ETHUSDT asset-perturbation robustness is complete (see T5d robustness section). Remaining bounded validation-only, no-holdout-tuning options: (a) period perturbation on the validation grid (2024 Q1 vs Q2) for C1/C2; (b) negative controls (label-permutation / white-noise forecasts) for C1/C2; (c) holdout-report/figure helpers (PIT histograms, calibration plots) exercised only on synthetic fixtures/tests. Run `PYTHONPATH=. python -m pytest -q` and update handoff with exact files/commands/outcomes.
+**If not explicitly authorized (default):** do **not** run the holdout. Completed validation-only robustness so far: ETHUSDT asset perturbation (T5d) and BTCUSDT Q1 vs Q2 period perturbation for C1/C2 (`research/forecasts/period_perturbation_q1q2.*`, `src/validation_period_perturbation.py`). Remaining bounded validation-only, no-holdout-tuning options: (a) **negative controls** (e.g. label-permutation or white-noise/constant forecasts) for C1/C2 on the saved validation grids with bootstrap comparison to real forecasts/baselines; (b) **holdout-report/figure helpers** (PIT histograms, calibration/diagnostic plots) exercised only on synthetic fixtures/tests consistent with `src/holdout_runner.py` wiring. Pick one, run `PYTHONPATH=. python -m pytest -q`, and update handoff with exact files/commands/outcomes and a clear next-agent message.
 
 - Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition in §11/AGENTS is truly met.
 
@@ -465,11 +490,9 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff.
 
-**Completed this session:** ETHUSDT 1h asset-perturbation robustness check of the C1 filtered HMM on the validation grid (2024-01 to 2024-06, 1,087 forecasts, stride 4; holdout excluded). Generalized `src/hmm_walkforward.py` (`load_returns(symbol)`, `symbol` config field, backward-compat `load_btc_returns`), added `src/hmm_walkforward_ethusdt.py` and `tests/test_hmm_walkforward_ethusdt.py`, wrote ETHUSDT artifacts under `research/forecasts/h2_hmm_validation_ethusdt.{json,md,csv}` and `research/forecasts/figures/*ethusdt.png`. Cross-family validation memo (`research/forecasts/cross_family_validation_comparison.md`) already complete. All 133 tests pass.
+**Completed this session:** Validation-only period perturbation (Q1 vs Q2 2024) for C1 filtered HMM and C2 higher-order Markov on saved BTCUSDT 1h validation forecast grids (1,087 forecasts each, stride 4; holdout excluded). Added `src/validation_period_perturbation.py`, `tests/test_validation_period_perturbation.py`, and `research/forecasts/period_perturbation_q1q2.{json,md}`. Key result: raw scores improve Q1→Q2 for both models, but relative edges vs unconditional/EWMA are period-unstable (e.g. C1 significant vs unconditional in Q1 but not Q2 on log/CRPS; C1 worse than EWMA on CRPS in Q1 only), reinforcing non-stationarity/robustness concerns (consistent with ETHUSDT asset perturbation). `PYTHONPATH=. python -m pytest -q` → **138 passed**.
 
-**Key result:** On ETHUSDT the HMM beats both unconditional (log score 3.7865 vs 3.5308) and EWMA (3.6511) on log score point-estimate and is roughly tied with EWMA on CRPS (0.003252 vs 0.003260) — contrasting with BTCUSDT where HMM did not significantly beat EWMA on log score and EWMA won on CRPS. The HMM edge is not consistent across assets; reinforces non-stationarity/robustness concern.
-
-**Next task:** If explicitly authorized by the user with `--execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, execute the locked holdout via `src/holdout_runner.py --execute-holdout --protocol-hash <hash>` and write the gate decision report. Otherwise (default), perform remaining validation-only robustness checks (period perturbation 2024 Q1 vs Q2, negative controls label-permutation/white-noise, or holdout-report figure helpers on synthetic fixtures) and update the handoff. Do not run the holdout without explicit authorization. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition is met.
+**Next task:** If explicitly authorized by the user with `--execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, execute the locked holdout via `src/holdout_runner.py --execute-holdout --protocol-hash <hash>` and write the gate decision report. Otherwise (default), perform a remaining validation-only robustness check: (a) negative controls (label-permutation or white-noise forecasts) for C1/C2 with bootstrap comparison on saved validation grids, or (b) holdout-report/figure helpers exercised on synthetic fixtures/tests only. Do not run the holdout without explicit authorization. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition is met.
 
 ---
 
