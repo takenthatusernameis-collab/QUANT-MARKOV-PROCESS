@@ -74,15 +74,19 @@ class ForecastResult:
     ewma_crps: float = 0.0
 
 
-def load_btc_returns(path: Path = DATA_PATH) -> pd.DataFrame:
+def load_returns(symbol: str = "BTCUSDT", path: Path = DATA_PATH) -> pd.DataFrame:
     df = pd.read_parquet(path)
-    df = df[df["symbol"] == "BTCUSDT"].copy()
+    df = df[df["symbol"] == symbol].copy()
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
     df = df.sort_values("timestamp").reset_index(drop=True)
     # returns column exists; first is NaN
     df = df[["timestamp", "returns"]].copy()
     df = df.dropna(subset=["returns"]).reset_index(drop=True)
     return df
+
+
+def load_btc_returns(path: Path = DATA_PATH) -> pd.DataFrame:
+    return load_returns("BTCUSDT", path)
 
 
 def split_indices(df: pd.DataFrame) -> Dict[str, np.ndarray]:
@@ -285,6 +289,7 @@ def run_walkforward(
     val_start: pd.Timestamp = VAL_START,
     val_end: pd.Timestamp = VAL_END,
     eval_stride: int = 1,
+    symbol: str = "BTCUSDT",
 ) -> Dict:
     splits = split_indices(df)
     val_idx = [i for i in splits["val"] if val_start <= df.loc[i, "timestamp"] <= val_end]
@@ -373,7 +378,7 @@ def run_walkforward(
     stability = summarize_refits(refit_records)
     payload = {
         "config": {
-            "symbol": "BTCUSDT",
+            "symbol": symbol,
             "frequency": "1h",
             "n_states": N_STATES,
             "refit_every": int(refit_every),

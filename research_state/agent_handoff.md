@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; **no holdout evaluation executed**)
+**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; T5d cross-family validation memo + ETHUSDT asset-perturbation robustness completed; **no holdout evaluation executed**)
 
 ## Mission
 
@@ -358,6 +358,31 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ---
 
+### Task T5d robustness completed (this session): ETHUSDT 1h asset-perturbation validation (no holdout execution)
+
+**Files created / modified**
+- `src/hmm_walkforward.py` — generalized `load_btc_returns` into `load_returns(symbol="BTCUSDT")` with backward-compat wrapper; added `symbol` field to `run_walkforward` config payload (default "BTCUSDT", existing BTC artifacts/tests unaffected).
+- `src/hmm_walkforward_ethusdt.py` — ETHUSDT 1h walk-forward filtered HMM forecast validation driver: bounded config (refit_every=720, seeds=(0,1,2), eval_stride=4), validation window 2024-01-01 to 2024-06-30 only, holdout (>=2024-07-01) excluded by construction, no holdout tuning. Writes ETHUSDT-named artifacts.
+- `tests/test_hmm_walkforward_ethusdt.py` — 4 tests: ETHUSDT symbol-only loading, backward-compat BTC loader, validation-only/no-holdout leakage + metrics + PIT range, expanding-history/no-future.
+- `research/forecasts/h2_hmm_validation_ethusdt.{json,md,csv}` — machine-readable config/metrics, markdown report, per-forecast rows (1,087 forecasts).
+- `research/forecasts/figures/h2_next_state_probs_ethusdt.png`, `h2_pit_hist_ethusdt.png`.
+
+**Run configuration (bounded, not holdout-tuned):** ETHUSDT 1h, 3-state Gaussian HMM (diag), states ordered by mean (mu1<mu2<mu3), expanding refit every 720 bars, multi-seed best log-likelihood, filtered forward probabilities, eval_stride=4, train fitted <=2023-12-31, validation 2024-01-01 to 2024-06-30, holdout excluded.
+
+**Validation metrics (1,087 forecasts, stride 4):**
+- Log score mean (higher better): ETH HMM 3.7865 vs unconditional Gaussian 3.5308 vs EWMA Gaussian 3.6511 (HMM beats both baselines on ETHUSDT).
+- CRPS mean (lower better): ETH HMM 0.003252 vs unconditional Gaussian 0.003583 vs EWMA Gaussian 0.003260 (HMM ≈ EWMA, both better than unconditional).
+- ETH HMM PIT mean/std: 0.5070 / 0.2749 (ideal uniform ~0.5 / 0.289).
+
+**Comparison to BTCUSDT validation (T4, same grid):** BTC HMM log score 4.0164 vs EWMA 3.9022 (not significantly different, p=0.44); EWMA CRPS 0.002631 significantly beats HMM 0.002597 (p=0.006). On ETHUSDT the HMM beats both baselines on log score point-estimate and is roughly tied with EWMA on CRPS — contrasting with BTCUSDT. The HMM forecast edge is therefore **not consistent across assets**, reinforcing the cross-family memo's robustness/non-stationarity concern. No bootstrap significance recomputed for ETHUSDT (point estimates only); period perturbation and negative-control robustness checks remain as follow-ups.
+
+**Commands/tests run and outcomes (this session):**
+- `PYTHONPATH=. python src/hmm_walkforward_ethusdt.py` — success; generated ETHUSDT artifacts above. Non-fatal "Model is not converging" warnings on some EM refits/seeds (consistent with T4).
+- `PYTHONPATH=. python -m pytest -q` — **133 passed in 54.30s** (129 prior + 4 new ETHUSDT tests).
+- No holdout executed. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
+
+---
+
 ### Concise findings and sources (prior)
 
 **Literature review** distinguishes six model families with primary references:
@@ -426,19 +451,25 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T5d (conditional): Authorized locked-holdout execution and gate reporting (only with explicit authorization) — or validation-only robustness if not authorized**
-
-- **If and only if explicitly authorized by the user in-session** with `--execute-holdout` and matching protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, run:
+**Holdout execution (only if explicitly authorized):** If and only if explicitly authorized by the user in-session with `--execute-holdout` and matching protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, run:
   - `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`
   This will generate protocol-complete artifacts under `research/forecasts/holdout/` and `research/economic/holdout/` (C1/C2 forecasts, bootstrap significance, B3–B5 baselines, cost/theta sensitivity, ledgers/returns, execution manifest, reports). After the run, write a concise gate decision report (`REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`) citing evidence, uncertainty, and protocol deviations (if any). Do not tune on holdout outcomes; do not rerun with changed configs.
-- **If not explicitly authorized (default):** do **not** run the holdout. Perform a bounded validation-only, no-holdout-tuning task such as: (a) add holdout-report/figure helpers (PIT histograms, calibration plots) exercised only on synthetic fixtures/tests; or (b) execute predeclared robustness checks on validation grid (asset perturbation on ETHUSDT 1h, period perturbation on 2024 Q1 vs Q2, negative controls label-permutation/white-noise). Run `PYTHONPATH=. python -m pytest -q` and update handoff with exact files/commands/outcomes.
+
+**If not explicitly authorized (default):** do **not** run the holdout. ETHUSDT asset-perturbation robustness is complete (see T5d robustness section). Remaining bounded validation-only, no-holdout-tuning options: (a) period perturbation on the validation grid (2024 Q1 vs Q2) for C1/C2; (b) negative controls (label-permutation / white-noise forecasts) for C1/C2; (c) holdout-report/figure helpers (PIT histograms, calibration plots) exercised only on synthetic fixtures/tests. Run `PYTHONPATH=. python -m pytest -q` and update handoff with exact files/commands/outcomes.
+
 - Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition in §11/AGENTS is truly met.
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5d is complete (this session):** Created `research/forecasts/cross_family_validation_comparison.md` — comprehensive cross-family validation comparison memo consolidating H1–H4, HMM, EWMA/unconditional results on the 2024-01 to 2024-06 validation grid (1,087 forecasts, stride 4). Key findings: H2 HMM (filtered, 3-state) dominates validation metrics (log score 4.0164, CRPS 0.002597) but does not significantly beat EWMA on log score (p=0.44); EWMA significantly beats HMM on CRPS (p=0.006). H3 HOM (2nd-order) is best non-latent MC, significantly improving on H1 but not beating EWMA. H4 Semi-Markov ≈ H1 Canonical. Economic dry-run shows zero trades for C1/C2 (forecast means 3–7 bps << 8–16 bps/side cost threshold). Gate projection: high failure risk for both candidates on holdout. All 129 tests pass. **No holdout executed.** No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff.
+
+**Completed this session:** ETHUSDT 1h asset-perturbation robustness check of the C1 filtered HMM on the validation grid (2024-01 to 2024-06, 1,087 forecasts, stride 4; holdout excluded). Generalized `src/hmm_walkforward.py` (`load_returns(symbol)`, `symbol` config field, backward-compat `load_btc_returns`), added `src/hmm_walkforward_ethusdt.py` and `tests/test_hmm_walkforward_ethusdt.py`, wrote ETHUSDT artifacts under `research/forecasts/h2_hmm_validation_ethusdt.{json,md,csv}` and `research/forecasts/figures/*ethusdt.png`. Cross-family validation memo (`research/forecasts/cross_family_validation_comparison.md`) already complete. All 133 tests pass.
+
+**Key result:** On ETHUSDT the HMM beats both unconditional (log score 3.7865 vs 3.5308) and EWMA (3.6511) on log score point-estimate and is roughly tied with EWMA on CRPS (0.003252 vs 0.003260) — contrasting with BTCUSDT where HMM did not significantly beat EWMA on log score and EWMA won on CRPS. The HMM edge is not consistent across assets; reinforces non-stationarity/robustness concern.
+
+**Next task:** If explicitly authorized by the user with `--execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, execute the locked holdout via `src/holdout_runner.py --execute-holdout --protocol-hash <hash>` and write the gate decision report. Otherwise (default), perform remaining validation-only robustness checks (period perturbation 2024 Q1 vs Q2, negative controls label-permutation/white-noise, or holdout-report figure helpers on synthetic fixtures) and update the handoff. Do not run the holdout without explicit authorization. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition is met.
 
 ---
 
