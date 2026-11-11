@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-11 (session: read prior handoff task and completed/confirmed closure — T5d-robustness-c artifacts, `AGENT_STOP`, and `research/final_decision_report.md` verified present; `PYTHONPATH=. python src/holdout_runner.py` refused by default EXIT 2, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`; `PYTHONPATH=. python -m pytest -q` → 145 passed in 55.00s; decision remains `RESEARCH_MORE`; **no holdout executed, no new research task started, handoff refreshed for next agent**)
+**Updated:** 2026-11-11 (session: read prior handoff and completed it — verified T5d-robustness-c artifacts (`src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.{json,md}`), `research/final_decision_report.md`, and `AGENT_STOP` present; `PYTHONPATH=. python src/holdout_runner.py` refused by default EXIT 2 (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`); `PYTHONPATH=. python -m pytest -q` → 145 passed in 55.00s; decision remains `RESEARCH_MORE`; **no holdout executed, no new research task started, handoff/next-agent message refreshed**)
 
 ## Mission
 
@@ -511,15 +511,15 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ---
 
-### Current session (2026-11-11): Prior handoff task completed and handoff refreshed
+### Current session (2026-11-11): Prior handoff task read and completed (verification), handoff refreshed
 
-**Prior task (from durable handoff):** read prior agent task and complete it — T5d-robustness-c negative controls, validation-only robustness closure, final decision report, and `AGENT_STOP`. **Status: verified complete; no additional implementation required.**
+**Prior task (from durable handoff):** read prior agent task and complete it — T5d-robustness-c negative controls, validation-only robustness closure, final decision report, and `AGENT_STOP`. **Status: completed/verified present; no additional implementation required.**
 
 **Evidence checked (this session)**
 - Required artifacts present: `src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.json`, `research/forecasts/negative_controls.md`, `research/final_decision_report.md`, `AGENT_STOP` (reason: validation-only cycle complete, `RESEARCH_MORE` for materially different approaches/cost assumptions, holdout not executed/authorized).
 - Holdout protocol enforcement: `PYTHONPATH=. python src/holdout_runner.py` → refused by default (**EXIT 2**, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
 - Full test suite: `PYTHONPATH=. python -m pytest -q` → **145 passed in 55.00s**.
-- Git/repo state reviewed: recent checkpoint commits on `main`; uncommitted work is limited to this handoff refresh (commit/push handled by workflow controller, not this agent).
+- Git/repo state reviewed: recent checkpoint commits on `main`; uncommitted work limited to this handoff refresh (commit/push handled by workflow controller, not this agent).
 
 **Assessment:** Cycle remains closed (`COMPLETE` / `RESEARCH_MORE`, C1/C2 validation-only). No safe, useful autonomous task remains while `AGENT_STOP` exists and no human authorization for continuation/holdout is recorded.
 
