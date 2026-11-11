@@ -1,0 +1,99 @@
+{
+  "protocol": {
+    "document": "research/specifications/holdout_evaluation_protocol.md",
+    "protocol_version": "2026-11-11-v1",
+    "status": "FROZEN_PRE_EXECUTION",
+    "holdout_period_utc": {
+      "start": "2024-07-01T00:00:00+00:00",
+      "end": "2025-12-31T23:00:00+00:00"
+    },
+    "instrument": "BTCUSDT",
+    "venue": "Binance",
+    "contract_type": "USDT-M perpetual",
+    "horizon": "1h",
+    "decision_grid": {
+      "primary_eval_stride_bars": 4,
+      "target_definition": "1-step-ahead completed 1h return"
+    }
+  },
+  "data_provenance": {
+    "features_parquet": "data/processed/features.parquet",
+    "raw_manifest": "data/raw/manifest.json",
+    "features_sha256": null,
+    "raw_manifest_sha256": null
+  },
+  "candidates": [
+    {
+      "id": "C1",
+      "name": "filtered_3state_gaussian_hmm",
+      "code": "src/hmm_walkforward.py",
+      "frozen_config": {
+        "n_states": 3,
+        "state_ordering": "mean_ascending",
+        "seeds": [0, 1, 2],
+        "refit_every_bars": 720,
+        "expanding_history": true,
+        "inference": "filtered_forward_only",
+        "eval_stride_bars": 4
+      },
+      "validation_evidence_artifacts": [
+        "research/forecasts/h2_hmm_validation.json",
+        "research/forecasts/h2_hmm_validation_significance.json",
+        "research/forecasts/h2_validation_forecasts.csv"
+      ]
+    },
+    {
+      "id": "C2",
+      "name": "higher_order_markov_order2_k5",
+      "code": "src/higher_order_markov.py",
+      "frozen_config": {
+        "order": 2,
+        "n_states": 5,
+        "discretization": "quantile_train_fitted_edges",
+        "laplace_alpha": 1.0,
+        "min_pair_samples": 20,
+        "refit": "expanding_per_evaluated_step",
+        "eval_stride_bars": 4
+      },
+      "validation_evidence_artifacts": [
+        "research/forecasts/h3_higher_order_markov_validation.json",
+        "research/forecasts/h3_higher_order_markov_validation.csv"
+      ]
+    }
+  ],
+  "baselines": [
+    {"id": "B1", "name": "expanding_unconditional_gaussian"},
+    {"id": "B2", "name": "ewma_gaussian_lambda_0_94"},
+    {"id": "B3", "name": "no_trade", "scope": "economic"},
+    {"id": "B4", "name": "buy_and_hold_btcusdt_perp", "scope": "economic"},
+    {"id": "B5", "name": "simple_momentum_vol_rules", "scope": "economic", "params_predeclared": true}
+  ],
+  "cost_model": {
+    "base_round_trip_bps": 10.6,
+    "stress_round_trip_bps": 21.2,
+    "funding_source": "data/processed/features.parquet",
+    "accounting_note": "Per-side explicit accounting required in runner; see protocol section 5.2"
+  },
+  "metrics": {
+    "forecast": ["log_score_mean", "crps_mean", "pit_mean", "pit_std", "calibration_diagnostics"],
+    "economic": ["net_cagr", "net_vol", "net_sharpe", "net_sortino", "net_calmar", "max_drawdown", "hit_rate", "expectancy", "turnover", "trade_count", "time_in_market"],
+    "uncertainty": {
+      "bootstrap": "stationary_block",
+      "n_replications": 2000,
+      "block_length": "n^(1/3)",
+      "ci_level": 0.95
+    }
+  },
+  "gates": {
+    "forecast": "see protocol section 6.1",
+    "economic_h5": "see protocol section 6.2",
+    "decision_mapping": ["REJECT", "RESEARCH_MORE", "CANDIDATE_FOR_INDEPENDENT_CONFIRMATION", "BLOCKED_NO_SAFE_WORK"]
+  },
+  "execution": {
+    "git_sha": null,
+    "command": null,
+    "executed_utc": null,
+    "holdout_evaluated": false,
+    "operator_notes": "Template only. Do not populate executed fields or run holdout without frozen protocol review and explicit task authorization."
+  }
+}

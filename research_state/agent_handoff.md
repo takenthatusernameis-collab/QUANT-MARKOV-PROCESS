@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
 **Status:** `READY`
-**Updated:** 2026-11-11 (T3d semi-Markov / duration-dependent baseline completed; handoff updated this session)
+**Updated:** 2026-11-11 (T5-prep holdout/economic gate protocol pre-specified; no holdout evaluation executed)
 
 ## Mission
 
@@ -206,7 +206,7 @@ Determine whether Markov-process-based representations can produce a statistical
 
 **Verification (prior):** `PYTHONPATH=. python src/higher_order_markov.py` regenerated artifacts; `PYTHONPATH=. python -m pytest -q` → 76 passed.
 
-### Task T3d completed (this session, verified): Semi-Markov / duration-dependent Markov chain baseline (validation only)
+### Task T3d completed (prior session, verified): Semi-Markov / duration-dependent Markov chain baseline (validation only)
 
 **Files present**
 - `src/semi_markov_baseline.py` — semi-Markov chain baseline: K=5 quantile states (bin edges fitted on training returns only, <=2023-12-31); expanding embedded transition counts/probabilities with Laplace smoothing; expanding sojourn distributions per state (negative binomial, geometric fallback for sparse states); hazard-based 1-step-ahead state probabilities given current state and run duration at decision time *t-1*; state-mixture Gaussian return forecast for target *t* using expanding state-conditional moments. Baselines: unconditional expanding Gaussian and EWMA Gaussian (λ=0.94). Validation 2024-01-01 to 2024-06-30 only; holdout >=2024-07-01 excluded.
@@ -238,7 +238,17 @@ Determine whether Markov-process-based representations can produce a statistical
 - EWMA Gaussian remains a strong baseline (not beaten on log score; significantly better on CRPS). HMM (T4, log score 4.0164, CRPS 0.002597) remains best overall on validation; direct aligned SM-vs-HMM not recomputed here (HMM grid offset noted previously).
 - Prior project-level caveats remain: train-vs-validation transition non-stationarity (Chow p=0.0042), EM convergence warnings in HMM fits.
 
-**Verification (this session):** `PYTHONPATH=. python -m pytest -q` → **85 passed in 30.04s**. `src/semi_markov_baseline.py`, `tests/test_semi_markov_baseline.py`, and H4 artifacts/figures present and consistent with saved JSON/MD. No holdout evaluation performed.
+**Verification (prior):** `PYTHONPATH=. python -m pytest -q` → **85 passed**. No holdout evaluation performed.
+
+### Task T5-prep completed (this session): Holdout evaluation & economic simulation gate protocol (no holdout execution)
+
+**Files created**
+- `research/specifications/holdout_evaluation_protocol.md` — pre-specified, frozen-pre-execution protocol for locked holdout 2024-07-01 to 2025-12-31 (BTCUSDT 1h). Defines leakage/integrity controls (no holdout tuning/execution, point-in-time expanding refit, filtered-only inference, purge/embargo, no holdout-fitted bins/scalers), validation-evidence summary, and frozen candidates: **C1** filtered 3-state Gaussian HMM (T4 config: K=3 ordered means, multi-seed EM, refit_every=720, eval_stride=4, filtered forward) as primary and **C2** higher-order Markov (H3, order 2, K=5 train-fitted quantiles, expanding counts/Laplace, eval_stride=4) as non-latent comparator. Specifies baselines B1–B5, holdout forecast procedure/uncertainty (stationary block bootstrap, proper scores/CRPS/PIT), economic simulation mapping (edge vs cost with predeclared θ/no-trade, fixed sizing/exposure), base/stress cost model (plan-consistent ~10.6/21.2 bps round-trip, funding from processed data), forecast+economic metrics, gate criteria (H5 thresholds: net Sharpe >0.5, max DD <20%, positive expectancy p<0.1 HAC-aware, >100 trades, turnover <500%, beat best baseline by >0.25 Sharpe), decision mapping (`REJECT`/`RESEARCH_MORE`/`CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`), predeclared robustness/red-team checks, artifact/provenance requirements, and explicit prohibitions (no live trading, no workflow/prompt edits, no smoothed probs, no post-hoc retuning).
+- `research/specifications/holdout_evaluation_manifest_template.json` — machine-readable template capturing protocol/data provenance placeholders, frozen C1/C2 configs, baselines, cost model, metrics/uncertainty, gates, and execution fields (`holdout_evaluated: false`, hashes/command/git SHA null) for future recorded runs.
+
+**Selection rationale (validation-only, not holdout-tuned):** C1 chosen as primary on strongest validation log score/CRPS (4.01643 / 0.00259686) and significant improvement vs unconditional, despite EM/non-stationarity caveats and no significant log-score edge vs EWMA; C2 chosen as best non-latent/transparent MC comparator (3.85845 / 0.002687) beating H1/H4 on key aligned comparisons. EWMA remains a strong baseline (esp. CRPS).
+
+**Verification (this session):** `PYTHONPATH=. python -m pytest -q` → **85 passed in 29.90s** (sanity; no holdout evaluation performed). No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP` created.
 
 ### Concise findings and sources (prior)
 
@@ -299,34 +309,23 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ## Next single bounded task
 
-**Task T5-prep: Holdout-evaluation and economic-simulation gate protocol design (no holdout execution)**
+**Task T5a: Validation-only economic/cost simulation dry-run scaffolding (no holdout execution)**
 
-- Write a concrete, pre-specified protocol artifact (e.g. `research/specifications/holdout_evaluation_protocol.md` and/or a machine-readable manifest template) for the **locked** holdout (2024-07-01 to 2025-12-31) and the Economic Simulation Gate (H5), **without running any holdout evaluation** and without tuning on holdout.
-- The protocol must:
-  1. Select and freeze the candidate model(s) to evaluate on holdout based **only** on validation evidence already recorded (H1/H3/H4 vs HMM T4): specify which model, exact config, and which parameters are fixed (K, bins/edges, refit schedule, stride, cost model, position-sizing/entry rules if any) with rationale tied to validation results and leakage controls.
-  2. Define the walk-forward/filtered inference procedure for holdout (expanding/rolling refit, decision timestamps, purge/embargo consistent with horizon) so evaluation is reproducible and point-in-time.
-  3. Specify the full trading-friction/cost model and execution assumptions per `initial-research-plan.md` (base and stress cases), turnover/capacity constraints, and what counts as a trade/position.
-  4. Define forecast metrics and economic metrics to report (log score/CRPS/PIT on holdout targets if applicable; net/gross CAGR, vol, Sharpe, Sortino, max DD, hit rate, expectancy, turnover, trade count, exposure) with bootstrap/uncertainty methods and significance thresholds/failure criteria mapped to Forecast/Economic gates.
-  5. List red-team/robustness checks to run **on/after holdout** only as predeclared analyses (cost stress, subperiods, baselines: unconditional, EWMA, buy-and-hold/no-trade, simple momentum/vol rules) and prohibit any post-hoc parameter changes.
-  6. State explicit decision mapping to `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION` and note that holdout results remain research-only (no live trading/deployment).
-- Cross-check that no step uses smoothed probabilities, holdout-fitted bins/scalers, or future information. Keep the document concise and cite existing artifact paths (H1–H4, T4, EDA).
-- Run `PYTHONPATH=. python -m pytest -q` (sanity) and update this handoff with completed work, exact files, verification, blockers, and one next task (e.g., implement holdout-evaluation runner per protocol **but do not execute on holdout** until protocol is frozen/recorded, or implement cost/stress simulation scaffolding on validation as a dry run if justified).
+- Implement a small, testable simulation/scaffolding module (e.g. `src/economic_simulation.py` or similar) that can take **existing validation** forecast artifacts (C1/C2 grids where available) and compute gross/net PnL series and metrics under the pre-specified protocol rules — **validation period only (2024-01-01 to 2024-06-30)** as a dry run. Do **not** run or read holdout targets for evaluation/tuning.
+- Follow `research/specifications/holdout_evaluation_protocol.md` and `holdout_evaluation_manifest_template.json`: point-in-time signal mapping with predeclared θ/no-trade, fixed sizing/exposure assumptions, explicit per-side cost accounting (base ~10.6 bps and stress ~21.2 bps round-trip) with funding from processed data where available at decision time, and baselines B3/B4/B5 as feasible (at minimum no-trade and a simple fixed rule/buy-and-hold proxy consistent with data; document any simplifications).
+- Output reproducible validation-only artifacts (e.g. under `research/economic/validation_dryrun/`) with metrics/uncertainty notes sufficient to sanity-check pipeline behavior; include unit tests for cost application, no-lookahead alignment, and net-vs-gross accounting.
+- Do **not** execute holdout, do **not** choose parameters by performance, and do **not** modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
+- Run `PYTHONPATH=. python -m pytest -q`, then update this handoff with exact files/commands/outcomes, blockers, and one next task (e.g. implement a holdout-evaluation runner that enforces protocol/manifest checks but requires an explicit execution flag and refuses by default).
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. T3d (semi-Markov / duration-dependent baseline, validation only) is complete and verified this session: implementation in `src/semi_markov_baseline.py` with tests in `tests/test_semi_markov_baseline.py`, artifacts `research/forecasts/h4_semi_markov_validation.{json,csv,md}` and figures `research/forecasts/figures/h4_sm_{next_state_probs,pit_hist,duration_hist}.png`.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff. **T5-prep is complete (this session):** holdout/economic gate protocol and manifest template are pre-specified and frozen-pre-execution at `research/specifications/holdout_evaluation_protocol.md` and `research/specifications/holdout_evaluation_manifest_template.json` (**no holdout evaluation executed**, no tuning). Frozen candidates from validation evidence only: **C1** filtered 3-state Gaussian HMM (T4 config, primary; log score 4.01643, CRPS 0.00259686 on validation grid) and **C2** higher-order Markov order-2 K=5 quantile (H3; 3.85845 / 0.002687). EWMA remains strong (esp. CRPS); prior caveats hold (HMM EM convergence warnings, train-vs-validation non-stationarity Chow p=0.0042, HMM grid offset vs H1/H3/H4). All leakage controls in protocol: filtered/point-in-time only, train-fitted discretization where applicable, expanding history, purge/embargo, holdout locked 2024-07-01–2025-12-31.
 
-**Key consolidated findings (validation only, BTCUSDT 1h, 1,087 forecasts, K=5 quantile states, train-fitted edges, expanding fit, eval_stride=4, holdout excluded):**
-- Semi-Markov: log score 3.82976, CRPS 0.00270785, PIT mean/std 0.49885/0.27875. Duration stats mean 1.319h, median 1.0h, max 9h (weak duration dependence on this grid).
-- Bootstrap vs baselines: significantly beats unconditional on log score (+0.08155, p=0.032) and CRPS (+1.948e-4, p=0.000); not significantly different from EWMA on log score (−0.07448, p=0.060); EWMA significantly better on CRPS (p=0.039).
-- Aligned comparisons (saved grids): SM vs H1 log score +0.04631 (p=0.189, ns) but SM better on CRPS diff H1−SM (p=0.000); SM vs H3 log score −0.00508 (p=0.88, ns) but SM better on CRPS diff H3−SM (p=0.000). Point log scores: HMM (T4) 4.0164 > H3 3.85845 > H1≈SM 3.82976; EWMA CRPS remains strong.
-- Leakage controls observed (train-only bins, expanding history, no holdout). Project caveats remain (non-stationarity Chow p=0.0042, HMM EM convergence warnings, HMM grid offset vs H1/H3/H4).
+**Verification (this session):** `PYTHONPATH=. python -m pytest -q` → **85 passed in 29.90s**. No changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. No `AGENT_STOP`.
 
-**Verification this session:** `PYTHONPATH=. python -m pytest -q` → **85 passed in 30.04s**. No holdout evaluation performed.
-
-Your bounded task is **T5-prep**: write a concrete, pre-specified holdout-evaluation and economic-simulation gate protocol (locked holdout 2024-07-01 to 2025-12-31) as durable artifacts (e.g. `research/specifications/holdout_evaluation_protocol.md` plus manifest template if useful) **without executing any holdout evaluation** and without tuning on holdout. Freeze candidate selection/config from validation evidence only, define point-in-time filtered evaluation, base/stress cost model and execution assumptions, forecast+economic metrics/uncertainty/failure criteria mapped to gates, predeclared baselines/red-team checks, and decision mapping (`REJECT`/`RESEARCH_MORE`/`CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`). Run `PYTHONPATH=. python -m pytest -q` (sanity) and update this handoff with exact files, findings, verification, blockers, and one next task (e.g. implement holdout-evaluation runner per protocol but do not run on holdout, or validation-only cost/simulation dry-run scaffolding if justified).
+Your bounded task is **T5a**: implement validation-only economic/cost simulation dry-run scaffolding per the protocol (base/stress costs, predeclared signal/no-trade/sizing, gross vs net, baselines as feasible) using **existing validation forecasts only** (no holdout). Produce code/tests and reproducible `research/economic/validation_dryrun/` artifacts, run `PYTHONPATH=. python -m pytest -q`, and update this handoff with exact files, findings, verification, blockers, and one next task (e.g. protocol-enforcing holdout runner stub that refuses execution by default until explicitly authorized). Do not execute or tune on the holdout.
 
 ## Stop rule
 
