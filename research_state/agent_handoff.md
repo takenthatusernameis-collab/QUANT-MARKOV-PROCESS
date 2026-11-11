@@ -2,9 +2,9 @@
 
 **Repository:** `takenthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
-**Current phase:** `DISCOVERY_AND_METHOD_DESIGN`
-**Status:** `READY`
-**Updated:** 2026-11-11 (T5c authorized holdout runner extended with forecast bootstrap/significance + economic gate artifact wiring; T5d cross-family validation memo + ETHUSDT asset-perturbation robustness + validation Q1/Q2 period perturbation (C1/C2) completed; **T5d-robustness-c negative controls for C1/C2 completed**; **no holdout evaluation executed**)
+**Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
+**Status:** `COMPLETE`
+**Updated:** 2026-11-11 (final session: T5d-robustness-c negative controls verified complete with artifacts/tests; validation-only robustness suite complete; final decision report written; research cycle closed as RESEARCH_MORE; AGENT_STOP created; **no holdout evaluation executed**)
 
 ## Mission
 
@@ -495,30 +495,41 @@ Final decision mapping: `REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_
 
 ---
 
+### Final session (this session): Verification, final decision, and cycle close
+
+**Prior task (T5d-robustness-c negative controls) — verified complete**
+- Artifacts present: `src/negative_controls.py`, `tests/test_negative_controls.py`, `research/forecasts/negative_controls.json`, `research/forecasts/negative_controls.md`.
+- `AGENT_STOP` absent at session start; holdout runner refusal verified (`PYTHONPATH=. python src/holdout_runner.py` refused by default; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`).
+- `PYTHONPATH=. python -m pytest -q` → **145 passed in 55.00s**.
+
+**Final assessment and stop condition**
+- Validation-only robustness suite complete (T5d cross-family memo, ETHUSDT asset perturbation, Q1/Q2 period perturbation, negative controls) and evidence supports a decision for the current candidate cycle (AGENTS.md §11 / prompt §11): economic dry-run produced zero trades (forecast means << conservative costs), C2/HOM weak/negative vs white-noise on CRPS and no log-score edge vs white noise, C1/HMM not robustly superior to EWMA and unstable across period/asset, negative controls confirm limited/fragile skill.
+- **Decision:** `RESEARCH_MORE` (no holdout executed; no in-session authorization). Locked holdout not run.
+- Created `research/final_decision_report.md` (concise evidence summary, decision, and recommended materially different next work if continued).
+- Created `AGENT_STOP` with reason; handoff set to `COMPLETE`. No further autonomous tasks started.
+
+**Constraints respected:** no changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`; no credentials; no live trading; no holdout execution/tuning.
+
+---
+
 ## Next single bounded task
 
-**Holdout execution (only if explicitly authorized):** If and only if explicitly authorized by the user in-session with `--execute-holdout` and matching protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, run:
-  - `PYTHONPATH=. python src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`
-  This will generate protocol-complete artifacts under `research/forecasts/holdout/` and `research/economic/holdout/` (C1/C2 forecasts, bootstrap significance, B3–B5 baselines, cost/theta sensitivity, ledgers/returns, execution manifest, reports). After the run, write a concise gate decision report (`REJECT` / `RESEARCH_MORE` / `CANDIDATE_FOR_INDEPENDENT_CONFIRMATION`) citing evidence, uncertainty, and protocol deviations (if any). Do not tune on holdout outcomes; do not rerun with changed configs.
-
-**If not explicitly authorized (default):** do **not** run the holdout. The validation-only robustness suite is now complete:
-- ETHUSDT asset perturbation (T5d-robustness, `research/forecasts/h2_hmm_validation_ethusdt.*`)
-- BTCUSDT Q1 vs Q2 period perturbation for C1/C2 (T5d-robustness-b, `research/forecasts/period_perturbation_q1q2.*`, `src/validation_period_perturbation.py`)
-- Negative controls for C1/C2 (T5d-robustness-c, `research/forecasts/negative_controls.*`, `src/negative_controls.py`)
-
-Remaining bounded option (no holdout tuning): (b) **holdout-report/figure helpers** (PIT histograms, calibration/diagnostic plots) exercised only on synthetic fixtures/tests consistent with `src/holdout_runner.py` wiring. Otherwise, per `AGENTS.md` §11 / research prompt §11, assess whether the cycle is complete (evidence: economic gate unlikely to clear — validation dry-run zero trades; weak/negative negative-control signal for C2; asset/period instability) and prepare a final decision report or `AGENT_STOP`. Do not create `AGENT_STOP` unless a stop condition is truly met.
-
-- Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Do not create `AGENT_STOP` unless a stop condition in §11/AGENTS is truly met.
+**None — research cycle closed (`AGENT_STOP` present).**
+- Do not start new tasks. See `AGENT_STOP` and `research/final_decision_report.md`.
+- If a human explicitly authorizes continuation, remove `AGENT_STOP`, record authorization/evidence in this handoff, and begin only a materially different, predeclared, bounded task (or authorized holdout execution per protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Do not tune on holdout outcomes.
+- Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ---
 
 ## Initial task message for next agent
 
-Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, and this handoff.
+Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`.
 
-**Completed this session:** Validation-only negative controls for C1 (filtered HMM) and C2 (higher-order Markov) on saved BTCUSDT 1h validation forecast grids (1,087 forecasts each, stride 4; holdout excluded). Added `src/negative_controls.py`, `tests/test_negative_controls.py`, and `research/forecasts/negative_controls.{json,md}`. Two no-information controls: NC_A white noise (Gaussian N(0, sigma_y^2)) and NC_B target-shuffled (model moments vs stationary-bootstrap resampled y_true), compared via stationary block bootstrap (n^(1/3) block, 2000 reps). Key result: C1 beats both controls significantly on log score (real-vs-white-noise p=0.0025; real-vs-shuffled p=0.000) but CRPS edge is not significant; C2 beats shuffled on log score (p=0.0035) but its edge over white noise is weak/non-significant (log p=0.37; CRPS significantly worse, p=0.0005). Shuffled-vs-white-noise not significant for C2 (confirms shuffle removes information without spurious skill). This completes the validation-only robustness suite (period perturbation, ETHUSDT asset perturbation, negative controls). `PYTHONPATH=. python -m pytest -q` → **145 passed**.
+**Status:** `COMPLETE` / `RESEARCH_MORE` for the current C1/C2 candidate cycle (validation-only). No locked holdout was executed. `AGENT_STOP` is present.
 
-**Next task:** If explicitly authorized by the user with `--execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`, execute the locked holdout via `src/holdout_runner.py --execute-holdout --protocol-hash <hash>` and write the gate decision report. Otherwise (default), the validation-only robustness suite is complete; either (b) implement holdout-report/figure helpers (PIT histograms, calibration plots) on synthetic fixtures/tests only, or per `AGENTS.md` §11 assess whether the research cycle is complete and prepare a final decision report / `AGENT_STOP`. Evidence weighs toward the economic gate failing (validation dry-run zero trades; weak negative-control signal for C2; asset/period instability). Do not run the holdout without explicit authorization. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
+**What is done:** Data ingestion/EDA, HMM and Markov-chain family baselines (H1–H4, HMM), forecast validation with bootstrap, H1 sensitivity and cross-family comparison, economic dry-run, holdout protocol/runner (refuses by default), and robustness checks (ETHUSDT asset, Q1/Q2 period, negative controls). Evidence: validation economic dry-run zero trades (means << costs), C2 weak/negative vs white-noise on CRPS, C1 not robustly superior to EWMA and unstable across period/asset. Full test suite: `PYTHONPATH=. python -m pytest -q` → 145 passed (last verified this session).
+
+**Next task:** **None.** Do not start work while `AGENT_STOP` exists. If a human explicitly authorizes continuation, they must remove `AGENT_STOP` and state the scope in this handoff; only then pursue a materially different, predeclared, bounded hypothesis/model family or an explicitly authorized holdout run (`src/holdout_runner.py --execute-holdout --protocol-hash 50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`) without tuning on holdout outcomes. Do not modify `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ---
 
