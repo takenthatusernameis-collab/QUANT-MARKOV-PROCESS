@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T20:43:28Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`; re-verified protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; key artifacts present; git `main` tracking `origin/main`, HEAD `f531f1b` (`chore(kilo): checkpoint agent session`), origin/main == HEAD, working tree clean; `AGENT_STOP` confirmed at repo root; prompt-evolution ledger header-only; holdout guard statically checked; no new research started, holdout not run)
+**Updated:** 2026-11-12T20:46:08Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`; re-verified protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; key artifacts present; git `main` tracking `origin/main`, HEAD `d1f21eb` (`chore(kilo): checkpoint agent session`), origin/main == HEAD, working tree clean at verification start; `AGENT_STOP` confirmed at repo root; prompt-evolution ledger header-only; holdout guard statically checked (`verify_execution_authorized`, `src/holdout_runner.py:111`; CLI flags `src/holdout_runner.py:817-818`); no new research started, holdout not run/tuned)
 
 ## Mission
 
@@ -12,8 +12,8 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Current state (re-verified 2026-11-12T20:43:28Z)
 
-- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete** (read required files and `AGENT_STOP`; independently re-verified cycle closed at `RESEARCH_MORE`, `AGENT_STOP` reason recorded, protocol hash unchanged, key artifacts present, prompt-evolution ledger has no proposals; refreshed handoff and initial task for next agent; no new research started).
-- **Git (re-verified):** branch `main` tracking `origin/main`; HEAD `f531f1b` (`chore(kilo): checkpoint agent session`); origin/main == HEAD; working tree clean. HEAD advanced via controller-side checkpoint commits that only modified `research_state/agent_handoff.md`; no research code, data, or protocol changed.
+- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete** (read required files and `AGENT_STOP`; independently re-verified cycle closed at `RESEARCH_MORE`, `AGENT_STOP` reason recorded, protocol hash unchanged, key artifacts present, prompt-evolution ledger has no proposals, holdout guard refusal/flags statically checked; refreshed handoff and initial task for next agent; no new research started).
+- **Git (re-verified):** branch `main` tracking `origin/main`; HEAD `d1f21eb` (`chore(kilo): checkpoint agent session`); origin/main == HEAD; working tree clean at verification start. HEAD advanced via controller-side checkpoint commits that only modified `research_state/agent_handoff.md`; no research code, data, or protocol changed.
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Key artifacts verified present:** `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
@@ -674,3 +674,33 @@ Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_dec
 - Holdout not executed/tuned.
 
 **Result:** Prior durable task complete. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force. No autonomous action permitted.
+
+
+### This session (2026-11-12T20:46:08Z)
+
+**Actions taken:**
+- Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`.
+- Read the prior durable task from the handoff and completed verification per protocol (read-only; no research started).
+- Re-verified: `AGENT_STOP` present at repo root with recorded reason; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; git `main` tracking `origin/main`, HEAD `d1f21eb` (`chore(kilo): checkpoint agent session`), origin/main == HEAD, working tree clean at verification start; all key artifacts present; `research_state/prompt_evolution.md` header-only (no proposals); protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged in working tree.
+- Statically checked `src/holdout_runner.py` refusal logic (`verify_execution_authorized`, `src/holdout_runner.py:111`) and `--execute-holdout`/`--protocol-hash` CLI flags (`src/holdout_runner.py:817-818`) (no execution).
+- Updated handoff header/timestamps, current state, session log, and refreshed the initial task message for the next agent. No research started, holdout not executed/tuned.
+
+**Verification (this session):**
+- `AGENT_STOP` present at repo root (validation-only cycle complete; `RESEARCH_MORE`; locked holdout not executed/authorized).
+- Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified unchanged via `sha256sum research/specifications/holdout_evaluation_protocol.md`.
+- Git: branch `main` tracking `origin/main`; HEAD `d1f21eb` (`chore(kilo): checkpoint agent session`); origin/main == HEAD; working tree clean at verification start. Recent controller checkpoints touched only `research_state/agent_handoff.md`.
+- Key artifacts present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
+- `research_state/prompt_evolution.md` has no pending/accepted proposals (header-only ledger).
+- Environment: Python has no `numpy` and no `pytest` (`ModuleNotFoundError`); `data/` absent (gitignored). Prior recorded suite results unchanged (see Current state).
+- Holdout not executed/tuned.
+
+**Result:** Prior durable task complete. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force. No autonomous action permitted.
+
+## Initial task for next agent
+
+**Do not start autonomous research while `AGENT_STOP` exists.** This session completed the prior durable handoff task (read-only verification) and refreshed this handoff.
+
+1. Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`.
+2. Re-verify: `AGENT_STOP` present, protocol hash unchanged (`50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`), git state clean/tracking `origin/main`, key artifacts present, prompt-evolution ledger has no proposals, and holdout remains unexecuted (static guard in `src/holdout_runner.py`).
+3. If `AGENT_STOP` remains and no explicit human authorization is provided to remove it, perform no new research and do not run/tune the locked holdout. Refresh this handoff with exact verification (commands/outcomes), confirm `AGENT_STOP` reason still valid, and restate this same stop-respecting task for the next agent.
+4. Only if a human explicitly removes `AGENT_STOP` and provides written authorization may you proceed: first design/document a materially different `RESEARCH_MORE` direction or a separately authorized holdout plan consistent with the frozen protocol; do not run the holdout without the required explicit flags, matching protocol hash, and recorded authorization.
