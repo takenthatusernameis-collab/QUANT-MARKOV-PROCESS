@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T23:32:02Z (session: read-only re-verification at HEAD `617f3e7`; `AGENT_STOP` present/unchanged, protocol hash `50aa8a4f...` unchanged, git clean tracking `origin/main` (origin/main == HEAD), key artifacts present, prompt-evolution ledger header-only, protected files unchanged; holdout guard refuses by default; **prior venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` no longer exists** — tests not re-run this session, guard syntax-compiles; no new research, holdout not run/tuned)
+**Updated:** 2026-11-12T23:33:27Z (session: read-only re-verification at HEAD `ed2fb9c`; `AGENT_STOP` present/unchanged, protocol hash `50aa8a4f...` unchanged, git clean tracking `origin/main` (origin/main == HEAD), key artifacts present, prompt-evolution ledger header-only, protected files unchanged; holdout guard refuses by default; **prior venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` no longer exists** — tests not re-run this session, guard syntax-compiles; no new research, holdout not run/tuned)
 
 ## Mission
 
@@ -54,6 +54,10 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 ### 2026-11-12T23:31:00Z
 
 **This session:** read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`. Re-verified at HEAD `770bf5d` (changes since prior checkpoint `0a18ead` are controller-side checkpoint/diagnostics commits, not research changes): `AGENT_STOP` present with reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged; git `main` tracking `origin/main`, clean, origin/main == HEAD; key artifacts present; prompt-evolution ledger header-only; protected files unchanged (`git diff origin/main -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` empty); holdout guard refuses by default (`verify_execution_authorized` at `src/holdout_runner.py:111`; CLI args at `src/holdout_runner.py:817-818`, call at `:832`). The prior venv (`/home/runner/work/_temp/kilo-tmp/qmp-venv`) no longer exists, so holdout-guard tests were not re-run; `src/holdout_runner.py` syntax-compiles (`py_compile` OK). Full suite not run (gitignored `data/` absent). No new research started; holdout not run/tuned; no code/data/protocol changes. Refreshed handoff and restated stop-respecting next task.
+
+### 2026-11-12T23:33:27Z
+
+**This session:** read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`. Re-verified at HEAD `ed2fb9c` (controller checkpoint commit `chore(kilo): checkpoint agent session` touching only `research_state/agent_handoff.md` since prior checkpoint `617f3e7`): `AGENT_STOP` present with reason unchanged; protocol hash recomputed from `research/specifications/holdout_evaluation_protocol.md` via SHA-256 = `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches recorded value); git `main` tracking `origin/main`, HEAD `ed2fb9c`, origin/main == HEAD, working tree clean; key artifacts all present (verified by `ls`); prompt-evolution ledger header-only; protected files unchanged (`git diff origin/main -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` empty); holdout guard refuses by default (`verify_execution_authorized` at `src/holdout_runner.py:111`; CLI args at `:817-818`, call at `:832`); `src/holdout_runner.py` syntax-compiles (`py_compile` OK). Prior venv no longer exists; full suite not run (gitignored `data/` absent). No new research started; holdout not run/tuned; no code/data/protocol changes. Refreshed handoff and restated stop-respecting next task.
 
 ### 2026-11-12T23:32:02Z
 
@@ -105,7 +109,7 @@ Prior session completed the durable task via verification plus a clean-venv test
 
 ## Initial task for next agent
 
-**Do not start autonomous research while `AGENT_STOP` exists.** This session (2026-11-12T23:32:02Z) completed the prior durable handoff task (read-only re-verification) and refreshed this handoff. HEAD at verification: `617f3e7` (`chore: capture completed workflow run diagnostics`), `main` tracking `origin/main`, origin/main == HEAD, working tree clean.
+**Do not start autonomous research while `AGENT_STOP` exists.** This session (2026-11-12T23:33:27Z) completed the prior durable handoff task (read-only re-verification) and refreshed this handoff. HEAD at verification: `ed2fb9c` (`chore(kilo): checkpoint agent session`), `main` tracking `origin/main`, origin/main == HEAD, working tree clean.
 
 > Note on the loop: the prior durable task is itself a verification-and-refresh loop that has now run many times. Repeating it adds no new evidence unless something material changes (e.g., a new commit touching research code/data/protocol, `AGENT_STOP` removal, or a prompt-evolution proposal). The next agent should do the checks below, record them compactly, and stop — unless a human explicitly removes/authorizes `AGENT_STOP` (step 4).
 
