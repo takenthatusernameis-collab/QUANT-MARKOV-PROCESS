@@ -794,9 +794,26 @@ Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_dec
 
 ## Initial task for next agent
 
-**Do not start autonomous research while `AGENT_STOP` exists.** This session (2026-11-12T20:53:32Z) completed the prior durable handoff task (read-only verification) and refreshed this handoff. HEAD at verification: `c6fd3c2` (`chore(kilo): checkpoint agent session`), `main` tracking `origin/main`.
+**Do not start autonomous research while `AGENT_STOP` exists.** This session (2026-11-12T20:54:56Z) completed the prior durable handoff task (read-only verification) and refreshed this handoff. HEAD at verification: `c6fd3c2` (`chore(kilo): checkpoint agent session`), `main` tracking `origin/main`.
 
 1. Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`.
 2. Re-verify and record: `AGENT_STOP` present with reason unchanged, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged, git clean/tracking `origin/main`, key artifacts present, `research_state/prompt_evolution.md` has no proposals, and `src/holdout_runner.py` still refuses without `--execute-holdout` + matching `--protocol-hash`.
 3. If `AGENT_STOP` remains and no explicit human authorization is provided, do **not** start research and do **not** run/tune the locked holdout. Refresh this handoff with exact verification evidence and restate this same stop-respecting task for the next agent.
 4. Only with explicit human authorization to remove `AGENT_STOP` (record scope/evidence in handoff): perform exactly one bounded, predeclared `RESEARCH_MORE` task (materially different family/state/costs/horizon with falsifiable criteria, data contract, validation, baselines, costs, gates) or an explicitly authorized locked-holdout run per frozen protocol. Do not retune/rescue C1/C2, do not tune on holdout outcomes, no trading/deployment/credentials, and do not edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
+
+### This session (2026-11-12T20:54:56Z)
+
+**Actions taken:**
+- Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`.
+- Completed prior durable task (read-only protocol verification) and refreshed handoff/next-agent task.
+- Re-verified: `AGENT_STOP` present with reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged (`sha256sum`); git `main` tracking `origin/main`, HEAD `c6fd3c2` (`chore(kilo): checkpoint agent session`), origin/main == HEAD, working tree clean at verification start; key artifacts present; `research_state/prompt_evolution.md` header-only (no proposals); protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged.
+- Statically checked `src/holdout_runner.py` refusal logic (`verify_execution_authorized`, `src/holdout_runner.py:111`) and CLI flags `--execute-holdout`/`--protocol-hash` (`src/holdout_runner.py:817-818`) without execution.
+
+**Verification (this session):**
+- `AGENT_STOP`: present (validation-only cycle complete; `RESEARCH_MORE`; locked holdout not executed/authorized).
+- Protocol hash: `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`.
+- Git: HEAD `c6fd3c2`, `origin/main` == HEAD, clean at verification start; recent checkpoints touched only `research_state/agent_handoff.md`.
+- Environment: `numpy` and `pytest` missing (`ModuleNotFoundError`); `data/` absent (gitignored). Prior recorded suite results unchanged (see Current state).
+- Holdout not executed/tuned.
+
+**Result:** Prior durable task complete. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force. No autonomous action permitted.
