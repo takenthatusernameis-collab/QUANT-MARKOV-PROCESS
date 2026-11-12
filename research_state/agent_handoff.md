@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T04:15:18Z (session: re-read durable handoff/task, `AGENT_STOP`, and key artifacts; re-verified protocol hash and environment; handoff refreshed; no research started)
+**Updated:** 2026-11-12T04:16:37Z (session: read durable handoff/task, `AGENT_STOP`, and key artifacts; re-verified protocol hash, git state, and environment; handoff already complete; no research started)
 
 ## Mission
 
@@ -48,7 +48,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-12T04:15:18Z)
+## Current session (2026-11-12T04:16:37Z)
 
 **Actions taken:**
 - Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`.
