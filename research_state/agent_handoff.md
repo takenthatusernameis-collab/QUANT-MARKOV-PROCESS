@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T07:18:45Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`; prior durable task re-verified complete — no new research started; verified git `main...origin/main` clean at HEAD `699f8df` (checkpoint commit on `main` that only refreshed this handoff; prior handoff recorded `1591847`/`1df8c5b`/`35e0bfe`/`a4168d2`/`c99a7b4`/`50d2d28` and earlier checkpoints, all on `main`, no divergence), key artifacts present, `AGENT_STOP` reason confirmed, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (sha256sum) re-verified, holdout not run/tuned, `data/` absent/gitignored; handoff refreshed with clear initial task for next agent; `AGENT_STOP` respected)
+**Updated:** 2026-11-12T07:20:00Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`; prior durable task re-verified complete — no new research started; verified git `main...origin/main` clean at HEAD `7550b7b` (checkpoint commit on `main` that only refreshed this handoff; prior handoff recorded `699f8df`/`a4168d2`/`c99a7b4`/`50d2d28` and earlier checkpoints, all on `main`, no divergence), key artifacts present, `AGENT_STOP` reason confirmed, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (sha256sum) re-verified, holdout not run/tuned, `data/` absent/gitignored; handoff refreshed with clear initial task for next agent; `AGENT_STOP` respected)
 
 ## Mission
 
@@ -48,23 +48,23 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-12T07:18:45Z)
+## Current session (2026-11-12T07:20:00Z)
 
 **Actions taken:**
 - Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`.
 - **Prior durable task re-verified complete**: validation-only cycle remains closed (`RESEARCH_MORE`) with `AGENT_STOP` in force; no new research started.
-- Verified git state: `main...origin/main`, clean working tree at session start, HEAD `699f8df chore(kilo): checkpoint agent session` (newest commit touches only `research_state/agent_handoff.md`; all checkpoint commits on `main`, no divergence).
+- Verified git state: `main...origin/main`, clean working tree at session start, HEAD `7550b7b chore(kilo): checkpoint agent session` (newest commit touches only `research_state/agent_handoff.md`; prior handoff recorded `699f8df`/`a4168d2`/`c99a7b4`/`50d2d28` and earlier checkpoints; all on `main`, no divergence).
 - Verified key artifacts present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
 - Re-verified holdout protocol SHA256 `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum`. Re-read `AGENT_STOP` reason. Holdout not run/tuned.
 - Confirmed `data/` absent (gitignored); tests not re-run this session (deps/data state unchanged from prior verification).
 
-**Result:** Prior durable task confirmed complete. Handoff refreshed (timestamps, git HEAD `699f8df`, state checks) with a clear initial task message for the next agent. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force.
+**Result:** Prior durable task confirmed complete. Handoff refreshed (timestamps, git HEAD `7550b7b`, state checks) with a clear initial task message for the next agent. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force.
 
 ## Initial task message for next agent
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-12T07:18:45Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` re-verified. Git: `main...origin/main`, HEAD `699f8df` at session start (latest commit touches only this handoff). `data/` absent (gitignored); prior verification: holdout-guard tests 19 passed, full suite 124 passed / 21 failed (all data-dependent, no code defects).
+**Repo state (re-verified 2026-11-12T07:20:00Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` re-verified. Git: `main...origin/main`, HEAD `7550b7b` at session start (latest commit touches only this handoff). `data/` absent (gitignored); prior verification: holdout-guard tests 19 passed, full suite 124 passed / 21 failed (all data-dependent, no code defects).
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run the holdout, and do not bypass stop conditions.
 
