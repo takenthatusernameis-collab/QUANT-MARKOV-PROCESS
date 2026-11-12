@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T05:04:54Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, handoff, `research/final_decision_report.md`, and `AGENT_STOP`; re-verified protocol hash, git state/HEAD, key artifacts, and environment; prior durable task confirmed complete; handoff refreshed with clear initial task for next agent; no research started)
+**Updated:** 2026-11-12T05:06:00Z (session: re-verified prior durable task as complete; installed missing runtime deps [numpy, pandas, pyarrow, pytest, scipy, hmmlearn, scikit-learn] in the sandbox; re-ran holdout-guard tests [19 passed]; re-verified all three refusal paths of `src/holdout_runner.py`; confirmed 21 of 145 tests fail only due to absent gitignored raw data; handoff refreshed with clear initial task message for next agent; no research started) (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, handoff, `research/final_decision_report.md`, and `AGENT_STOP`; re-verified protocol hash, git state/HEAD, key artifacts, and environment; prior durable task confirmed complete; handoff refreshed with clear initial task for next agent; no research started)
 
 ## Mission
 
@@ -48,15 +48,22 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-12T05:04:54Z)
+## Current session (2026-11-12T05:06:00Z)
 
 **Actions taken:**
 - Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`.
-- Re-verified the prior durable task ("Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent.") as complete; no new research task started.
-- Re-verified git state: `main...origin/main` (clean working tree), HEAD `76029c3 chore(kilo): checkpoint agent session`.
+- Re-verified the prior durable task as complete; no new research task started.
+- Re-verified git state: `main...origin/main` (clean working tree), HEAD `9e40dbe chore(kilo): checkpoint agent session`.
 - Re-verified key artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`).
-- Re-verified holdout protocol SHA256: `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches frozen). Holdout not run/tuned.
-- Environment: `numpy` not installed; `data/processed/features.parquet` and `data/raw/manifest.json` absent.
+- Re-verified holdout protocol SHA256: `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches frozen; `--print-protocol-hash` returns identical value). Holdout not run/tuned.
+- Installed missing runtime dependencies in the sandbox (`numpy`, `pandas`, `pyarrow`, `pytest`, `scipy`, `hmmlearn`, `scikit-learn`) to enable verification; no repo code changed.
+- Re-ran holdout-guard tests: `PYTHONPATH=. python3 -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed**.
+- Re-verified all three refusal paths of `src/holdout_runner.py` directly:
+  - no flag → exit 2, "Holdout execution refused: --execute-holdout not provided";
+  - `--execute-holdout` only → exit 2, "--protocol-hash is required";
+  - `--execute-holdout --protocol-hash deadbeef` → exit 2, "hash does not match frozen protocol".
+- Full test sweep: `PYTHONPATH=. python3 -m pytest tests/ -q` → 124 passed, **21 failed**; every failure is data-dependent (`FileNotFoundError` for gitignored `data/raw/*.parquet` / `data/processed/features.parquet` / `data/raw/manifest.json`, which are not committed and reproducible only via the manifest). No code defects found.
+- Environment: runtime deps now installed locally in the sandbox; `data/processed/features.parquet` and `data/raw/manifest.json` still absent (gitignored, not reproducible without network retrieval).
 
 **Result:** Prior durable task complete and re-verified. Handoff updated with current state and a clear initial task message for the next agent. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force.
 
@@ -64,7 +71,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-12T05:04:54Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout runner refuses by default; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` re-verified (SHA256 of `research/specifications/holdout_evaluation_protocol.md`). Git: `main...origin/main` (clean), HEAD `76029c3 chore(kilo): checkpoint agent session`. Environment: `numpy` not installed; `data/processed/features.parquet` and `data/raw/manifest.json` absent.
+**Repo state (re-verified 2026-11-12T05:06:00Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout runner refuses by default on all three paths (verified: no-flag, missing-hash, wrong-hash → exit 2); protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` re-verified via `--print-protocol-hash` and `sha256sum` (SHA256 of `research/specifications/holdout_evaluation_protocol.md`). Git: `main...origin/main` (clean), HEAD `9e40dbe chore(kilo): checkpoint agent session`. Holdout-guard tests: 19 passed. Full suite: 124 passed, 21 failed — all 21 failures are data-dependent (gitignored raw/processed parquet absent); no code defects. Environment: runtime deps installed in sandbox; `data/processed/features.parquet` and `data/raw/manifest.json` absent (gitignored).
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run the holdout, and do not bypass stop conditions.
 
