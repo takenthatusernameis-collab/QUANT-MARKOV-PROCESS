@@ -4,16 +4,16 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T21:58:24Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, and `research_state/prompt_evolution.md`; re-verified protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; key artifacts present; git `main` tracking `origin/main`, HEAD `e873e96`, origin/main == HEAD, working tree clean at verification start; `AGENT_STOP` confirmed at repo root; prompt-evolution ledger header-only; protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged via `git diff --name-only HEAD`; holdout guard refusal logic and CLI flags statically checked; no new research started, holdout not run/tuned; handoff consolidated (48 near-duplicate verification blocks folded into one checkpoint table) and single authoritative next-agent task written)
+**Updated:** 2026-11-12T22:46:04Z (session: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `AGENT_STOP`, `research/final_decision_report.md`, `research_state/prompt_evolution.md`; re-verified protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; key artifacts present; git `main` tracking `origin/main`, HEAD `125302d`, origin/main == HEAD, working tree clean; `AGENT_STOP` confirmed at repo root; prompt-evolution ledger header-only; protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged via `git diff --name-only HEAD`; holdout guard refusal logic and CLI flags statically checked; no new research started, holdout not run/tuned; handoff refreshed with this session's verification evidence and a restated stop-respecting next task)
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-12T21:58:24Z)
+## Current state (re-verified 2026-11-12T22:46:04Z)
 
-- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete this session** (read required files and `AGENT_STOP`; independently re-verified cycle closed at `RESEARCH_MORE`, `AGENT_STOP` reason recorded, protocol hash unchanged, key artifacts present, prompt-evolution ledger has no proposals, holdout guard refusal/flags statically checked, protected files unchanged; consolidated and refreshed the handoff and wrote a single clear initial task for the next agent; no new research started).
-- **Git (re-verified):** branch `main` tracking `origin/main`; HEAD `e873e96` (`chore(kilo): checkpoint agent session`); origin/main == HEAD; working tree clean at verification start (handoff modified only by this session). Recent HEAD changes were controller-side checkpoints touching only `research_state/agent_handoff.md`; no research code, data, or protocol changed.
+- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete this session** (read required files and `AGENT_STOP`; independently re-verified cycle closed at `RESEARCH_MORE`, `AGENT_STOP` reason unchanged, protocol hash unchanged, key artifacts present, prompt-evolution ledger has no proposals, holdout guard refusal/flags statically checked, protected files unchanged; refreshed the handoff with exact verification evidence and restated a single stop-respecting initial task for the next agent; no new research started).
+- **Git (re-verified):** branch `main` tracking `origin/main`; HEAD `125302d` (`chore(kilo): checkpoint agent session`); origin/main == HEAD; working tree clean. Recent HEAD changes were controller-side checkpoints touching only `research_state/agent_handoff.md`; no research code, data, or protocol changed.
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Key artifacts verified present:** `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
@@ -51,28 +51,32 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 ## Session log
 
-### Consolidated 2026-11-12T21:58:24Z
+### 2026-11-12T22:46:04Z
 
-**This session:** completed the prior durable task via read-only verification and consolidated this file. Prior 48 per-session blocks (2026-11-12T14:28:55Z–21:56:18Z) each performed the same stop-respecting verification (read required files, re-check `AGENT_STOP`/protocol hash/git/artifacts/ledger/protected files, statically check holdout guard) and refreshed the handoff. No session changed research code, data, protocol, or findings. Those repeated blocks are folded into the compact checkpoint table below; the underlying verification evidence is preserved in Git history (`git log research_state/agent_handoff.md`) and in the controller diagnostics (`research_state/workflow_run_diagnostics.jsonl`).
+**This session:** completed the prior durable handoff task via read-only verification (no research started, holdout not run). Confirmed `AGENT_STOP` present with reason unchanged; protocol hash `50aa8a4f...` unchanged; git `main` tracking `origin/main`, HEAD `125302d`, clean; key artifacts present; prompt-evolution ledger header-only; protected files unchanged; holdout guard still refuses by default (`src/holdout_runner.py:111`, `:817-818`). Refreshed this handoff and restated a single stop-respecting initial task. No code, data, protocol, or findings changed.
 
-**Verification checkpoints (all re-confirmed this session at HEAD `e873e96`):**
+**Verification checkpoints (re-confirmed at HEAD `125302d`):**
 
 | Check | Result |
 | --- | --- |
 | `AGENT_STOP` | present; reason = validation-only cycle complete, `RESEARCH_MORE`, locked holdout not executed/authorized |
 | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged (`sha256sum research/specifications/holdout_evaluation_protocol.md`) |
-| Git | `main` tracking `origin/main`; HEAD `e873e96`; origin/main == HEAD; clean at verification start; recent commits touched only `research_state/agent_handoff.md` |
+| Git | `main` tracking `origin/main`; HEAD `125302d`; origin/main == HEAD; clean; recent commits touched only `research_state/agent_handoff.md` |
 | Protected files | `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*` unchanged (`git diff --name-only HEAD` empty) |
 | Key artifacts | all present (see Current state) |
 | Prompt-evolution ledger | header-only; no proposals |
 | Holdout guard | `verify_execution_authorized` refuses without `--execute-holdout` + matching `--protocol-hash` (`src/holdout_runner.py:111`, `:817-818`); not executed/tuned |
 | Environment | `numpy`/`pytest` missing; `data/` absent; tests not run this session |
 
+### Consolidated 2026-11-12T21:58:24Z
+
+**Prior session:** completed the prior durable task via read-only verification and consolidated this file. Prior 48 per-session blocks (2026-11-12T14:28:55Z–21:56:18Z) each performed the same stop-respecting verification (read required files, re-check `AGENT_STOP`/protocol hash/git/artifacts/ledger/protected files, statically check holdout guard) and refreshed the handoff. No session changed research code, data, protocol, or findings. Those repeated blocks are folded into the compact checkpoint table above; the underlying verification evidence is preserved in Git history (`git log research_state/agent_handoff.md`) and in the controller diagnostics (`research_state/workflow_run_diagnostics.jsonl`).
+
 **Prior checkpoint HEADs (all verified clean at their time):** `0693472, 110ce74, 13065a3, 13f7b5a, 1597f9c, 16acef5, 16c4e92, 1fc4183, 228d504, 26517fd, 2a1c144, 2c004e7, 2eacbdc, 3c0cec0, 3f329da, 3fd834a, 45860d3, 4f30c5e, 5030bbf, 5c97a5d, 63dafa6, 75e6b55, 804180f, 866e2a2, 90083d6, 970990c, 9937ecb, 9bf8e28, a868b15, a8ef5e4, b8651bb, bf778d5, c2844da, c6fd3c2, c8f6ca5, cccfb5f, d162af7, d1f21eb, d9f7f52, dd57320, e39b00c, f2ba106, f531f1b, f6cd63e` (plus earlier consolidated sessions at `cccfb5f`, `b8651bb`, `3c0cec0`, `2eacbdc`, `f6cd63e`).
 
 ## Initial task for next agent
 
-**Do not start autonomous research while `AGENT_STOP` exists.** This session (2026-11-12T21:58:24Z) completed the prior durable handoff task (read-only verification) and consolidated/refreshed this handoff. HEAD at verification: `e873e96` (`chore(kilo): checkpoint agent session`), `main` tracking `origin/main`, working tree clean at verification start.
+**Do not start autonomous research while `AGENT_STOP` exists.** This session (2026-11-12T22:46:04Z) completed the prior durable handoff task (read-only verification) and refreshed this handoff. HEAD at verification: `125302d` (`chore(kilo): checkpoint agent session`), `main` tracking `origin/main`, working tree clean.
 
 1. Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`.
 2. Re-verify and record: `AGENT_STOP` present with reason unchanged, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged, git clean/tracking `origin/main`, key artifacts present, `research_state/prompt_evolution.md` has no proposals, and `src/holdout_runner.py` still refuses without `--execute-holdout` + matching `--protocol-hash`.
