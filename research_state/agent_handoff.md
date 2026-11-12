@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T13:40:47Z (session: re-read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, `research_state/prompt_evolution.md`, and `AGENT_STOP`; verified protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; key artifacts present; git `main` tracking `origin/main`, HEAD `fd3cd5d`, working tree clean; `AGENT_STOP` confirmed with recorded reason; no new research started, holdout not run)
+**Updated:** 2026-11-12T13:43:23Z (session: re-read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, `research_state/prompt_evolution.md`, and `AGENT_STOP`; verified protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` unchanged via `sha256sum`; key artifacts present; git `main` tracking `origin/main`, HEAD `fd3cd5d`, working tree clean; `AGENT_STOP` confirmed with recorded reason; no new research started, holdout not run)
 
 ## Mission
 
@@ -49,7 +49,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-12T13:40:47Z)
+## Current session (2026-11-12T13:43:23Z)
 
 **Actions taken:**
 - Re-read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, `research_state/prompt_evolution.md`, and `AGENT_STOP`.
@@ -67,7 +67,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-12T13:40:47Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`. Git at verification: `main` tracking `origin/main`, HEAD `fd3cd5d` (`chore(kilo): checkpoint agent session`), working tree clean. `data/` absent (gitignored).
+**Repo state (re-verified 2026-11-12T13:43:23Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`. Git at verification: `main` tracking `origin/main`, HEAD `fd3cd5d` (`chore(kilo): checkpoint agent session`), working tree clean. `data/` absent (gitignored).
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run the holdout, and do not bypass stop conditions. Re-verify state (`AGENT_STOP`, protocol hash, git, key artifacts) and refresh/report this handoff only.
 
