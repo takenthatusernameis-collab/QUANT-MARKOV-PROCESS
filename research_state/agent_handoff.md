@@ -4,21 +4,21 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T11:36:48Z (session: re-read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, `research_state/prompt_evolution.md`, and `AGENT_STOP`; prior durable task "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." confirmed complete — re-verified repo state, key artifacts, protocol hash, git state, and `AGENT_STOP`/holdout guard; handoff refreshed with current timestamp and clear initial task message for the next agent; `AGENT_STOP` respected, no new research started)
+**Updated:** 2026-11-12T11:37:57Z (session: re-read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, `research_state/prompt_evolution.md`, and `AGENT_STOP`; re-verified repo state, key artifacts, protocol hash, git state; confirmed the validation-only cycle remains closed at `RESEARCH_MORE` and `AGENT_STOP` remains in force; refreshed handoff with accurate current HEAD and a clear initial task message for the next agent; no new research started)
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-12T11:32:45Z)
+## Current state (re-verified 2026-11-12T11:37:57Z)
 
 - **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete** (this session: read required instructions, handoff, final decision, prompt evolution, and `AGENT_STOP`; re-verified cycle is closed at `RESEARCH_MORE`, key artifacts and holdout guard/protocol hash present, and git up to date/clean at verification; refreshed handoff and retained clear next-agent task; no new research started).
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
-- **Git (at verification):** `main...origin/main` up to date, working tree clean; HEAD `3c50482` (`chore(kilo): checkpoint agent session`).
+- **Git (at verification):** `main...origin/main` up to date, working tree clean; HEAD `0baf36d` (`chore(kilo): checkpoint agent session`).
 - **Key artifacts verified present:** `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
-- **Holdout enforcement:** protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (unchanged per prior verification/manifest). Holdout **not** executed or tuned.
-- **Environment/data note:** `data/` absent (gitignored). Prior session (2026-11-12T11:31:00Z) verified holdout-runner refusal guard (exit 2), holdout-guard tests 19 passed, and full suite 124 passed / 21 failed (all `FileNotFoundError: data/processed/features.parquet`, gitignored data absent — no code defects); not re-run this session.
+- **Holdout enforcement:** protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (verified unchanged this session via `sha256sum`). Holdout **not** executed or tuned.
+- **Environment/data note:** `data/` absent (gitignored). Prior session verified holdout-runner refusal guard (exit 2), holdout-guard tests 19 passed, and full suite 124 passed / 21 failed (all `FileNotFoundError: data/processed/features.parquet`, gitignored data absent — no code defects); not re-run this session (no code/data changes).
 - **Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ## Completed work (summary)
@@ -48,13 +48,14 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Economic dry-run:** zero trades for C1/C2 under frozen base/stress costs and θ∈{0,2,5} bps (validation 1h).
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
-## Current session (2026-11-12T11:35:57Z)
+## Current session (2026-11-12T11:37:57Z)
 
 **Actions taken:**
 - Re-read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, `research_state/prompt_evolution.md`, and `AGENT_STOP`.
-- **Prior durable task completed:** confirmed the validation-only cycle is closed (`RESEARCH_MORE`) with `AGENT_STOP` in force; no new research started.
-- Re-verified repo state: `main...origin/main` up to date and clean at verification (HEAD `95d8e56`), required artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`), protocol hash unchanged (`50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`), holdout not executed/tuned.
-- Refreshed this handoff (timestamp/state/next-agent task). Tests not re-run this session (no code/data changes; prior verification recorded: holdout-runner refusal guard exit 2, holdout-guard tests 19 passed, full suite 124 passed / 21 failed — all `FileNotFoundError: data/processed/features.parquet`, gitignored data absent — no code defects).
+- **Prior durable task:** the handoff's prior task was this same meta-task; confirmed complete. Cycle is closed (`RESEARCH_MORE`) with `AGENT_STOP` in force; no new research started.
+- Re-verified repo state: `main...origin/main` up to date and clean at verification (HEAD `0baf36d`), required artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`), protocol hash unchanged (`50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`), holdout not executed/tuned.
+- `research_state/prompt_evolution.md` has no pending/accepted proposals (empty ledger).
+- Refreshed this handoff (timestamp/state/next-agent task); corrected stale git SHAs. Tests not re-run this session (no code/data changes; prior verification recorded: holdout-runner refusal guard exit 2, holdout-guard tests 19 passed, full suite 124 passed / 21 failed — all `FileNotFoundError: data/processed/features.parquet`, gitignored data absent — no code defects).
 
 **Result:** Prior durable task confirmed complete. Handoff refreshed with a clear initial task message for the next agent. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force.
 
@@ -62,7 +63,7 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-12T11:36:48Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`. Git: `main...origin/main` up to date, HEAD `3c50482` (`chore(kilo): checkpoint agent session`). `data/` absent (gitignored); prior session verified holdout-runner refusal guard (exit 2), holdout-guard tests 19 passed, full suite 124 passed / 21 failed (all `FileNotFoundError: data/processed/features.parquet`, gitignored data absent — no code defects).
+**Repo state (re-verified 2026-11-12T11:37:57Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c are complete with required artifacts; decision recorded in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`. Git: `main...origin/main` up to date, HEAD `0baf36d` (`chore(kilo): checkpoint agent session`). `data/` absent (gitignored); prior session verified holdout-runner refusal guard (exit 2), holdout-guard tests 19 passed, full suite 124 passed / 21 failed (all `FileNotFoundError: data/processed/features.parquet`, gitignored data absent — no code defects).
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run the holdout, and do not bypass stop conditions.
 
