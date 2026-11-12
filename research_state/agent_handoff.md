@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-12T03:03:40Z (session: re-confirmed prior durable task complete; `AGENT_STOP` present, decision `RESEARCH_MORE`; refreshed handoff and next-agent initial message)
+**Updated:** 2026-11-12T03:04:45Z (session: re-confirmed prior durable task complete; `AGENT_STOP` present, decision `RESEARCH_MORE`; refreshed handoff and next-agent initial message)
 **This session:** Prior durable task ("Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent.") was complete at read time (validation-only cycle closed through T5d-robustness-c, decision `RESEARCH_MORE`, `AGENT_STOP` present). Independently re-verified 2026-11-12T02:15:45Z: read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP`; checked git (HEAD `c46d08e`, `## main...origin/main`, working tree clean at verification except this handoff update; controller checkpoint commits only); confirmed key artifacts exist (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`). Holdout protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` remains frozen and runner requires `--execute-holdout` (default refusal not re-executed this session). No tests run (deps/processed-data state not assumed). No holdout run and no new research task started. `AGENT_STOP` respected.
 
 ## Mission
@@ -355,11 +355,26 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 **Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
+## Current session (2026-11-12T03:04:45Z)
+
+**Actions taken (this session):**
+- Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `research/final_decision_report.md`, and `AGENT_STOP` (reason: validation-only cycle complete / `RESEARCH_MORE`; holdout not executed/authorized).
+- Confirmed prior durable task complete at read time: validation-only cycle closed through T5d-robustness-c, decision **`RESEARCH_MORE`**, stop condition met (`AGENT_STOP` present).
+- Git: `git status -sb` → `## main...origin/main`, working tree clean; HEAD `d13bb8c` (controller checkpoint commits only since prior handoff; no new research artifacts or stop-condition change).
+- Verified key artifacts present via `ls`: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`.
+- Holdout enforcement: recomputed protocol hash from `research/specifications/holdout_evaluation_protocol.md` → `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches frozen value). Runner fails at `import numpy` in this environment (`ModuleNotFoundError`), so default-refusal exit code not directly observable; refusal-by-design confirmed by source (requires `--execute-holdout` + matching hash). Holdout not executed or tuned.
+- Data state: `data/processed/features.parquet` and `data/raw/manifest.json` absent in this environment; tests not run.
+- No new research task started; no holdout executed/tuned.
+
+**Result:** Prior durable task completed/re-confirmed. Cycle remains `COMPLETE` / `RESEARCH_MORE`; `AGENT_STOP` remains in force. Handoff updated and next-agent initial message refreshed.
+
+**Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
+
 ## Initial task message for next agent
 
 Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, this handoff, `research/final_decision_report.md`, and `AGENT_STOP` before taking any action.
 
-**Repo state (re-verified 2026-11-12T03:03:40Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default without `--execute-holdout` (protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062`). Git at verification: HEAD `1728c62`, `## main...origin/main`, working tree clean except this handoff update (controller checkpoint commits only). Note: `numpy` is not installed in this environment (`ModuleNotFoundError`), so data-dependent tests/code cannot run until deps are installed; `data/processed/features.parquet` may also be absent.
+**Repo state (re-verified 2026-11-12T03:04:45Z):** `COMPLETE` / `RESEARCH_MORE` for the C1/C2 validation-only cycle. Tasks through T5d-robustness-c complete with required artifacts; decision in `research/final_decision_report.md`. `AGENT_STOP` exists at repo root (validation-only cycle complete / `RESEARCH_MORE`; locked holdout not executed/authorized). Holdout runner refuses by default without `--execute-holdout`; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` re-verified by recomputing SHA256 of `research/specifications/holdout_evaluation_protocol.md`. Git at verification: HEAD `d13bb8c`, `## main...origin/main`, working tree clean except this handoff update (controller checkpoint commits only). Environment note: `numpy` is not installed (`ModuleNotFoundError`), so data-dependent tests/code cannot run until deps are installed; `data/processed/features.parquet` and `data/raw/manifest.json` are absent in this environment.
 
 **Your task:** **None while `AGENT_STOP` exists.** Do not start autonomous research, do not run holdout, and do not bypass stop conditions.
 
