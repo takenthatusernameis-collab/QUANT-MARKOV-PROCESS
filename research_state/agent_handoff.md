@@ -4,16 +4,16 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-13T06:29:10Z (completed prior durable task via read-only re-verification at HEAD `0fa3584` [origin/main]; working tree clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches `research/specifications/holdout_evaluation_protocol.md`; `data/` absent; runtime holdout-guard invocation and pytest unavailable this session due to missing `numpy`/`pytest` in env — carried forward: refusal EXIT:2, holdout-guard **19 passed**, full suite **124 passed / 21 failed** all data-missing; no research, holdout run, or repo code/data/protocol changes)
+**Updated:** 2026-11-13T06:31:20Z (completed prior durable task via read-only re-verification at HEAD `19118c7` [origin/main]; working tree clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches `research/specifications/holdout_evaluation_protocol.md`; `data/` absent; runtime holdout-guard invocation and pytest unavailable this session due to missing `numpy`/`pytest` in env — carried forward: refusal EXIT:2, holdout-guard **19 passed**, full suite **124 passed / 21 failed** all data-missing; no research, holdout run, or repo code/data/protocol changes)
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-13T06:29:10Z)
+## Current state (re-verified 2026-11-13T06:31:20Z)
 
-- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete this session** (read-only re-verification at HEAD `0fa3584` [origin/main]).
-- **Git:** branch `main` tracking `origin/main`; HEAD `0fa3584` (`chore(kilo): checkpoint agent session`); HEAD == origin/main; working tree clean before this session's handoff edit. Only changes since prior recorded HEAD `fb3afc2e` are controller checkpoints (including `research_state/agent_handoff.md` updates); no research code, data, or protocol changed.
+- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete this session** (read-only re-verification at HEAD `19118c7` [origin/main]).
+- **Git:** branch `main` tracking `origin/main`; HEAD `19118c7` (`chore(kilo): checkpoint agent session`); HEAD == origin/main; working tree clean before this session's handoff edit. Only changes since prior recorded HEAD `0fa3584` are controller checkpoints (including `research_state/agent_handoff.md` updates); no research code, data, or protocol changed.
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -22,7 +22,7 @@ Determine whether Markov-process-based representations can produce a statistical
   | --- | --- |
   | `AGENT_STOP` | present; reason unchanged (validation-only complete, `RESEARCH_MORE`, holdout not executed/authorized) |
   | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (recomputed via `sha256sum`, matches `research/specifications/holdout_evaluation_protocol.md`) |
-  | Git | `main` tracking `origin/main`; HEAD == origin/main `0fa3584`; `git status -sb` clean pre-edit |
+  | Git | `main` tracking `origin/main`; HEAD == origin/main `19118c7`; `git status -sb` clean pre-edit |
   | Diff vs origin/main (protected) | `git diff origin/main -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` empty (0 lines) |
   | Key artifacts | all present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json` |
   | Prompt-evolution ledger | `research_state/prompt_evolution.md` header-only (13 lines, no proposals) |
@@ -62,6 +62,10 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
 ## Session log
+
+### 2026-11-13T06:31:20Z
+
+**This session:** completed prior durable task (read-only re-verification at HEAD `19118c7` [origin/main], `chore(kilo): checkpoint agent session`; working tree clean pre-edit). `AGENT_STOP` present/reason unchanged (validation-only complete, `RESEARCH_MORE`, holdout not executed/authorized); protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches `research/specifications/holdout_evaluation_protocol.md`; `git status -sb` clean pre-edit; `main` tracks `origin/main`, HEAD == origin/main `19118c7`; protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) empty diff vs `origin/main` (0 lines); key artifacts present (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`); `research_state/prompt_evolution.md` header-only (13 lines, no proposals); `data/` absent; venv absent. Runtime holdout-guard check not executable this session (`python3 src/holdout_runner.py` → `ModuleNotFoundError: No module named 'numpy'` EXIT:1); tests not re-run (`python3 -m pytest` → `No module named pytest`). Carried forward (no material change, `data/` absent): runtime refusal "Holdout execution refused: --execute-holdout not provided." (EXIT:2), holdout-guard **19 passed**, full suite **124 passed / 21 failed** (all missing gitignored data). No autonomous research started; locked holdout not executed or tuned; no repo code/data/protocol changes. Updated handoff and restated next-agent task.
 
 ### 2026-11-13T06:29:10Z
 
@@ -171,7 +175,7 @@ Every listed HEAD was verified at the time as: `AGENT_STOP` present with unchang
 
 | Date/time (UTC) | HEAD | Notes |
 | --- | --- | --- |
-| 2026-11-13T06:29:10Z | `0fa3584` | holdout-guard/tests not executable (missing numpy/pytest, EXIT:1); handoff updated (stop-respecting re-verification) |
+| 2026-11-13T06:31:20Z | `19118c7` | holdout-guard/tests not executable (missing numpy/pytest, EXIT:1); handoff updated (stop-respecting re-verification) |
 | 2026-11-13T06:24:37Z | `e5167f3` | holdout-guard/tests not executable (missing numpy/pytest, EXIT:1); handoff updated (stop-respecting re-verification) |
 | 2026-11-13T06:25:50Z | `fb3afc2e` | holdout-guard/tests not executable (missing numpy/pytest, EXIT:1); handoff updated (stop-respecting re-verification) |
 | 2026-11-13T05:32:15Z | `42cd4a8` | holdout-guard/tests not executable (missing numpy/pytest, EXIT:1); handoff updated (stop-respecting re-verification) |
@@ -231,9 +235,9 @@ Every listed HEAD was verified at the time as: `AGENT_STOP` present with unchang
 3. If `AGENT_STOP` remains and no explicit human authorization is provided, do **not** start research and do **not** run/tune the locked holdout. Refresh this handoff with exact verification evidence and restate the stop-respecting task. Keep the session log compact (append one short entry).
 4. Only with explicit human authorization to remove `AGENT_STOP` (record scope/evidence in handoff): perform exactly one bounded, predeclared `RESEARCH_MORE` task (materially different family/state/costs/horizon with falsifiable criteria, data contract, validation, baselines, costs, gates) or an explicitly authorized locked-holdout run per frozen protocol. Do not retune/rescue C1/C2, do not tune on holdout outcomes, no trading/deployment/credentials, and do not edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
-## Next-agent initial task message (2026-11-13T06:24:37Z)
+## Next-agent initial task message (2026-11-13T06:31:20Z)
 
-> **Task:** Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`. Re-verify (read-only) that the validation-only cycle remains closed: `AGENT_STOP` present with unchanged reason, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` matches `research/specifications/holdout_evaluation_protocol.md`, git `main` tracks `origin/main` (HEAD == origin/main `fb3afc2e`, clean pre-edit), key artifacts present, `research_state/prompt_evolution.md` has no proposals, and `src/holdout_runner.py` refusal guard remains intact (runtime refusal expected EXIT:2 when deps available; this session saw `ModuleNotFoundError: numpy` and pytest unavailable due to missing env deps, and venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` absent). With `data/` absent and deps installed expect **124 passed / 21 failed** (all data-missing) and holdout-guard **19 passed** (`tests/test_holdout_runner.py` + `tests/test_holdout_runner_t5c.py`); if deps/tests unavailable record exact evidence and carry forward. Append one compact session-log entry with exact evidence and restate this same stop-respecting task. Do **not** start autonomous research, run/tune the locked holdout, or edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Proceed with a bounded `RESEARCH_MORE` task or authorized locked-holdout run only if a human explicitly removes/authorizes `AGENT_STOP` and records scope/evidence in the handoff.
+> **Task:** Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`. Re-verify (read-only) that the validation-only cycle remains closed: `AGENT_STOP` present with unchanged reason, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` matches `research/specifications/holdout_evaluation_protocol.md`, git `main` tracks `origin/main` (HEAD == origin/main `19118c7`, clean pre-edit), key artifacts present, `research_state/prompt_evolution.md` has no proposals, and `src/holdout_runner.py` refusal guard remains intact (runtime refusal expected EXIT:2 when deps available; this session saw `ModuleNotFoundError: numpy` and pytest unavailable due to missing env deps, and venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` absent). With `data/` absent and deps installed expect **124 passed / 21 failed** (all data-missing) and holdout-guard **19 passed** (`tests/test_holdout_runner.py` + `tests/test_holdout_runner_t5c.py`); if deps/tests unavailable record exact evidence and carry forward. Append one compact session-log entry with exact evidence and restate this same stop-respecting task. Do **not** start autonomous research, run/tune the locked holdout, or edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Proceed with a bounded `RESEARCH_MORE` task or authorized locked-holdout run only if a human explicitly removes/authorizes `AGENT_STOP` and records scope/evidence in the handoff.
 
 ### 2026-11-13T06:25:50Z
 
