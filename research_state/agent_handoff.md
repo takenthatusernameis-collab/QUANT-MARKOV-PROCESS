@@ -4,16 +4,16 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-13T08:39:48Z (completed prior durable task via read-only re-verification at HEAD `cb7147e` [origin/main], `chore(kilo): checkpoint agent session`; working tree clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches `research/specifications/holdout_evaluation_protocol.md`; `--print-protocol-hash` confirms; `data/` absent; runtime holdout-guard invocations and pytest re-run this session from scratch venv built from `requirements.txt`; no research, holdout run, or repo code/data/protocol changes)
+**Updated:** 2026-11-13T08:43:06Z (completed prior durable task via read-only re-verification at HEAD `3d4ae8e` [origin/main], `chore(kilo): checkpoint agent session`; working tree clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches `research/specifications/holdout_evaluation_protocol.md`; `--print-protocol-hash` confirms; `data/` absent; runtime holdout-guard invocations and pytest re-run this session from scratch venv built from `requirements.txt`; no research, holdout run, or repo code/data/protocol changes)
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-13T08:39:48Z)
+## Current state (re-verified 2026-11-13T08:43:06Z)
 
-- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete this session** (read-only re-verification at HEAD `cb7147e` [origin/main]).
-- **Git:** branch `main` tracking `origin/main`; HEAD `cb7147e` (`chore(kilo): checkpoint agent session`); HEAD == origin/main; working tree clean before this session's handoff edit. Change since prior recorded HEAD `46b1ec9` is controller checkpoint only (`research_state/agent_handoff.md` + diagnostics); no research code, data, or protocol changed.
+- **Prior durable task:** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — **complete this session** (read-only re-verification at HEAD `3d4ae8e` [origin/main]).
+- **Git:** branch `main` tracking `origin/main`; HEAD `3d4ae8e` (`chore(kilo): checkpoint agent session`); HEAD == origin/main; working tree clean before this session's handoff edit. Change since prior recorded HEAD `cb7147e` is controller checkpoint only (`research_state/agent_handoff.md` + diagnostics); no research code, data, or protocol changed.
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -22,13 +22,13 @@ Determine whether Markov-process-based representations can produce a statistical
   | --- | --- |
   | `AGENT_STOP` | present; reason unchanged (validation-only complete, `RESEARCH_MORE`, holdout not executed/authorized) |
   | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (recomputed via `sha256sum`, matches `research/specifications/holdout_evaluation_protocol.md` and `--print-protocol-hash` EXIT:0) |
-  | Git | `main` tracking `origin/main`; HEAD == origin/main `cb7147e`; `git status -sb` clean pre-edit |
+  | Git | `main` tracking `origin/main`; HEAD == origin/main `3d4ae8e`; `git status -sb` clean pre-edit |
   | Diff vs origin/main (protected) | `git diff origin/main -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` empty (0 lines) |
   | Key artifacts | all present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json` |
   | Prompt-evolution ledger | `research_state/prompt_evolution.md` header-only (13 lines, no proposals) |
   | Data | `data/` absent (gitignored) |
   | Holdout guard (runtime, venv) | `python3 src/holdout_runner.py` → "Holdout execution refused: --execute-holdout not provided." EXIT:2; `--execute-holdout` (no hash) → "refused: --protocol-hash is required with --execute-holdout." EXIT:2; `--execute-holdout --protocol-hash deadbeef` → "provided protocol hash does not match frozen protocol" EXIT:2; `--print-protocol-hash` → `50aa8a4f…166062` EXIT:0; `python3 -m py_compile src/holdout_runner.py` EXIT:0 |
-  | Tests (venv `/home/runner/work/_temp/kilo-tmp/qmp-venv`) | holdout-guard **19 passed** in 1.92s EXIT:0; full suite **124 passed / 21 failed** in 6.75s EXIT:1 (all 21 failures are missing gitignored `data/` paths — no regression) |
+  | Tests (venv `/home/runner/work/_temp/kilo-tmp/qmp-venv`) | holdout-guard **19 passed** in 1.56s EXIT:0; full suite **124 passed / 21 failed** in 6.01s EXIT:1 (all 21 failures are missing gitignored `data/` paths — no regression) |
 
 - **Holdout enforcement:** protocol hash unchanged; default refusal + required `--execute-holdout` + matching `--protocol-hash`. Holdout **not** executed or tuned.
 - **Environment/data note:** `data/` absent (gitignored). Full suite requires deps installed and `data/` restored (or re-ingest via `src/data_ingestion.py`).
@@ -66,6 +66,9 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 ### 2026-11-13T08:39:48Z
 **This session:** completed prior durable task (read-only re-verification at HEAD `cb7147e` [origin/main], `chore(kilo): checkpoint agent session`; change since last-recorded `46b1ec9` is controller checkpoint only; working tree clean pre-edit). `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches protocol file and `--print-protocol-hash` (EXIT:0); git `main` tracking `origin/main`, HEAD == origin/main `cb7147e`, clean pre-edit; protected diff vs `origin/main` empty (0 lines); key artifacts present; `research_state/prompt_evolution.md` header-only (13 lines, no proposals); `data/` absent. Built scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` from `requirements.txt` and ran: `python3 -m py_compile src/holdout_runner.py` EXIT:0; `src/holdout_runner.py` (no flag) → refusal EXIT:2; `--execute-holdout` (no hash) → refusal EXIT:2; `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; `--print-protocol-hash` → `50aa8a4f…166062` EXIT:0; holdout-guard tests **19 passed** in 1.92s EXIT:0; full suite **124 passed / 21 failed** in 6.75s EXIT:1 (all 21 missing gitignored `data/`, no regression). No autonomous research started; locked holdout not executed or tuned; no repo code/data/protocol changes.
+
+### 2026-11-13T08:43:06Z
+**This session:** completed prior durable task (read-only re-verification at HEAD `3d4ae8e` [origin/main], `chore(kilo): checkpoint agent session`; change since last-recorded `cb7147e` is controller checkpoint only; working tree clean pre-edit). `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches protocol file and `--print-protocol-hash` (EXIT:0); git `main` tracking `origin/main`, HEAD == origin/main `3d4ae8e`, clean pre-edit; protected diff vs `origin/main` empty (0 lines); key artifacts present; `research_state/prompt_evolution.md` header-only (13 lines, no proposals); `data/` absent. Built scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` from `requirements.txt` and ran: `python3 -m py_compile src/holdout_runner.py` EXIT:0; `src/holdout_runner.py` (no flag) → refusal EXIT:2; `--execute-holdout` (no hash) → refusal EXIT:2; `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; `--print-protocol-hash` → `50aa8a4f…166062` EXIT:0; holdout-guard tests **19 passed** in 1.56s EXIT:0; full suite **124 passed / 21 failed** in 6.01s EXIT:1 (all 21 missing gitignored `data/`, no regression). No autonomous research started; locked holdout not executed or tuned; no repo code/data/protocol changes.
 
 ### 2026-11-13T08:32:56Z
 **Prior (summary):** read-only re-verification at HEAD `46b1ec9`; `AGENT_STOP`/hash/guards/protected-files unchanged; key artifacts present; prompt ledger empty; `data/` absent. Scratch venv from updated `requirements.txt`: guard invocations EXIT:2/2/2/0, `py_compile` EXIT:0, holdout-guard **19 passed** (1.48s), full suite **124 passed / 21 failed** (6.75s-era comparable; all missing gitignored `data/`). No research/holdout run/code/data/protocol changes.
