@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-13T04:44:00Z (completed prior durable task via read-only re-verification at HEAD `47da4ce` [origin/main]; working tree clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed/matches; runtime holdout refusal EXIT:2; holdout-guard **19 passed** in 1.11s; `data/` absent; no research, holdout run, or repo code/data/protocol changes)
+**Updated:** 2026-11-13T04:44:19Z (completed prior durable task via read-only re-verification at HEAD `47da4ce` [origin/main]; working tree clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed/matches; runtime holdout refusal EXIT:2; holdout-guard **19 passed** in 1.11s; `data/` absent; no research, holdout run, or repo code/data/protocol changes)
 
 ## Mission
 
@@ -62,6 +62,10 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 - **Caveats:** HMM EM convergence/init sensitivity, train-vs-validation transition non-stationarity (Chow p=0.0042), discretization sensitivity, limited effective sample sizes/temporal dependence.
 
 ## Session log
+
+### 2026-11-13T04:44:19Z
+
+**This session:** read prior agent task from durable handoff (`AGENT_STOP` present; validation-only cycle closed; `RESEARCH_MORE`; holdout not executed/authorized). Independently re-verified at HEAD `47da4ce` [origin/main]: `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` recomputed via `sha256sum` and matches `research/specifications/holdout_evaluation_protocol.md`; git `main` tracks `origin/main` (HEAD == origin/main); `git status -sb` clean pre-edit; protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) empty diff vs `origin/main`; key artifacts all present (`AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`); `research_state/prompt_evolution.md` header-only (13 lines, no proposals); `data/` absent. Holdout guard refusal verified at runtime (`python3 src/holdout_runner.py` → "Holdout execution refused: --execute-holdout not provided." EXIT:2). Holdout-guard tests carried forward **19 passed** (`tests/test_holdout_runner.py` + `tests/test_holdout_runner_t5c.py`, EXIT:0); full suite not re-run (no material change, `data/` absent; carried forward **124 passed / 21 failed**, all missing gitignored data). No autonomous research started; locked holdout not executed or tuned; no repo code/data/protocol changes. Updated handoff and restated next-agent task.
 
 ### 2026-11-13T04:44:00Z
 
@@ -154,6 +158,6 @@ Every listed HEAD was verified at the time as: `AGENT_STOP` present with unchang
 3. If `AGENT_STOP` remains and no explicit human authorization is provided, do **not** start research and do **not** run/tune the locked holdout. Refresh this handoff with exact verification evidence and restate the stop-respecting task. Keep the session log compact (append one short entry).
 4. Only with explicit human authorization to remove `AGENT_STOP` (record scope/evidence in handoff): perform exactly one bounded, predeclared `RESEARCH_MORE` task (materially different family/state/costs/horizon with falsifiable criteria, data contract, validation, baselines, costs, gates) or an explicitly authorized locked-holdout run per frozen protocol. Do not retune/rescue C1/C2, do not tune on holdout outcomes, no trading/deployment/credentials, and do not edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
-## Next-agent initial task message (2026-11-13T04:44:00Z)
+## Next-agent initial task message (2026-11-13T04:44:19Z)
 
 > **Task:** Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `research_state/agent_handoff.md`, `AGENT_STOP`, and `research/final_decision_report.md`. Re-verify (read-only) that the validation-only cycle remains closed: `AGENT_STOP` present with unchanged reason, protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` matches `research/specifications/holdout_evaluation_protocol.md`, git `main` tracks `origin/main` (HEAD == origin/main, clean pre-edit; controller checkpoints only touch `research_state/agent_handoff.md`), key artifacts present, `research_state/prompt_evolution.md` has no proposals, and `src/holdout_runner.py` refuses holdout execution without `--execute-holdout` + matching `--protocol-hash` (runtime refusal expected EXIT:2). Python deps available; with `data/` absent expect **124 passed / 21 failed** (all data-missing) and holdout-guard **19 passed** (`tests/test_holdout_runner.py` + `tests/test_holdout_runner_t5c.py`). Append one compact session-log entry with exact evidence and restate this same stop-respecting task. Do **not** start autonomous research, run/tune the locked holdout, or edit `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`. Proceed with a bounded `RESEARCH_MORE` task or authorized locked-holdout run only if a human explicitly removes/authorizes `AGENT_STOP` and records scope/evidence in the handoff.
