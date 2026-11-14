@@ -4,16 +4,16 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-14T11:53:00Z (stop-respecting re-verification at HEAD `b8d71e7`; controller advance since last verified checkpoint is `1c40fe0..b8d71e7` handoff-only (`git diff --name-only 1c40fe0..HEAD` → `research_state/agent_handoff.md` only); state refreshed in place per PE-001, `NO_NEW_INFORMATION` for stop/protocol/guard/test outcomes; `git status -sb` clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python src/holdout_runner.py --print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; holdout-guard tests `pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 1.69s EXIT:0; full suite not re-run this session (prior: 124 passed / 21 failed, all missing gitignored `data/`); no research, holdout run/tuning, or protected-file edits)
+**Updated:** 2026-11-14T12:34:41Z (stop-respecting re-verification at HEAD `7203abd`; controller advance since last verified checkpoint is `b8d71e7..7203abd` handoff-only (`git diff --name-only b8d71e7..HEAD` → `research_state/agent_handoff.md` only); state refreshed in place per PE-001, `NO_NEW_INFORMATION` for stop/protocol/guard/test outcomes; `git status -sb` clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python src/holdout_runner.py --print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; holdout-guard tests `pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 1.51s EXIT:0; full suite not re-run this session (prior: 124 passed / 21 failed, all missing gitignored `data/`); no research, holdout run/tuning, or protected-file edits)
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-14T11:53:00Z)
+## Current state (re-verified 2026-11-14T12:34:41Z)
 
-- **Prior durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — stop-respecting re-verification completed at HEAD `b8d71e7` (controller advance since last verified checkpoint is `1c40fe0..b8d71e7` handoff-only; `git status -sb` clean pre-edit; protected-file diff vs `origin/main` empty). Cycle remains complete (`AGENT_STOP` present/reason unchanged, `status: COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` matches `research/specifications/holdout_evaluation_protocol.md`. Guard refusals all EXIT:2; `--print-protocol-hash` EXIT:0. Holdout-guard tests 19 passed in 1.69s EXIT:0. Restated clear initial task message for next agent. No new research, no holdout run/tuning, no protected-file edits.
-- **Git:** branch `main` tracking `origin/main`; HEAD `b8d71e7`; `git status -sb` clean pre-edit; `1c40fe0..b8d71e7` handoff-only controller advance.
+- **Prior durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — stop-respecting re-verification completed at HEAD `7203abd` (controller advance since last verified checkpoint is `b8d71e7..7203abd` handoff-only; `git status -sb` clean pre-edit; protected-file diff vs `origin/main` empty). Cycle remains complete (`AGENT_STOP` present/reason unchanged, `status: COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` matches `research/specifications/holdout_evaluation_protocol.md`. Guard refusals all EXIT:2; `--print-protocol-hash` EXIT:0. Holdout-guard tests 19 passed in 1.51s EXIT:0. Restated clear initial task message for next agent. No new research, no holdout run/tuning, no protected-file edits.
+- **Git:** branch `main` tracking `origin/main`; HEAD `7203abd`; `git status -sb` clean pre-edit; `b8d71e7..7203abd` handoff-only controller advance.
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -22,9 +22,9 @@ Determine whether Markov-process-based representations can produce a statistical
 | --- | --- |
 | `AGENT_STOP` | present; reason unchanged (validation-only complete, `RESEARCH_MORE`, holdout not executed/authorized) |
 | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches `research/specifications/holdout_evaluation_protocol.md`) via `sha256sum` and `--print-protocol-hash` EXIT:0 |
-| Git | `main` tracking `origin/main`; HEAD `b8d71e7`; clean pre-edit; `1c40fe0..b8d71e7` handoff-only controller advance |
+| Git | `main` tracking `origin/main`; HEAD `7203abd`; clean pre-edit; `b8d71e7..7203abd` handoff-only controller advance |
 | Runtime guards | no-flag EXIT:2, `--execute-holdout` EXIT:2, bad-hash (`deadbeef`) mismatch EXIT:2, `--print-protocol-hash` EXIT:0 |
-| Tests | holdout-guard 19 passed in 1.69s EXIT:0; full suite not re-run this session (prior: 124 passed / 21 failed, all missing gitignored `data/`) |
+| Tests | holdout-guard 19 passed in 1.51s EXIT:0; full suite not re-run this session (prior: 124 passed / 21 failed, all missing gitignored `data/`) |
 | Key artifacts | present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`, `research_state/prompt_evolution.md` |
 | Prompt-evolution ledger | `research_state/prompt_evolution.md` — PE-001, PE-002 pending; none accepted |
 | Protected diff / data / env | `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*` clean vs HEAD/origin; `data/` absent (gitignored); venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present, functional |
@@ -36,7 +36,7 @@ Determine whether Markov-process-based representations can produce a statistical
 
 **Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff. `AGENT_STOP` is present and the validation-only cycle is `COMPLETE` (`RESEARCH_MORE`); perform no autonomous research, no holdout execution/tuning, and no protected-file edits.** Your bounded task is stop-respecting re-verification only: confirm `AGENT_STOP` and the protocol hash/guards remain unchanged, record exact command outcomes, and refresh this handoff in place per PE-001 if state is unchanged. If explicit user authorization or materially new repo state removes the stop condition, remove/justify `AGENT_STOP`, choose one high-value bounded `RESEARCH_MORE` task with a distinct rationale, and define falsification criteria before implementation.
 
-**Current verified state (2026-11-14T11:53:00Z):** HEAD `b8d71e7` [origin/main]; controller advance since last verified checkpoint is `1c40fe0..b8d71e7` (handoff-only). Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches `research/specifications/holdout_evaluation_protocol.md`). Guard refusals: no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2, `--print-protocol-hash` → EXIT:0. Holdout-guard tests: 19 passed in 1.69s EXIT:0. `data/` absent (gitignored); scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional. `research_state/prompt_evolution.md` holds PE-001/PE-002 pending, none accepted.
+**Current verified state (2026-11-14T12:34:41Z):** HEAD `7203abd` [origin/main]; controller advance since last verified checkpoint is `b8d71e7..7203abd` (handoff-only). Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches `research/specifications/holdout_evaluation_protocol.md`). Guard refusals: no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2, `--print-protocol-hash` → EXIT:0. Holdout-guard tests: 19 passed in 1.51s EXIT:0. `data/` absent (gitignored); scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional. `research_state/prompt_evolution.md` holds PE-001/PE-002 pending, none accepted.
 
 ## Completed work (summary)
 
@@ -67,68 +67,29 @@ All planned validation-only tasks through T5d-robustness-c are complete with dur
 
 ## Session log
 
+  ### 2026-11-14T12:34:41Z
+  **This session:** completed the prior durable task — read the prior agent task from the durable handoff and completed stop-respecting re-verification only (`AGENT_STOP` present/reason unchanged, status `COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Re-verified state at HEAD `7203abd` [origin/main] (controller advance since last verified checkpoint is `b8d71e7..7203abd` handoff-only, `git diff --name-only b8d71e7..HEAD` → `research_state/agent_handoff.md` only; `git status -sb` clean pre-edit; protected-file diff vs HEAD/origin empty for `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`). Read-only/runtime re-verification (venv present, `PYTHONPATH=.`): protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `holdout_runner.py --print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; holdout-guard tests `pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 1.51s EXIT:0. Full suite not re-run (prior: 124 passed / 21 failed, all missing gitignored `data/`; no code changes). Key artifacts present; `research_state/prompt_evolution.md` PE-001/PE-002 pending, none accepted; `data/` absent; venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional. Maintenance: refreshed handoff in place per PE-001 — `NO_NEW_INFORMATION` for stop/protocol/guard/test outcomes (handoff-only controller advance). No autonomous research started; locked holdout not executed or tuned; no changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`, `src/`, `tests/`, or `data/`. Restated clear initial task message for next agent.
+
   ### 2026-11-14T11:50:46Z
-  **This session:** completed the prior durable task — read the prior agent task from the durable handoff and completed stop-respecting re-verification only (`AGENT_STOP` present/reason unchanged, status `COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Re-verified state at HEAD `1c40fe0` [origin/main] (controller advance since last verified checkpoint is `dd18063..1c40fe0` handoff-only, `git diff --name-only dd18063..HEAD` → `research_state/agent_handoff.md` only; `git status -sb` clean pre-edit; protected-file diff vs HEAD/origin empty for `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`). Read-only/runtime re-verification (venv present, `PYTHONPATH=.`): protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `holdout_runner.py --print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; holdout-guard tests `pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 1.53s EXIT:0. Full suite not re-run (prior: 124 passed / 21 failed, all missing gitignored `data/`; no code changes). Key artifacts present; `research_state/prompt_evolution.md` PE-001/PE-002 pending, none accepted; `data/` absent; venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional. Maintenance: refreshed handoff in place per PE-001 — `NO_NEW_INFORMATION` for stop/protocol/guard/test outcomes (handoff-only controller advance). No autonomous research started; locked holdout not executed or tuned; no changes to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`, `src/`, `tests/`, or `data/`. Restated clear initial task message for next agent.
+  **This session:** completed the prior durable task — stop-respecting re-verification at HEAD `1c40fe0` (`dd18063..1c40fe0` handoff-only). Protocol hash verified (sha256sum + `--print-protocol-hash` EXIT:0); guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.53s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### 2026-11-14T11:48:41Z
-  **This session:** completed the prior durable task — read the prior agent task from the durable handoff and completed stop-respecting re-verification only (`AGENT_STOP` present/reason unchanged, status `COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Re-verified state at HEAD `dd18063` [origin/main] (controller advance since last verified checkpoint is `5411c04..dd18063` handoff-only (`git diff --name-only 5411c04..HEAD` → `research_state/agent_handoff.md` only; `git status -sb` clean pre-edit; protected-file diff vs `origin/main` empty). Read-only/runtime re-verification (venv present, `PYTHONPATH=.`): protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `--print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2; holdout-guard tests → **19 passed** in 1.64s EXIT:0. Full suite not re-run (prior: 124 passed / 21 failed, all missing gitignored `data/`). Key artifacts present; `data/` absent; venv functional. Maintenance: refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
+  **This session:** stop-respecting re-verification at HEAD `dd18063` (`5411c04..dd18063` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.64s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### 2026-11-14T11:45:48Z
-  **This session:** stop-respecting re-verification at HEAD `5411c04` (controller advance since last verified checkpoint `8c1c4fe..5411c04` handoff-only). Protocol hash verified (sha256sum + `--print-protocol-hash` EXIT:0); guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.70s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
+  **This session:** stop-respecting re-verification at HEAD `5411c04` (`8c1c4fe..5411c04` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.70s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### 2026-11-14T11:45:09Z
-  **This session:** stop-respecting re-verification at HEAD `8c1c4fe` (controller advance since last verified checkpoint `7a104f4..8c1c4fe` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.61s EXIT:0; venv deps import ok. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
+  **This session:** stop-respecting re-verification at HEAD `8c1c4fe` (`7a104f4..8c1c4fe` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.61s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### 2026-11-14T11:43:13Z
-  **This session:** stop-respecting re-verification at HEAD `7a104f4` (controller advance since last verified checkpoint `5655ad1..7a104f4` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.63s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
+  **This session:** stop-respecting re-verification at HEAD `7a104f4` (`5655ad1..7a104f4` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.63s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### 2026-11-14T11:41:11Z
-  **This session:** stop-respecting re-verification at HEAD `5655ad1` (controller advance since last verified checkpoint `1ef24ff..5655ad1` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.50s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
+  **This session:** stop-respecting re-verification at HEAD `5655ad1` (`1ef24ff..5655ad1` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.50s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### 2026-11-14T11:38:42Z
-  **This session:** stop-respecting re-verification at HEAD `1ef24ff` (controller advance since last verified checkpoint `46019d7..1ef24ff` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.50s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
-
-  ### 2026-11-14T10:59:18Z
-  **This session:** stop-respecting re-verification at HEAD `4b5f3d8` (controller advance since last verified checkpoint `0f38f65..4b5f3d8` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.13s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned.
-
-  ### 2026-11-14T10:57:35Z
-  **This session:** stop-respecting re-verification at HEAD `0f38f65` (`ce1e58d..0f38f65` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.17s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T10:56:27Z
-  **This session:** stop-respecting re-verification at HEAD `ce1e58d` (`6aba5d3..ce1e58d` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.16s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T10:55:26Z
-  **This session:** stop-respecting re-verification at HEAD `6aba5d3` (`5742287..6aba5d3` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.13s EXIT:0; venv deps import ok. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T10:51:50Z
-  **This session:** stop-respecting re-verification at HEAD `5742287` (`422daeb..5742287` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.17s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T10:49:20Z
-  **This session:** stop-respecting re-verification at HEAD `422daeb` (`981b8e7..422daeb` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.15s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T09:56:00Z
-  **This session:** stop-respecting re-verification at HEAD `3823075` (`cfb0252..3823075` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.17s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T09:53:45Z
-  **This session:** stop-respecting re-verification at HEAD `701c0a6` (`cfb0252..701c0a6` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.25s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T09:52:47Z
-  **This session:** stop-respecting re-verification at HEAD `cfb0252` (`496ea99..cfb0252` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.23s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T09:49:26Z
-  **This session:** stop-respecting re-verification at HEAD `09fbdd8` (`9dca18f..09fbdd8` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.22s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T09:47:29Z
-  **This session:** stop-respecting re-verification at HEAD `8d3ef75` (`9dca18f..8d3ef75` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.26s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T08:59:17Z
-  **This session:** stop-respecting re-verification at HEAD `8d3ef75` state refreshed from `9dca18f` (handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.37s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T08:57:24Z
-  **This session:** stop-respecting re-verification at HEAD `9dca18f` (`f1c9de8..9dca18f` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.15s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
-
-  ### 2026-11-14T08:56:10Z
-  **This session:** stop-respecting re-verification at HEAD `f1c9de8` (`a2bcb48..f1c9de8` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.18s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`.
+  **This session:** stop-respecting re-verification at HEAD `1ef24ff` (`46019d7..1ef24ff` handoff-only). Protocol hash verified; guard refusals EXIT:2/2/2; holdout-guard tests **19 passed** in 1.50s EXIT:0. Refreshed in place per PE-001 — `NO_NEW_INFORMATION`. No autonomous research; holdout not executed/tuned; no protected/src/tests/data edits.
 
   ### Earlier sessions (compacted)
-  Prior sessions (2026-11-12 through 2026-11-14T08:53:40Z) performed equivalent stop-respecting re-verifications, runtime guard checks, and holdout-guard test runs under `AGENT_STOP` with no material state changes; historical details preserved in git history of this file. All validation-only research tasks T1–T5d, robustness checks, final decision (`RESEARCH_MORE`), and `AGENT_STOP` creation were completed earlier and remain unchanged.
+  Prior sessions (2026-11-12 through 2026-11-14T11:38:42Z) performed equivalent stop-respecting re-verifications, runtime guard checks, and holdout-guard test runs under `AGENT_STOP` with no material state changes; historical details preserved in git history of this file. All validation-only research tasks T1–T5d, robustness checks, final decision (`RESEARCH_MORE`), and `AGENT_STOP` creation were completed earlier and remain unchanged.
