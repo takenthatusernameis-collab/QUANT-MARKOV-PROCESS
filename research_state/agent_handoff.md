@@ -4,7 +4,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE`
-**Updated:** 2026-11-14T06:53:05Z (read-only re-verification at HEAD `fa24cd8` [origin/main]; controller advanced `ad387a3..fa24cd8` via handoff-only controller commit whose diff is `research_state/agent_handoff.md` only — no new checkpoint-eligible content per PE-001; state refreshed in place; `git status -sb` clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python src/holdout_runner.py --print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2, `--print-protocol-hash` → EXIT:0; venv present; holdout-guard tests `pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 1.15s EXIT:0; full suite `pytest -q` → **124 passed / 21 failed** in 4.45s EXIT:1 (all 21 missing gitignored `data/`); no research, holdout run/tuning, or repo code/data/protocol changes)
+**Updated:** 2026-11-14T06:55:06Z (read-only re-verification at HEAD `c77ccd1` [origin/main]; controller advanced `fa24cd8..c77ccd1` via handoff-only controller commit whose diff is `research_state/agent_handoff.md` only — no new checkpoint-eligible content per PE-001; state refreshed in place; `git status -sb` clean pre-edit; `AGENT_STOP` present/reason unchanged; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` verified via `sha256sum` and `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python src/holdout_runner.py --print-protocol-hash` (EXIT:0); guard refusals no-flag → EXIT:2, `--execute-holdout` → EXIT:2, `--execute-holdout --protocol-hash deadbeef` → mismatch EXIT:2, `--print-protocol-hash` → EXIT:0; venv present; holdout-guard tests `pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 1.13s EXIT:0; full suite not re-run this session (prior: 124 passed / 21 failed, all missing gitignored `data/`); no research, holdout run/tuning, or repo code/data/protocol changes)
 
 ## Mission
 
@@ -12,8 +12,8 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Current state (re-verified 2026-11-14T06:53:05Z)
 
-- **Prior durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — read prior handoff/task; cycle confirmed complete (`AGENT_STOP` present, `status: COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Re-verified at HEAD `fa24cd8` (main, tracking origin/main); controller advanced `ad387a3..fa24cd8` via handoff-only commit (`research_state/agent_handoff.md` only) so per PE-001 quiescence state refreshed in place (no new checkpoint appended). Restated clear initial task message for next agent. No new research, no holdout run/tuning, no protected-file edits.
-- **Git:** branch `main` tracking `origin/main`; HEAD `fa24cd8` == origin/main; `git status -sb` clean pre-edit.
+- **Prior durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — read prior handoff/task; cycle confirmed complete (`AGENT_STOP` present, `status: COMPLETE`, decision `RESEARCH_MORE`; no autonomous research while stop exists). Re-verified at HEAD `c77ccd1` (main, tracking origin/main); controller advanced `fa24cd8..c77ccd1` via handoff-only commit (`research_state/agent_handoff.md` only) so per PE-001 quiescence state refreshed in place (no new checkpoint appended). Restated clear initial task message for next agent. No new research, no holdout run/tuning, no protected-file edits.
+- **Git:** branch `main` tracking `origin/main`; HEAD `c77ccd1` == origin/main; `git status -sb` clean pre-edit.
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -22,9 +22,9 @@ Determine whether Markov-process-based representations can produce a statistical
   | --- | --- |
   | `AGENT_STOP` | present; reason unchanged (validation-only complete, `RESEARCH_MORE`, holdout not executed/authorized) |
   | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` (matches `research/specifications/holdout_evaluation_protocol.md`) via `sha256sum` and `--print-protocol-hash` EXIT:0 |
-  | Git | `main` tracking `origin/main`; HEAD `fa24cd8`; clean pre-edit; `ad387a3..fa24cd8` handoff-only diff |
+  | Git | `main` tracking `origin/main`; HEAD `c77ccd1`; clean pre-edit; `fa24cd8..c77ccd1` handoff-only diff |
   | Runtime guards | no-flag EXIT:2, `--execute-holdout` EXIT:2, bad-hash (`deadbeef`) mismatch EXIT:2, `--print-protocol-hash` EXIT:0 |
-  | Tests | holdout-guard 19 passed in 1.15s EXIT:0; full suite 124 passed / 21 failed in 4.45s EXIT:1 (all 21 missing gitignored `data/`) |
+  | Tests | holdout-guard 19 passed in 1.13s EXIT:0; full suite not re-run (prior: 124 passed / 21 failed, all missing gitignored `data/`) |
   | Key artifacts | present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `src/data_ingestion.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json` |
   | Prompt-evolution ledger | `research_state/prompt_evolution.md` — PE-001, PE-002 pending; none accepted |
   | Protected diff / data / env | `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*` empty diff vs `origin/main`; `data/` absent (gitignored); venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present |
