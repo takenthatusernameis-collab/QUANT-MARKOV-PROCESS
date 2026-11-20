@@ -1,18 +1,18 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-20T08:26:18Z, re-verified at HEAD `b58fd19` (`origin/main`); NO_NEW_INFORMATION):** HEAD `b58fd19` (`origin/main`; working tree clean; controller checkpoint `20ab738`→`b58fd19`, diff `20ab738..b58fd19` = `research_state/agent_handoff.md` only). This session completed stop-respecting re-verification: AGENT_STOP reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` (EXIT:0) and `--print-protocol-hash` (EXIT:0); holdout guard refusals: no flag EXIT:2, `--execute-holdout` EXIT:2 (protocol-hash required), `--execute-holdout --protocol-hash deadbeef` EXIT:2 (mismatch), good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed); holdout-guard tests **19 passed** in 0.98s EXIT:0. Protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged. `AGENT_STOP` whole-file sha256 `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`; status `COMPLETE`, decision `RESEARCH_MORE`. `data/` absent (gitignored). Scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` functional (Python 3.12.3; no rebuild needed this session). No autonomous research, no holdout execution/tuning, no protected-file edits.
+**Current verified state (2026-11-20T08:28:20Z, re-verified at HEAD `5dd884d` (`origin/main`); NO_NEW_INFORMATION):** HEAD `5dd884d` (`origin/main`; working tree clean; controller checkpoint `b58fd19`→`5dd884d`, diff `b58fd19..5dd884d` = `research_state/agent_handoff.md` only). This session completed stop-respecting re-verification: AGENT_STOP reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`; protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` (EXIT:0) and `--print-protocol-hash` (EXIT:0); holdout guard refusals: no flag EXIT:2, `--execute-holdout` EXIT:2 (protocol-hash required), `--execute-holdout --protocol-hash deadbeef` EXIT:2 (mismatch), good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed); holdout-guard tests **19 passed** in 0.97s EXIT:0. Protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged (diff `b58fd19..5dd884d` empty outside handoff). `AGENT_STOP` whole-file sha256 `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`; status `COMPLETE`, decision `RESEARCH_MORE`. `data/` absent (gitignored). Scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` functional (Python 3.12.3; no rebuild needed this session). No autonomous research, no holdout execution/tuning, no protected-file edits.
 
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE` (HEAD `b58fd19`; stop-respecting re-verification complete, NO_NEW_INFORMATION; venv functional)
-**Updated:** 2026-11-20T08:26:18Z
+**Updated:** 2026-11-20T08:28:20Z
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-20T07:31:34Z)
+## Current state (re-verified 2026-11-20T08:28:20Z)
 
 - **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `b58fd19` (`origin/main`; controller checkpoint `20ab738`→`b58fd19`, diff `20ab738..b58fd19` = `research_state/agent_handoff.md` only).
 - **Git:** branch `main` tracking `origin/main`; HEAD `b58fd19` at this verification; diff `20ab738..b58fd19` = `research_state/agent_handoff.md` only (handoff bookkeeping).
