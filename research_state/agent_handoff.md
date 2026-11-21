@@ -1,12 +1,12 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-21T05:46:35Z, re-verified at HEAD `6cf5003` (`origin/main`; NO_NEW_INFORMATION):** HEAD `6cf5003` (`origin/main`; working tree clean). Controller checkpoint `f014c60`→`6cf5003`, diff `f014c60`..`6cf5003` = `research_state/agent_handoff.md` only (handoff-only bookkeeping). Re-verification: AGENT_STOP reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`); protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0; holdout-guard refusals: no flag EXIT:2, `--execute-holdout` EXIT:2, `--execute-holdout --protocol-hash deadbeef` EXIT:2, good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed); holdout-guard tests **19 passed** in 0.98s EXIT:0 (venv present/functional, Python 3.12.3, no rebuild needed). Protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged. `data/` absent. No autonomous research, no holdout execution/tuning, no protected-file edits.
+**Current verified state (2026-11-21T05:48:07Z, re-verified at HEAD `6cf5003` (`origin/main`; NO_NEW_INFORMATION):** HEAD `6cf5003` (`origin/main`; working tree clean). Controller checkpoint `f014c60`→`6cf5003`, diff `f014c60`..`6cf5003` = `research_state/agent_handoff.md` only (handoff-only bookkeeping). Re-verification: AGENT_STOP reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`); protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0; holdout-guard refusals: no flag EXIT:2, `--execute-holdout` EXIT:2, `--execute-holdout --protocol-hash deadbeef` EXIT:2, good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed); holdout-guard tests **19 passed** in 0.98s EXIT:0 (venv present/functional, Python 3.12.3, no rebuild needed). Protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`) unchanged. `data/` absent. No autonomous research, no holdout execution/tuning, no protected-file edits.
 
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE` (HEAD `6cf5003`; stop-respecting re-verification complete, NO_NEW_INFORMATION; venv present and functional)
-**Updated:** 2026-11-21T05:46:35Z
+**Updated:** 2026-11-21T05:48:07Z
 
 ## Mission
 
