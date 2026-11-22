@@ -6,8 +6,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE` (HEAD `8c3b9e6`; stop-respecting re-verification complete, NO_NEW_INFORMATION; venv functional)
-**Updated:** 2026-11-22T08:50:00Z
-
+**Updated:** 2026-11-22T08:46:18Z
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
