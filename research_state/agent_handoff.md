@@ -46,3 +46,7 @@ The only permitted bounded task is a stop-respecting re-verification at the then
 Use the scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv`; it is present and functional this session (Python 3.12.3). If it is ever missing, empty (no `bin/python`), or non-functional, rebuild it from `requirements.txt` (`python3 -m venv <path> && <path>/bin/pip install -q -r requirements.txt`) and re-run the checks — never fabricate results or carry forward unverified numbers.
 
 Per PE-001, if repository state is unchanged from this handoff (same stop reason, same protocol hash, same guard/test outcomes/protected files; only a controller-bookkeeping HEAD advance and/or a repeated empty/missing-venv rebuild with identical results, or re-verification at the same HEAD), refresh this handoff in place as `NO_NEW_INFORMATION` and do NOT append a near-identical session entry. Only with explicit user authorization that removes `AGENT_STOP` and authorizes a locked-holdout evaluation may that holdout be executed. Report any new blockers or materially changed evidence in the handoff. Do not commit or push.
+
+## Re-verification note (2026-11-23T04:27Z)
+
+NO_NEW_INFORMATION at HEAD `97eac09`: reason sha256 match, protocol hash match, guard refusals match, tests 19 passed in 0.87s EXIT:0, protected files unchanged, data/ absent. Controller-bookkeeping advance only.
