@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-23T12:56:35Z, HEAD `4c14306` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `4c14306` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `87f5d06` → `4c14306`; `git diff 87f5d06 HEAD` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv present and functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; no rebuild needed this session).
+**Current verified state (2026-11-23T12:58:21Z, HEAD `15a73bb` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `15a73bb` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `4c14306` → `15a73bb`; `git diff 4c14306 HEAD` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv present and functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; no rebuild needed this session).
 
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
@@ -12,8 +12,8 @@
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `4c14306`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-23T12:56:35Z (stop-respecting re-verification; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; only controller-bookkeeping HEAD advance 87f5d06 → 4c14306 and verified venv this session)
+**Status:** `COMPLETE` (HEAD `15a73bb`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-23T12:58:21Z (stop-respecting re-verification; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; only controller-bookkeeping HEAD advance 4c14306 → 15a73bb and verified venv this session)
 
 ## Mission
 
@@ -79,5 +79,6 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-23T11:58:35Z @ `7c71cab` — 19 passed in 1.00s, EXIT:0 (this session)
 - 2026-11-23T12:00:05Z @ `fc3ea51` — 19 passed in 0.95s, EXIT:0 (this session)
 - 2026-11-23T12:01:33Z @ `87f5d06` — 19 passed in 1.07s, EXIT:0 (this session)
+- 2026-11-23T12:58:21Z @ `15a73bb` — 19 passed in 0.96s, EXIT:0 (this session)
 
 (End of file)
