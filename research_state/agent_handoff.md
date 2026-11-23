@@ -1,19 +1,19 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-23T11:04:10Z, HEAD `9e50c1b` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `9e50c1b` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `a90e425` → `9e50c1b`; `git diff a90e425 9e50c1b` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv present and functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; no rebuild needed this session).
+**Current verified state (2026-11-23T11:08:34Z, HEAD `8c085cd` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `8c085cd` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `9e50c1b` → `8c085cd`; `git diff 9e50c1b 8c085cd` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv present and functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; no rebuild needed this session).
 
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
-- Holdout-guard tests **19 passed** in 0.94s EXIT:0 this session at `9e50c1b` (identical pass count/EXIT to prior sessions; timing variance only).
+- Holdout-guard tests **19 passed** in 1.07s EXIT:0 this session at `8c085cd` (identical pass count/EXIT to prior sessions; timing variance only).
 - Protected files unchanged (`git diff 29a0c97 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty). `data/` absent.
 - No autonomous research, no holdout execution/tuning, no protected-file edits.
 
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `9e50c1b`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-23T11:04:10Z (stop-respecting re-verification; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; only controller-bookkeeping HEAD advance and verified venv this session)
+**Status:** `COMPLETE` (HEAD `8c085cd`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-23T11:08:34Z (stop-respecting re-verification; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; only controller-bookkeeping HEAD advance and verified venv this session)
 
 ## Mission
 
@@ -21,8 +21,8 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Current state (re-verified 2026-11-23T11:04:10Z)
 
-- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `9e50c1b`; all four checks passed this session, NO_NEW_INFORMATION.
-- **Git:** branch `main` tracking `origin/main`; HEAD `9e50c1b` at this verification; working tree clean; no research-content change vs prior verified HEAD `a90e425` (only handoff bookkeeping).
+- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `8c085cd`; all four checks passed this session, NO_NEW_INFORMATION.
+- **Git:** branch `main` tracking `origin/main`; HEAD `8c085cd` at this verification; working tree clean; no research-content change vs prior verified HEAD `9e50c1b` (only handoff bookkeeping).
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -43,7 +43,7 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Initial task message for the next agent
 
-**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `9e50c1b` (`origin/main`; verified 2026-11-23T11:04:10Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
+**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `8c085cd` (`origin/main`; verified 2026-11-23T11:08:34Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
 
 The only permitted bounded task is a stop-respecting re-verification at the then-current HEAD, following steps 1–4 below:
 1. Confirm the `AGENT_STOP` reason sha256 is `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`. This is the sha256 of the `REASON:` text with the `REASON: ` prefix stripped and the trailing newline removed — `sed -n 's/^REASON: //p' AGENT_STOP | tr -d '\n' | sha256sum`. It is NOT the whole-file hash: `sha256sum AGENT_STOP` yields `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c` (whole file, for reference only).
@@ -73,6 +73,7 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-23T10:56:19Z @ `ccd0a92` — 19 passed in 0.99s, EXIT:0
 - 2026-11-23T11:00:28Z @ `b1427b1` — 19 passed in 0.96s, EXIT:0
 - 2026-11-23T11:03:11Z @ `a90e425` — 19 passed in 1.07s, EXIT:0
-- 2026-11-23T11:04:10Z @ `9e50c1b` — 19 passed in 0.94s, EXIT:0 (this session)
+- 2026-11-23T11:04:10Z @ `9e50c1b` — 19 passed in 0.94s, EXIT:0
+- 2026-11-23T11:08:34Z @ `8c085cd` — 19 passed in 1.07s, EXIT:0 (this session)
 
 (End of file)
