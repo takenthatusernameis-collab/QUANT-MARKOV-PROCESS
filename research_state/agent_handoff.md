@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-23T15:03:39Z, HEAD `dbf4332` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `dbf4332` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `0c2dc1c` → `dbf4332`; `git diff 0c2dc1c dbf4332 --stat` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv present and functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; no rebuild needed this session).
+**Current verified state (2026-11-23T15:57:57Z, HEAD `ee58320` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `ee58320` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `dbf4332` → `ee58320`; `git diff dbf4332 ee58320 --stat` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv present and functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; no rebuild needed this session).
 
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
