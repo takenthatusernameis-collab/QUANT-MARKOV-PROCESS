@@ -1,11 +1,11 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-23T09:35:17Z, HEAD `e1c6efa` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `e1c6efa` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `0e367e1` → `e1c6efa`; `git diff 0e367e1 e1c6efa` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; present, used as-is, no rebuild needed).
+**Current verified state (2026-11-23T09:37:22Z, HEAD `6947d5e` = `origin/main`, working tree clean): `NO_NEW_INFORMATION`.** Re-verification at HEAD `6947d5e` complete; all four checks pass with results identical to the prior verified session. Controller-bookkeeping HEAD advance only (prior verified HEAD `e1c6efa` → `6947d5e`; `git diff e1c6efa 6947d5e` shows only `research_state/agent_handoff.md` bookkeeping; no research-content/code change). Venv functional at `/home/runner/work/_temp/kilo-tmp/qmp-venv` (Python 3.12.3; present, used as-is, no rebuild needed).
 
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
-- Holdout-guard tests **19 passed** in 0.98s EXIT:0 this session at `e1c6efa` (identical pass count/EXIT to prior sessions; timing variance only).
+- Holdout-guard tests **19 passed** in 1.12s EXIT:0 this session at `6947d5e` (identical pass count/EXIT to prior sessions; timing variance only).
 - Protected files unchanged (`git diff 29a0c97 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty). `data/` absent.
 - No autonomous research, no holdout execution/tuning, no protected-file edits.
 
