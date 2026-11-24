@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-24T17:48:12Z, HEAD `ebdb7f0`, working tree clean): `NO_NEW_INFORMATION`.**
+**Current verified state (2026-11-24T18:35:08Z, HEAD `9e929a5610f9a3c5f78d8e704240680f3b38d661`, working tree clean): `NO_NEW_INFORMATION`.**
   Stop-respecting re-verification at HEAD `ebdb7f0` complete; all four checks pass with results identical to the prior verified session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.61s EXIT:0, protected files unchanged vs `e6c2f37`, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional this session (`bin/python` → python3). No new information.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
@@ -43,7 +43,7 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Initial task message for the next agent
 
-**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `ebdb7f0` (`origin/main`; verified 2026-11-24T17:48:12Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
+**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `9e929a5610f9a3c5f78d8e704240680f3b38d661` (`origin/main`; verified 2026-11-24T18:35:08Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
 
 The only permitted bounded task is a stop-respecting re-verification at the then-current HEAD, following steps 1–4 below:
 1. Confirm the `AGENT_STOP` reason sha256 is `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`. This is the sha256 of the `REASON:` text with the `REASON: ` prefix stripped and the trailing newline removed — `sed -n 's/^REASON: //p' AGENT_STOP | tr -d '\n' | sha256sum`. It is NOT the whole-file hash: `sha256sum AGENT_STOP` yields `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c` (whole file, for reference only).
@@ -119,3 +119,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-24T17:39:05Z @ `7d20718` — 19 passed in 1.52s, EXIT:0 (this session; venv present and functional)
 - 2026-11-24T17:39:42Z @ `adeb4ce` — 19 passed in 1.70s, EXIT:0 (this session; venv present and functional)
 - 2026-11-24T17:44:51Z @ `dc17d97` — 19 passed in 1.51s, EXIT:0 (this session; venv present and functional)
+- 2026-11-24T18:35:08Z @ `9e929a5610f9a3c5f78d8e704240680f3b38d661` — 19 passed in 1.49s, EXIT:0 (this session; venv present and functional)
