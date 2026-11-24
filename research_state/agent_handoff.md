@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-24T03:30:00Z, HEAD `1432d81`, working tree clean): `NO_NEW_INFORMATION`.**
+**Current verified state (2026-11-24T03:31:00Z, HEAD `f57e4d4`, working tree clean): `NO_NEW_INFORMATION`.**
   Stop-respecting re-verification at HEAD `1432d81` complete; all four checks pass with results identical to the prior verified session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.17s EXIT:0, protected files unchanged vs `e6c2f37`, `data/` absent). Scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional (Python 3.12.3); all checks re-ran with identical results. No new information.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
@@ -113,3 +113,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-24T03:24:52Z @ `ff53fca` — 19 passed in 1.13s, EXIT:0 (this session)
 - 2026-11-24T03:28:12Z @ `a8d018b` — 19 passed in 1.13s, EXIT:0 (this session)
 - 2026-11-24T03:30:00Z @ `1432d81` — 19 passed in 1.17s, EXIT:0 (this session)
+- 2026-11-24T03:31:00Z @ `f57e4d4` — 19 passed in 1.13s, EXIT:0 (this session)
