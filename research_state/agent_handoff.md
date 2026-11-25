@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-25T01:57:44Z, HEAD `6e420bd`, working tree clean): `NO_NEW_INFORMATION`.**
+**Current verified state (2026-11-25T02:04:52Z, HEAD `016f45c`, working tree clean): `NO_NEW_INFORMATION`.**
   Stop-respecting re-verification at HEAD `6e420bd` complete; all four checks pass with results identical to the prior verified session at HEAD `4b7724f` (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.00s EXIT:0, protected files unchanged vs `e6c2f37`, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional (`bin/python` → python3, Python 3.12.3); no rebuild needed. No new information.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
