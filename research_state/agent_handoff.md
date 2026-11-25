@@ -1,18 +1,18 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-25T21:21:12Z, HEAD `c5ec997`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `c5ec997` complete; all four checks pass with results identical to the prior verified session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional. No new information. Controller-bookkeeping HEAD advance `a9563b8` → `c5ec997` touching `research_state/agent_handoff.md`.
+**Current verified state (2026-11-25T21:21:12Z, HEAD `b578ebd`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `b578ebd` complete; all four checks pass with results identical to the prior verified session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional. No new information. Controller-bookkeeping HEAD advance `a9563b8` → `c5ec997` touching `research_state/agent_handoff.md`.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
-- Holdout-guard tests **19 passed** in 0.97s EXIT:0 this session at `c5ec997` (identical pass count/EXIT to prior sessions; timing variance only; venv present and functional with identical results).
+- Holdout-guard tests **19 passed** in 0.97s EXIT:0 this session at `b578ebd` (identical pass count/EXIT to prior sessions; timing variance only; venv present and functional with identical results).
 - Protected files unchanged (`git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty). `data/` absent.
 - No autonomous research, no holdout execution/tuning, no protected-file edits.
 
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `c5ec997`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-25T21:21:12Z (stop-respecting re-verification at HEAD `c5ec997`; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; controller-bookkeeping HEAD advance `a9563b8` → `c5ec997` touching `research_state/agent_handoff.md`; venv present and functional with identical results)
+**Status:** `COMPLETE` (HEAD `b578ebd`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-25T21:21:12Z (stop-respecting re-verification at HEAD `b578ebd`; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; controller-bookkeeping HEAD advance `a9563b8` → `c5ec997` touching `research_state/agent_handoff.md`; venv present and functional with identical results)
 
 ## Mission
 
@@ -20,8 +20,8 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Current state (re-verified 2026-11-25T21:21:12Z)
 
-- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `c5ec997`; all four checks passed this session (AGENT_STOP reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was present and functional with identical results.
-- **Git:** branch `main` tracking `origin/main`; HEAD `c5ec997` at this verification; working tree clean; no research-content change vs prior verified HEAD `a9563b8` (only controller-bookkeeping HEAD advance touching `research_state/agent_handoff.md`).
+- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `b578ebd`; all four checks passed this session (AGENT_STOP reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was present and functional with identical results.
+- **Git:** branch `main` tracking `origin/main`; HEAD `b578ebd` at this verification; working tree clean; no research-content change vs prior verified HEAD `a9563b8` (only controller-bookkeeping HEAD advance touching `research_state/agent_handoff.md`).
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -30,13 +30,13 @@ Determine whether Markov-process-based representations can produce a statistical
 | --- | --- |
 | `AGENT_STOP` | present; reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`) |
 | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0 |
-| Git | `main` tracking `origin/main`; HEAD `c5ec997` at this verification (working tree clean); no research-content change vs prior verified HEAD `a9563b8` (only controller-bookkeeping HEAD advance touching `research_state/agent_handoff.md`) |
+| Git | `main` tracking `origin/main`; HEAD `b578ebd` at this verification (working tree clean); no research-content change vs prior verified HEAD `a9563b8` (only controller-bookkeeping HEAD advance touching `research_state/agent_handoff.md`) |
 | Holdout guard (observed) | no flag EXIT:2; `--execute-holdout` EXIT:2 (protocol-hash required); `--execute-holdout --protocol-hash deadbeef` EXIT:2 (mismatch); good-hash+missing-`data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed) |
-| Tests | holdout-guard `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 0.97s EXIT:0 this session at `c5ec997` (identical pass count/EXIT to prior sessions; timing variance only; venv present and functional with identical results) |
+| Tests | holdout-guard `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 0.97s EXIT:0 this session at `b578ebd` (identical pass count/EXIT to prior sessions; timing variance only; venv present and functional with identical results) |
 | Key artifacts | present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`, `research_state/prompt_evolution.md` |
 | Prompt-evolution ledger | `research_state/prompt_evolution.md` — PE-001, PE-002 pending; none accepted |
 | Protected diff / data / env | `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*` unchanged (git diff e6c2f37 HEAD → empty); `data/` absent (gitignored); scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional this session (Python 3.12.3), identical results |
-| Verification summary | All four checks pass at HEAD `c5ec997`: reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed EXIT:0. Protected files unchanged. `data/` absent. NO_NEW_INFORMATION. No autonomous research, no holdout execution/tuning, no protected-file edits. |
+| Verification summary | All four checks pass at HEAD `b578ebd`: reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed EXIT:0. Protected files unchanged. `data/` absent. NO_NEW_INFORMATION. No autonomous research, no holdout execution/tuning, no protected-file edits. |
 
 - **Holdout enforcement:** protocol hash unchanged; default refusal + required `--execute-holdout` + matching `--protocol-hash`. Holdout **not** executed or tuned.
 - **Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
@@ -49,7 +49,7 @@ The only permitted bounded task is a stop-respecting re-verification at the then
 1. Confirm the `AGENT_STOP` reason sha256 is `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`. This is the sha256 of the `REASON:` text with the `REASON: ` prefix stripped and the trailing newline removed — `sed -n 's/^REASON: //p' AGENT_STOP | tr -d '\n' | sha256sum`. It is NOT the whole-file hash: `sha256sum AGENT_STOP` yields `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c` (whole file, for reference only).
 2. Confirm frozen protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum research/specifications/holdout_evaluation_protocol.md` and `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m src.holdout_runner --print-protocol-hash` (EXIT:0).
 3. Confirm holdout-guard refusals: no flag EXIT:2, `--execute-holdout` EXIT:2 (protocol-hash required), `--execute-holdout --protocol-hash deadbeef` EXIT:2 (mismatch), and good-hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed). Note: when piping through `tail`, the reported `$?` is `tail`'s exit code, so capture exit codes with a wrapper (e.g. `cmd >out 2>&1; echo "EXIT:$?"`) or `PIPESTATUS`.
-4. Run `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` and record the exact pass count and EXIT (this session at `c5ec997`: **19 passed** in 0.97s EXIT:0).
+4. Run `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` and record the exact pass count and EXIT (this session at `b578ebd`: **19 passed** in 0.97s EXIT:0).
 
 Use the scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv`. It was present and functional at the start of this session (`bin/python` → python3). If it is ever missing, empty (no `bin/python`), or non-functional, rebuild it from `requirements.txt` (`python3 -m venv <path> && <path>/bin/pip install -q -r requirements.txt`, Python 3.12.3) and re-run the checks — never fabricate results or carry forward unverified numbers.
 
@@ -185,3 +185,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-25T21:21:12Z @ `c5ec997` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 
 (End of file)
+- 2026-11-25T22:01:55Z @ `b578ebd` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
