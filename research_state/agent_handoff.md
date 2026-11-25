@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-25T14:36:49Z, HEAD `f96b18ccdc7a4a98da5241d07df19987a3d9d859`, working tree clean): `NO_NEW_INFORMATION`.** Stop-respecting re-verification at HEAD `f96b18ccdc7a4a98da5241d07df19987a3d9d859` complete; all four checks pass with results identical to the prior verified session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional (`bin/python` → python3, Python 3.12.3); no rebuild needed. No new information.
+**Current verified state (2026-11-25T14:40:45Z, HEAD `63fa536690156a1eeac2a4502c6de36b8df94b15`, working tree clean): `NO_NEW_INFORMATION`.**" Stop-respecting re-verification at HEAD `f96b18ccdc7a4a98da5241d07df19987a3d9d859` complete; all four checks pass with results identical to the prior verified session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional (`bin/python` → python3, Python 3.12.3); no rebuild needed. No new information.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -165,6 +165,6 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-25T13:30:30Z @ `9f78d36` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T13:30:53Z @ `5ab641879ae3441d4075d998700fe30ec00eaeb1` — 19 passed in 1.05s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T14:25:23Z @ `23a701863f6658d5ec4dd299853a67a7bfe5aeb9` — 19 passed in 0.99s, EXIT:0 (this session; venv present and functional).
-- 2026-11-25T14:35:00Z @ `7012b400fe46ffeef757d34b2029129ddd09381b` — 19 passed in 0.94s, EXIT:0 (this session; venv present and functional).
+- 2026-11-25T14:40:45Z @ `63fa536` — 19 passed in 1.01s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 
 (End of file - total 154 lines)
