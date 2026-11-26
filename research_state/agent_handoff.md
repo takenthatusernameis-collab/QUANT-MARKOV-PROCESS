@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-26T20:25:06Z, HEAD `9bc947b`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `9bc947b` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.02s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional (Python 3.12.3) with identical results. HEAD advance from `66f4315` to `9bc947b` is controller-bookkeeping only (`git diff 66f4315 HEAD` touches `research_state/agent_handoff.md` and workflow-diagnostics bookkeeping only; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty). No new information. Research content unchanged.
+**Current verified state (2026-11-26T20:28:00Z, HEAD `1bbf3f3`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `9bc947b` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.02s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional (Python 3.12.3) with identical results. HEAD advance from `66f4315` to `9bc947b` is controller-bookkeeping only (`git diff 66f4315 HEAD` touches `research_state/agent_handoff.md` and workflow-diagnostics bookkeeping only; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty). No new information. Research content unchanged.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -11,8 +11,8 @@
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `9bc947b`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-26T20:25:06Z (stop-respecting re-verification at HEAD `9bc947b`; NO_NEW_INFORMATION)
+**Status:** `COMPLETE` (HEAD `1bbf3f3`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-26T20:28:00Z (stop-respecting re-verification at HEAD `1bbf3f3`; NO_NEW_INFORMATION)
 
 ## Mission
 
@@ -222,3 +222,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-26T16:38:54Z @ `677e8b6` — 19 passed in 1.51s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T16:42:14Z @ `faf7ada` — 19 passed in 1.50s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T20:23:50Z @ `66f4315` — 19 passed in 1.04s, EXIT:0 (this session; venv was missing, rebuilt from `requirements.txt` with identical results; NO_NEW_INFORMATION).
+- 2026-11-26T20:28:00Z @ `1bbf3f3` — 19 passed in 1.00s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
