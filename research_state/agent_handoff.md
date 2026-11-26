@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-26T04:43:03Z, HEAD `f226f03`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `f226f03` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.15s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional with identical results. No new information. Research content unchanged.**
+**Current verified state (2026-11-26T04:46:34Z, HEAD `f226f03`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `f226f03` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.15s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional with identical results. No new information. Research content unchanged.**
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -12,13 +12,13 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE` (HEAD `f226f03`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-26T04:43:03Z (stop-respecting re-verification at HEAD `f226f03`; NO_NEW_INFORMATION — same stop reason, same protocol hash, same guard/test outcomes, same protected files; HEAD advanced `2e118288`→`f226f03` as controller bookkeeping only; venv present and functional with identical results)
+**Updated:** 2026-11-26T04:46:34Z (stop-respecting re-verification at HEAD `f226f03`; NO_NEW_INFORMATION)
 
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-26T04:43:03Z)
+## Current state (re-verified 2026-11-26T04:46:34Z)
 
 - **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `f226f03`; all four checks passed this session (AGENT_STOP reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.15s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was present and functional with identical results. HEAD advanced `2e118288`→`f226f03` as controller bookkeeping only; research content unchanged.
 - **Git:** branch `main` tracking `origin/main`; HEAD `f226f03` at this verification; working tree clean; no research-content change vs prior verified HEAD `2e118288` (HEAD advance is controller bookkeeping only; `git diff 2e118288 f226f03` touches only `research_state/agent_handoff.md`, not research content).
@@ -193,4 +193,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-26T02:52:00Z @ `b2942f4` — 19 passed in 1.15s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T03:42:22Z @ `ddad24e` — 19 passed in 1.19s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T04:42:19Z @ `2e118288` — 19 passed in 1.13s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-26T04:43:03Z @ `f226f03` — 19 passed in 1.15s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-26T04:46:34Z @ `f226f03` — 19 passed in 1.15s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
