@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-26T06:45:08Z, HEAD `6694767`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `6694767` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.25s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional with identical results. No new information. Research content unchanged.**
+**Current verified state (2026-11-26T06:55:00Z, HEAD `2e097fee`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `2e097fee` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.17s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional with identical results. No new information. Research content unchanged.**
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -11,8 +11,8 @@
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `6694767`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-26T06:45:08Z (stop-respecting re-verification at HEAD `6694767`; NO_NEW_INFORMATION)
+**Status:** `COMPLETE` (HEAD `2e097fee`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-26T06:55:00Z (stop-respecting re-verification at HEAD `2e097fee`; NO_NEW_INFORMATION)
 
 ## Mission
 
@@ -199,4 +199,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-26T05:44:00Z @ `3618b62` — 19 passed in 1.23s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T05:47:36Z @ `36d2cc3` — 19 passed in 1.20s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T05:55:34Z @ `c3cb88f` — 19 passed in 1.31s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-26T06:45:08Z @ `6694767` — 19 passed in 1.25s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-26T06:55:00Z @ `2e097fee` — 19 passed in 1.17s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
