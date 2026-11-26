@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-26T01:24:36Z, HEAD `08dce41`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `08dce41` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.95s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional (Python 3.12.3). No new information. Controller-bookkeeping HEAD advanced `b2615cf`→`08dce41` since the prior verification; research content unchanged.**
+**Current verified state (2026-11-26T02:40:55Z, HEAD `08dce41`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `08dce41` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.19s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was missing and rebuilt from `requirements.txt` (Python 3.12.3) with identical results. No new information. Research content unchanged.**
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -188,4 +188,4 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-25T22:02:49Z @ `27f25e1` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 
 - 2026-11-25T22:05:10Z @ `cd138c9` — 19 passed in 0.99s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-26T01:21Z @ `b2615cf` — 19 passed in 1.11s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-26T02:40:55Z @ `08dce41` — 19 passed in 1.19s, EXIT:0 (this session; venv was missing, rebuilt from `requirements.txt` with identical results; NO_NEW_INFORMATION).
