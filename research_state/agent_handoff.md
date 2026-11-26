@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-26T07:06:04Z, HEAD `d246448`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `d246448` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.32s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional with identical results. No new information. Research content unchanged.**
+**Current verified state (2026-11-26T07:09:30Z, HEAD `a14e575`, working tree clean): `NO_NEW_INFORMATION`. Stop-respecting re-verification at HEAD `a14e575` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.20s EXIT:0, protected files unchanged, `data/` absent). The scratch venv at `/home/runner/work/_temp/kilo-tmp/qmp-venv` was present and functional with identical results. No new information. Research content unchanged.**
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -11,8 +11,8 @@
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `d246448`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-26T07:06:04Z (stop-respecting re-verification at HEAD `d246448`; NO_NEW_INFORMATION)
+**Status:** `COMPLETE` (HEAD `a14e575`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-26T07:09:30Z (stop-respecting re-verification at HEAD `a14e575`; NO_NEW_INFORMATION)
 
 ## Mission
 
