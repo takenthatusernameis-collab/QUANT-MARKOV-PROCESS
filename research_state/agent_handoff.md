@@ -12,7 +12,7 @@
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
 **Status:** `COMPLETE` (HEAD `12497ef`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-27T16:57:00Z (stop-respecting re-verification at HEAD `12497ef`; NO_NEW_INFORMATION)
+**Updated:** 2026-11-27T16:58:00Z (stop-respecting re-verification at HEAD `8cc84d4`; NO_NEW_INFORMATION)
 
 ## Mission
 
@@ -43,7 +43,7 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Initial task message for the next agent
 
-**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `12497ef` (`origin/main`; verified 2026-11-27T16:57:00Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
+**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `8cc84d4` (`origin/main`; verified 2026-11-27T16:58:00Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
 
 The only permitted bounded task is a stop-respecting re-verification at the then-current HEAD, following steps 1–4 below:
 1. Confirm the `AGENT_STOP` reason sha256 is `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`. This is the sha256 of the `REASON:` text with the `REASON: ` prefix stripped and the trailing newline removed — `sed -n 's/^REASON: //p' AGENT_STOP | tr -d '\n' | sha256sum`. It is NOT the whole-file hash: `sha256sum AGENT_STOP` yields `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c` (whole file, for reference only).
@@ -253,5 +253,6 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-27T13:51:24Z @ `6e1cb2e` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T15:54:30Z @ `fb768e8` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T16:37:46Z @ `c7da6c5` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-27T16:58:00Z @ `8cc84d4` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 
 (End of file)
