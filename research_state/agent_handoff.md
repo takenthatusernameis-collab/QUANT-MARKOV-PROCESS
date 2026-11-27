@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-27T08:13:49Z, HEAD `c975a37`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `c975a37` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.49s EXIT:0, protected files unchanged, `data/` absent). Scratch venv present and functional (Python 3.12.3) with identical results. No new information. Research content unchanged.
+**Current verified state (2026-11-27T11:45:51Z, HEAD `4a7dd75`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `4a7dd75` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0, protected files unchanged, `data/` absent). Scratch venv was missing, rebuilt from `requirements.txt` with identical results. No new information. Research content unchanged.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -11,8 +11,8 @@
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `c975a37`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-27T08:13:49Z (stop-respecting re-verification at HEAD `c975a37`; NO_NEW_INFORMATION)
+**Status:** `COMPLETE` (HEAD `4a7dd75`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-27T11:45:51Z (stop-respecting re-verification at HEAD `4a7dd75`; NO_NEW_INFORMATION)
 
 ## Mission
 
@@ -20,8 +20,8 @@ Determine whether Markov-process-based representations can produce a statistical
 
 ## Current state (re-verified 2026-11-27T08:13:12Z)
 
-- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `c975a37`; all four checks passed this session (AGENT_STOP reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.49s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was present and functional from `requirements.txt` this session (Python 3.12.3) with identical results. Research content unchanged.
-- **Git:** branch `main` tracking `origin/main`; HEAD `c975a37` at this verification; working tree clean; no research-content change vs prior verified HEAD (HEAD advance `15cee1c` → `c975a37` is controller-bookkeeping; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty).
+- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `4a7dd75`; all four checks passed this session (AGENT_STOP reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was missing, rebuilt from `requirements.txt` with identical results. Research content unchanged.
+- **Git:** branch `main` tracking `origin/main`; HEAD `4a7dd75` at this verification; working tree clean; no research-content change vs prior verified HEAD (HEAD advance `c975a37` → `4a7dd75` is controller-bookkeeping; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty).
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -242,6 +242,6 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-27T07:10:31Z @ `444677b` — 19 passed in 1.58s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T07:13:26Z @ `c48ddde` — 19 passed in 1.57s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T08:02:07Z @ `ff9737a` — 19 passed in 1.49s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-27T08:13:49Z @ `c975a37` — 19 passed in 1.49s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-27T11:45:51Z @ `4a7dd75` — 19 passed in 0.98s, EXIT:0 (this session; venv was missing, rebuilt from `requirements.txt` with identical results; NO_NEW_INFORMATION).
 
 (End of file)
