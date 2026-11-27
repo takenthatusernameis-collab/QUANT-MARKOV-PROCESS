@@ -1,6 +1,6 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-27T04:05:35Z, HEAD `5db900b`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `5db900b` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.47s EXIT:0, protected files unchanged, `data/` absent). Scratch venv present and functional (Python 3.12.3) with identical results. No new information. Research content unchanged.
+**Current verified state (2026-11-27T04:06:13Z, HEAD `841523bd`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `841523bd` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 1.46s EXIT:0, protected files unchanged, `data/` absent). Scratch venv present and functional (Python 3.12.3) with identical results. No new information. Research content unchanged.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
@@ -232,4 +232,5 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-27T04:01:18Z @ `35a69c2` — 19 passed in 1.54s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T04:04:05Z @ `2576bd9` — 19 passed in 1.47s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 
+- 2026-11-27T04:06:13Z @ `841523bd` — 19 passed in 1.46s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 (End of file - total 232 lines)
