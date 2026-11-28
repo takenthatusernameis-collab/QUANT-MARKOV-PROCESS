@@ -1,30 +1,30 @@
 # Durable handoff — Quant Markov Process
 
-**Current verified state (2026-11-28T00:27:06Z, HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0, protected files unchanged, `data/` absent). Scratch venv was present and functional this session. No new information. Research content unchanged. HEAD advance `0965910` → `dc4ab5dd6163ac0f716698517a0e39a503369d58` is controller-bookkeeping.
+**Current verified state (2026-11-28T00:28:00Z, HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a`, working tree clean): `NO_NEW_INFORMATION`**. Stop-respecting re-verification at HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` complete; all four checks pass with results identical to prior verified sessions (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0, protected files unchanged, `data/` absent). Scratch venv was present and functional this session. No new information. Research content unchanged. HEAD advance `dc4ab5d` → `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` is controller-bookkeeping.
 - `AGENT_STOP` reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`, reference only).
 - Protocol hash `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0.
 - Holdout-guard refusals: no flag EXIT:2; `--execute-holdout` EXIT:2; `--execute-holdout --protocol-hash deadbeef` EXIT:2; good hash + missing `data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed).
-- Holdout-guard tests **19 passed** in 0.97s EXIT:0 (this session; identical pass count/EXIT to prior sessions; timing variance only; venv was present and functional this session).
+- Holdout-guard tests **19 passed** in 0.98s EXIT:0 (this session; identical pass count/EXIT to prior sessions; timing variance only; venv was present and functional this session).
 - Protected files unchanged (`git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty). `data/` absent.
 - No autonomous research, no holdout execution/tuning, no protected-file edits.
 - Key artifacts: present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`, `research_state/prompt_evolution.md`
 - Prompt-evolution ledger: `research_state/prompt_evolution.md` — PE-001, PE-002 pending; none accepted
 - Protected diff / data / env: `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*` unchanged (git diff e6c2f37 HEAD → empty); `data/` absent (gitignored); scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional this session
-- Verification summary: All four checks pass at HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58`: reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0. Protected files unchanged. `data/` absent. NO_NEW_INFORMATION. No autonomous research, no holdout execution/tuning, no protected-file edits.
+- Verification summary: All four checks pass at HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a`: reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0. Protected files unchanged. `data/` absent. NO_NEW_INFORMATION. No autonomous research, no holdout execution/tuning, no protected-file edits.
 
 **Repository:** `takentthatusernameis-collab/QUANT-MARKOV-PROCESS`
 **Branch:** `main`
 **Current phase:** `DISCOVERY_AND_METHOD_DESIGN` (validation-only cycle closed)
-**Status:** `COMPLETE` (HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
-**Updated:** 2026-11-28T00:27:06Z (stop-respecting re-verification at HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58`; NO_NEW_INFORMATION)
+**Status:** `COMPLETE` (HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a`; stop-respecting re-verification complete, NO_NEW_INFORMATION)
+**Updated:** 2026-11-28T00:28:00Z (stop-respecting re-verification at HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a`; NO_NEW_INFORMATION)
 ## Mission
 
 Determine whether Markov-process-based representations can produce a statistically robust, executable-after-costs predictive edge in liquid cryptocurrency markets. Research-only; no approved live-trading or deployment path.
 
-## Current state (re-verified 2026-11-28T00:27:06Z)
+## Current state (re-verified 2026-11-28T00:28:00Z)
 
-- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58`; all four checks passed this session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was present and functional this session. Research content unchanged.
-- **Git:** branch `main` tracking `origin/main`; HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58` at this verification; working tree clean; no research-content change vs prior verified HEAD (HEAD advance `0965910` → `dc4ab5dd6163ac0f716698517a0e39a503369d58` is controller-bookkeeping; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty).
+- **Durable task (completed this session):** "Read the prior agent task from the durable handoff and complete it. Then update the handoff and write a clear initial task message for the next agent." — completed stop-respecting re-verification at HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a`; all four checks passed this session (reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0, protected files unchanged; `data/` absent), NO_NEW_INFORMATION. Scratch venv was present and functional this session. Research content unchanged.
+- **Git:** branch `main` tracking `origin/main`; HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` at this verification; working tree clean; no research-content change vs prior verified HEAD (HEAD advance `dc4ab5d` → `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` is controller-bookkeeping; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty).
 - **Decision:** `RESEARCH_MORE` for materially different approaches/cost assumptions; current C1/C2 do not show robust net-after-cost edge. See `research/final_decision_report.md`.
 - **Stop condition:** `AGENT_STOP` exists at repo root (validation-only cycle complete; locked holdout not executed/authorized). **No autonomous research while `AGENT_STOP` exists.**
 - **Verification evidence (this session):**
@@ -33,20 +33,20 @@ Determine whether Markov-process-based representations can produce a statistical
 | --- | --- |
 | `AGENT_STOP` | present; reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` (whole-file `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c`) |
 | Protocol hash | `50aa8a4feff29de41a03c0d63e998d6b15f12ccd979825800d02c7dbe4166062` via `sha256sum` and `--print-protocol-hash` EXIT:0 |
-| Git | `main` tracking `origin/main`; HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58` at this verification (working tree clean); no research-content change vs prior verified HEAD (HEAD advance `0965910` → `dc4ab5dd6163ac0f716698517a0e39a503369d58` is controller-bookkeeping; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty) |
+| Git | `main` tracking `origin/main`; HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` at this verification (working tree clean); no research-content change vs prior verified HEAD (HEAD advance `dc4ab5d` → `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` is controller-bookkeeping; `git diff e6c2f37 HEAD -- AGENTS.md MARKOV_RESEARCH_PROMPT.md .github/workflows/` → empty) |
 | Holdout guard (observed) | no flag EXIT:2; `--execute-holdout` EXIT:2 (protocol-hash required); `--execute-holdout --protocol-hash deadbeef` EXIT:2 (mismatch); good-hash+missing-`data/` EXIT:1 (`FileNotFoundError: features data not found .../data/processed/features.parquet`, holdout not executed) |
-| Tests | holdout-guard `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 0.97s EXIT:0 this session (identical pass count/EXIT to prior sessions; timing variance only; venv present and functional this session) |
+| Tests | holdout-guard `PYTHONPATH=. /home/runner/work/_temp/kilo-tmp/qmp-venv/bin/python -m pytest tests/test_holdout_runner.py tests/test_holdout_runner_t5c.py -q` → **19 passed** in 0.98s EXIT:0 this session (identical pass count/EXIT to prior sessions; timing variance only; venv present and functional this session) |
 | Key artifacts | present: `AGENT_STOP`, `research/final_decision_report.md`, `research/forecasts/cross_family_validation_comparison.md`, `src/holdout_runner.py`, `research/specifications/holdout_evaluation_protocol.md`, `research/specifications/holdout_evaluation_manifest_template.json`, `research_state/prompt_evolution.md` |
 | Prompt-evolution ledger | `research_state/prompt_evolution.md` — PE-001, PE-002 pending; none accepted |
 | Protected diff / data / env | `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*` unchanged (git diff e6c2f37 HEAD → empty); `data/` absent (gitignored); scratch venv `/home/runner/work/_temp/kilo-tmp/qmp-venv` present and functional this session |
-| Verification summary | All four checks pass at HEAD `dc4ab5dd6163ac0f716698517a0e39a503369d58`: reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.97s EXIT:0. Protected files unchanged. `data/` absent. NO_NEW_INFORMATION. No autonomous research, no holdout execution/tuning, no protected-file edits. |
+| Verification summary | All four checks pass at HEAD `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a`: reason sha256 match, protocol hash match, guard refusals EXIT:2/2/2/1, tests 19 passed in 0.98s EXIT:0. Protected files unchanged. `data/` absent. NO_NEW_INFORMATION. No autonomous research, no holdout execution/tuning, no protected-file edits. |
 
 - **Holdout enforcement:** protocol hash unchanged; default refusal + required `--execute-holdout` + matching `--protocol-hash`. Holdout **not** executed or tuned.
 - **Constraints respected:** no live trading; no credentials; no holdout execution/tuning; no edits to `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, or `.github/workflows/*`.
 
 ## Initial task message for the next agent
 
-**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `dc4ab5dd6163ac0f716698517a0e39a503369d58` (`origin/main`; verified 2026-11-28T00:27:06Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
+**Read `AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `AGENT_STOP`, and this handoff first. Current HEAD at this verification is `a4d2b2b0bce3172b2cee80ff021f0b27d3ff641a` (`origin/main`; verified 2026-11-28T00:28:00Z). `AGENT_STOP` is present with reason-text sha256 `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7` and the cycle is `COMPLETE` (`RESEARCH_MORE`); do NOT start autonomous research, do NOT execute or tune the locked holdout, and do NOT edit protected files (`AGENTS.md`, `MARKOV_RESEARCH_PROMPT.md`, `.github/workflows/*`).**
 
 The only permitted bounded task is a stop-respecting re-verification at the then-current HEAD, following steps 1–4 below:
 1. Confirm the `AGENT_STOP` reason sha256 is `4ae222a6d1b3bec910f80bbda34a7124c275ef453e69ecb772579b08982947f7`. This is the sha256 of the `REASON:` text with the `REASON: ` prefix stripped and the trailing newline removed — `sed -n 's/^REASON: //p' AGENT_STOP | tr -d '\n' | sha256sum`. It is NOT the whole-file hash: `sha256sum AGENT_STOP` yields `8cd582d3d0bd58f5c54b06fade11b0ccf772d117cc9b7764c7fae43527e9af1c` (whole file, for reference only).
@@ -147,16 +147,16 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-25T02:50:06Z @ `bd8a959` — 19 passed in 1.02s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T02:56:18Z @ `05c2a92` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T03:40:15Z @ `31be179` — 19 passed in 1.01s, EXIT:0 (this session; venv present and functional).
-- 2026-11-25T03:49:28Z @ `e768148` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional).
+- 2026-11-25T03:49:28Z @ `e768148` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T04:40:38Z @ `fb3e900` — 19 passed in 1.17s, EXIT:0 (this session; venv present and functional).
-- 2026-11-25T04:48:56Z @ `b951a8b` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional).
+- 2026-11-25T04:48:56Z @ `b951a8b` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T05:44:15Z @ `99b667b` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T06:50:39Z @ `a0ea4d3` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T06:51:25Z @ `7104964` — 19 passed in 1.03s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T10:23:06Z @ `6492548` — 19 passed in 0.98s, EXIT:0 (this session; venv rebuilt from requirements.txt; NO_NEW_INFORMATION).
 - 2026-11-25T10:23:58Z @ `fee9171` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T11:23:22Z @ `d7e6757` — 19 passed in 1.09s, EXIT:0 (this session; venv present and functional).
-- 2026-11-25T11:24:39Z @ `628e41e` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional).
+- 2026-11-25T11:24:39Z @ `628e41e` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T11:26:26Z @ `512277a` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T11:27:36Z @ `e959625` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T11:30:00Z @ `cb87e56` — 19 passed in 1.08s, EXIT:0 (this session; venv present and functional).
@@ -164,7 +164,7 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-25T12:29:23Z @ `6a5181c` — 19 passed in 1.00s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T12:33:53Z @ `b92f6be` — 19 passed in 1.17s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T12:36:15Z @ `82830cc` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
-- 2026-11-25T12:38:13Z @ `17bd13e` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional).
+- 2026-11-25T12:38:13Z @ `17bd13e` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T13:24:43Z @ `52ae63c` — 19 passed in 1.03s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T13:30:30Z @ `9f78d36` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional).
 - 2026-11-25T13:30:53Z @ `5ab641879ae3441d4075d998700fe30ec00eaeb1` — 19 passed in 1.05s, EXIT:0 (this session; venv present and functional).
@@ -185,7 +185,7 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-25T21:14:54Z @ `3afe25a` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-25T21:15:20Z @ `0c96f7c` — 19 passed in 1.00s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-25T21:18:36Z @ `a9563b8` — 19 passed in 1.07s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-25T21:21:12Z @ `c5ec997` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-25T21:21:12Z @ `c5ec997` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-25T22:02:25Z @ `88aa294` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-25T22:02:49Z @ `27f25e1` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-25T22:05:10Z @ `cd138c9` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
@@ -225,11 +225,11 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-26T21:31:38Z @ `5dba33d` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T22:27:05Z @ `2ac9902` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T22:29:47Z @ `b0b3519` — 19 passed in 1.09s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-26T23:35:00Z @ `1352847` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-26T23:35:00Z @ `1352847` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-26T23:37:30Z @ `7375709` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-27T00:29:03Z @ `a73f7a0` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-27T00:29:03Z @ `a73f7a0` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T00:35:14Z @ `65a2605` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-27T00:38:20Z @ `5fa4181` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-27T00:38:20Z @ `5fa4181` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T02:59:43Z @ `9e95390` — 19 passed in 1.48s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T03:04:15Z @ `46feca4` — 19 passed in 1.64s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T04:01:18Z @ `35a69c2` — 19 passed in 1.54s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
@@ -249,7 +249,7 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-27T11:49:45Z @ `99ac3c6` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T11:57:20Z @ `6100f67` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T12:14:05Z @ `51b253b` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-27T12:47:52Z @ `ed4c436` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-27T12:47:52Z @ `ed4c436` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T13:00:26Z @ `8984fe7` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T13:04:02Z @ `c22a9e9` — 19 passed in 1.02s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T13:06:08Z @ `8d5a0cd` — 19 passed in 1.08s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
@@ -261,7 +261,7 @@ Repeated stop-respecting re-verifications at successive controller-bookkeeping H
 - 2026-11-27T20:22:52Z @ `5041544` — 19 passed in 0.94s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T20:23:36Z @ `365d69d` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T21:21:51Z @ `3f43ec9` — 19 passed in 0.96s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
-- 2026-11-27T21:24:18Z @ `17a849a` — 19 passed in 0.97s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
+- 2026-11-27T21:24:18Z @ `17a849a` — 19 passed in 0.98s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T21:25:30Z @ `1c67c70` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T22:24:06Z @ `383a691` — 19 passed in 0.95s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
 - 2026-11-27T22:32:04Z @ `96aeb78` — 19 passed in 1.05s, EXIT:0 (this session; venv present and functional; NO_NEW_INFORMATION).
