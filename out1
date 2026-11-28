@@ -1,1 +1,1 @@
-Holdout execution refused: --execute-holdout not provided. This runner enforces a locked holdout and will not run by default.
+Holdout execution refused: --protocol-hash is required with --execute-holdout.
